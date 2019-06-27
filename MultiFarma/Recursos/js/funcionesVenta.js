@@ -1,0 +1,409 @@
+function venta(){
+
+   $("#id_cliente").keyup(function(e){
+   e.preventDefault();
+   var id_cliente = $(this).val();
+   $.ajax({
+    type:"get",
+    url:"./Controlador/controladorCliente.php",
+    data: {codigo: id_cliente,accion:'consultar'},
+    dataType:"json"
+ }).done(function( cliente ) {                    
+    if(cliente.respuesta == 'no existe'){
+
+      $("#nombre_cliente").val('');
+      $("#telefono_cliente").val('');
+      $("#direccion_cliente").val('');
+      $("#apellido_cliente").val('');
+      $('#nuevo').show();
+
+      $("#id_pais").find('option').remove().end().append(
+        '<option value="whatever">Seleccione ...</option>').val("whatever");
+
+      $("#id_ciudad").find('option').remove().end().append(
+        '<option value="whatever">Seleccione ...</option>').val("whatever");
+    }
+    else{
+        $("#nombre_cliente").attr('readonly','true');
+        $("#telefono_cliente").attr('readonly','true');
+        $("#apellido_cliente").attr('readonly','true');
+        $("#direccion_cliente").attr('readonly','true');
+    
+        $("#id_pais").attr('disabled','true');
+        $("#id_ciudad").attr('disabled','true');    
+        $('#nuevo').hide();
+        var pais, ciudad;
+        $("#id_cliente").val(cliente.id_cliente);                   
+        $("#nombre_cliente").val(cliente.nombre_cliente);
+        $("#apellido_cliente").val(cliente.apellido_cliente);
+        $("#direccion_cliente").val(cliente.direccion_cliente);
+        $("#telefono_cliente").val(cliente.telefono_cliente);
+        pais = cliente.id_pais;
+        ciudad = cliente.id_ciudad;
+        var id_pais = cliente.id_pais;
+        $.ajax({
+            type:"get",
+            url:"./Controlador/controladorPais.php",
+            data: {accion:'listar'},
+            dataType:"json"
+        }).done(function( resultado ) {                      
+            $.each(resultado.data, function (index, value) { 
+            if(pais === value.id_pais){
+                $("#id_pais").append("<option selected value='" + value.id_pais + "'>" + value.nombre_pais + "</option>")
+            }else {
+                $("#id_pais").append("<option value='" + value.id_pais + "'>" + value.nombre_pais + "</option>")
+            }
+            });
+        });
+        $.ajax({
+            type:"get",
+            url:"./Controlador/controladorCiudad.php",
+            data: {codigo: id_pais, accion:'listarC'},
+            dataType:"json"
+         }).done(function( resultado ) {                    
+             $.each(resultado.data, function (index, value) { 
+                if(ciudad === value.id_ciudad){
+                $("#id_ciudad").append("<option selected value='" + value.id_ciudad + "'>" + value.nombre_ciudad + "</option>")
+                }
+                else{
+                $("#id_ciudad").append("<option value='" + value.id_ciudad + "'>" + value.nombre_ciudad + "</option>")
+                } 
+             });
+         });  
+    }
+ });
+ }); 
+
+ $("#box-panel-two").on("click","#nuevo", function(){
+
+  if($("#id_cliente").val() != ''){
+    $("#id_cliente").attr('readonly','true');
+
+    $("#nombre_cliente").removeAttr('readonly');
+    $("#telefono_cliente").removeAttr('readonly');
+    $("#apellido_cliente").removeAttr('readonly');
+    $("#direccion_cliente").removeAttr('readonly');
+
+    $("#id_pais").removeAttr('disabled');
+   
+    $.ajax({
+        type:"get",
+        url:"./Controlador/controladorPais.php",
+        data: {accion:'listar'},
+        dataType:"json"
+     }).done(function( resultado ) {                    
+         $.each(resultado.data, function (index, value) { 
+           $("#id_pais").append("<option value='" + value.id_pais + "'>" + value.nombre_pais + "</option>")
+         });
+     });
+
+     $("#id_pais").change(function(){
+        $("#id_pais option:selected").each(function(){
+        var id_pais = document.forms['fventa']['id_pais'].value;
+        $("#id_ciudad").removeAttr('disabled');
+        $("#id_ciudad").find('option').remove().end().append(
+        '<option value="whatever">Seleccione ...</option>').val("whatever");
+        $.ajax({
+            type:"get",
+            url:"./Controlador/controladorCiudad.php",
+            data: {codigo: id_pais, accion:'listarC'},
+            dataType:"json"
+         }).done(function( resultado ) {                    
+             $.each(resultado.data, function (index, value) { 
+               $("#id_ciudad").append("<option value='" + value.id_ciudad + "'>" + value.nombre_ciudad + "</option>")
+             });
+             $('#grabar').show();
+         });
+        });             
+        });
+    }
+    else{
+        swal({
+            position: 'center',
+            type: 'error',
+            title: 'El campo identificación esta vacio',
+            showConfirmButton: false,
+            timer: 1200
+        }) 
+    }
+ })
+
+ $("#box-panel-two").on("click","#grabar", function(){
+    var datos=$("#fventa").serialize();
+    $.ajax({
+        type:"post",
+        url:"./Controlador/controladorCliente.php",
+        data: datos,
+        dataType:"json"
+      }).done(function( resultado ) {
+          if(resultado.respuesta){
+            $("#id_cliente").attr('readonly','true');  
+            $("#nombre_cliente").attr('readonly','true');
+            $("#telefono_cliente").attr('readonly','true');
+            $("#apellido_cliente").attr('readonly','true');
+            $("#direccion_cliente").attr('readonly','true');
+        
+            $("#id_pais").attr('disabled','true');
+            $("#id_ciudad").attr('disabled','true');
+            
+            $('#nuevo').hide();
+            $('#grabar').hide();                  
+         } 
+    });
+
+ })
+
+ $("#id_producto").keyup(function(e){
+    e.preventDefault();
+    
+    var id_producto = $(this).val();
+    $.ajax({
+        type:"get",
+        url:"./Controlador/controladorProducto.php",
+        data: {codigo: id_producto, accion:"consultar_prod_venta"},
+        dataType:"json"
+      }).done(function( producto ) {
+    if(producto.respuesta == 'existe'){
+      $("#nombre_producto").html(producto.detalle_producto);
+      $("#stock").html(producto.stock);
+      $("#cantidad_producto").val('1');
+      $("#valor_venta").html(producto.valor_venta);
+      $("#valor_venta_total").html(producto.valor_venta);
+    
+      $("#cantidad_producto").removeAttr('disabled');
+    
+      $('#add_producto_venta').slideDown();
+    }
+    else{
+      $("#nombre_producto").html('-');
+      $("#stock").html('-');
+      $("#cantidad_producto").val('0');
+      $("#valor_venta").html('0.00');
+      $("#valor_venta_total").html('0.00');
+    
+      $("#cantidad_producto").attr('disabled','true');
+    
+      $('#add_producto_venta').slideUp();  
+    }
+      }); 
+    });
+
+    $("#cantidad_producto").keyup(function(e){
+    e.preventDefault();
+    var valor_venta_total = $(this).val() * $("#valor_venta").html();
+    $("#valor_venta_total").html(valor_venta_total);  
+    
+    if($(this).val() < 1 || isNaN($(this).val())||$(this).val() > parseInt($("#stock").html())){
+      $("#add_producto_venta").slideUp();
+    }
+    else{
+      $("#add_producto_venta").slideDown();
+    }
+
+    });
+
+    
+    var posicion = 0, subTotal, iva, total_venta, cantidad;
+    var movimiento_factura;
+    var self = this;
+    self.model = new Comprobante();
+    self.producto = null;
+
+    function Producto(obj){
+      this.id = obj.id;
+      this.nombre = obj.nombre;
+      this.cantidad = obj.cantidad;
+      this.precio = obj.precio;
+      this.total = obj.total;
+  }
+
+  
+function Comprobante() {
+    this.detalle = [];
+}
+
+function Calcular_totales(obj){
+
+this.total = obj.total;
+
+ subTotal = subTotal + this.total;
+ iva = subTotal*0.19;
+ total_venta = subTotal+iva;
+
+var totales = '<tr>'+
+'<td>'+subTotal+'</td>'+
+'<td>'+iva+'</td>'+
+'<td>'+total_venta+'</td>'+'</tr>'; 
+
+$("#tablaT").html(totales);
+
+}
+
+function Cargar_detalle(){
+  subTotal = 0, iva = 0, total_venta = 0;
+
+  $.each(self.model.detalle, function (index, value) { 
+
+    movimiento_factura = movimiento_factura + '<tr>'+
+    '<td>'+value.id+'</td>'+
+    '<td>'+value.nombre+'</td>'+
+    '<td>'+value.cantidad+'</td>'+
+    '<td>'+value.precio+'</td>'+
+    '<td>'+value.total+'</td>'+ 
+    '<td>'+'<a href="#" data-codigo="'+ posicion + 
+    '" class="btn btn-danger btn-sm borrar"> <i class="fa fa-trash"></i></a>'+'</td>'+'</tr>';  
+  
+   self.calcular_totales = new Calcular_totales({
+    total: value.total 
+    });    
+    posicion++; 
+  });
+  posicion = 0;
+
+  $("#tablaD").html(movimiento_factura);
+}
+
+  $("#box-panel-three").on("click","#add_producto_venta", function(){
+  
+  cantidad = self.model.detalle.length;
+
+  if(cantidad == 0){
+  $("#procesar").removeAttr('disabled');
+  }
+
+  movimiento_factura = '';   
+  self.producto = new Producto({
+      id: parseInt($("#id_producto").val()),
+      nombre: $("#nombre_producto").html(),
+      cantidad: parseInt($("#cantidad_producto").val()),
+      precio: parseInt($("#valor_venta").html()),
+      total: parseInt($("#valor_venta_total").html())
+  });
+            
+     self.model.detalle.push(self.producto);
+
+     self.cargar_detalle = new Cargar_detalle();
+
+      $("#id_producto").val('');
+      $("#nombre_producto").html('-');
+      $("#stock").html('-');
+      $("#cantidad_producto").val('0');
+      $("#cantidad_producto").attr('disabled','true');
+      $("#valor_venta").html('0.00');
+      $("#valor_venta_total").html('0.00');
+      $('#add_producto_venta').slideUp();
+
+      
+  })
+
+  $("#box-panel-four").on("click","a.borrar", function(){
+   
+    cantidad = self.model.detalle.length;
+
+    if(cantidad == 1){
+    $("#procesar").attr('disabled','true');
+    $("#tablaT").html('');
+    }
+           var item = $(this).data("codigo");
+
+            index = self.model.detalle.indexOf(item);
+
+            self.model.detalle.splice(index, 1);
+            
+            movimiento_factura = '';
+            self.cargar_detalle = new Cargar_detalle();
+
+  })
+
+  $("#box-panel-one").on("click","#cancelar", function(){
+
+    if(cantidad > 1){
+
+    $("#id_cliente").val('');
+    $("#nombre_cliente").val('');
+    $("#telefono_cliente").val('');
+    $("#direccion_cliente").val('');
+    $("#apellido_cliente").val('');
+    
+    $("#id_pais").find('option').remove().end().append(
+      '<option value="whatever">Seleccione ...</option>').val("whatever");
+
+    $("#id_ciudad").find('option').remove().end().append(
+      '<option value="whatever">Seleccione ...</option>').val("whatever");
+    }
+
+    $("#id_producto").val('');
+    $("#nombre_producto").html('-');
+    $("#stock").html('-');
+    $("#cantidad_producto").val('0');
+    $("#cantidad_producto").attr('disabled','true');
+    $("#valor_venta").html('0.00');
+    $("#valor_venta_total").html('0.00');
+    $('#add_producto_venta').slideUp();
+
+    self.model.detalle = [];
+
+    $("#tablaD").html('');
+    $("#tablaT").html('');
+    $("#procesar").attr('disabled','true');
+
+  })
+
+  $("#box-panel-one").on("click","#procesar", function(){
+   var id_cliente = document.forms['fventa']['id_cliente'].value;
+   $.ajax({
+    type:"post",
+    url:"./Controlador/controladorVenta.php",
+    data: {codigo: id_cliente, codigoS: subTotal, codigoI: iva, codigoT: total_venta, accion:"nuevo"},
+    dataType:"json"
+   }).done(function(resultado){
+     if(resultado.respuesta){
+      $.ajax({
+        type:"get",
+        url:"./Controlador/controladorVenta.php",
+        data: {accion:"identificarM"},
+        dataType:"json"
+       }).done(function(resultado){
+         if(resultado.respuesta == 'existe'){
+          var id_factura = resultado.id_factura;
+          var datos = {};
+          for(i in self.model.detalle){
+            datos[i] = self.model.detalle[i];
+          }
+          $.ajax({
+           type:"post",
+           url:"./Controlador/controladorVenta.php",
+           data: {datos: datos, codigoF: id_factura, accion:"nuevoD"},
+           dataType:"json"
+          }).done(function(resultado){
+            if(resultado.respuesta){
+              $.ajax({
+                type:"post",
+                url:"./Controlador/controladorInventario.php",
+                data: {datos: datos, accion:"editar_inven_venta"},
+                dataType:"json"
+               }).done(function(resultado){
+                 if(resultado.respuesta){
+                 generarPDF(id_cliente,id_factura);
+                 location.reload();
+                 }
+               })
+            }
+          })
+         }
+        })
+     }
+   })
+  })  
+}
+function generarPDF(cliente,factura){
+var ancho = 1000;
+var alto = 800;
+
+var x = parseInt((window.screen.width / 2) - (ancho / 2));
+var y = parseInt((window.screen.height / 2) - (alto / 2));
+
+$url = 'factura/generaFactura.php?cl='+cliente+'&f='+factura;
+window.open($url,"Factura","left="+x+",top="+y+"height="+alto+",width="+ancho+",scrollbar=si,location=no,resizable=si,menubar=no");
+}
+    

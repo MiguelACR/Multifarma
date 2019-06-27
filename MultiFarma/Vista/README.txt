@@ -1,0 +1,1 @@
+Agregue aqui todos los ficheros de vista, cree una nueva carpeta con el nombre del modulo y posteriomente agregue los ficheros dentro de la carpeta creada.
