@@ -1,4 +1,6 @@
-<?php include_once ("../../Funciones/sessiones.php"); ?>
+<?php include_once ("../../Funciones/sessiones.php"); 
+usuarioAutenticado(1);
+?>
 <div id="seccion-ciudad">
     <div class="box-header">
         <i class="fa fa-building" aria-hidden="true">Gestion de Ciudad</i>

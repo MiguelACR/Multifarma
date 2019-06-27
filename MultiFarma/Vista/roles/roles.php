@@ -1,4 +1,6 @@
-<?php include_once ("../../Funciones/sessiones.php"); ?>
+<?php include_once ("../../Funciones/sessiones.php"); 
+usuarioAutenticado(16);
+?>
      
      <h1>
         Gestión de

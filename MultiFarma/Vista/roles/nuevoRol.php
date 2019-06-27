@@ -1,4 +1,6 @@
-<?php include_once ("../../Funciones/sessiones.php"); ?>
+<?php include_once ("../../Funciones/sessiones.php"); 
+usuarioAutenticado(16);
+?>
 
     <div class="box-body">
         <div class="panel-group"><div class="panel panel-primary">

@@ -123,7 +123,7 @@ $("#editar").on("click","#desbloqueo",function(){
                                           swal({
                                               position: 'center',
                                               type: 'success',
-                                              title: 'La comuna fue grabada con éxito',
+                                              title: 'El usuario fue grabado con éxito',
                                               showConfirmButton: false,
                                               timer: 1200
                                           })     

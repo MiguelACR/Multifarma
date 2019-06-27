@@ -1,4 +1,6 @@
-<?php include_once ("../../Funciones/sessiones.php"); ?>
+<?php include_once ("../../Funciones/sessiones.php"); 
+usuarioAutenticado(6);
+?>
 <div id="nuevo-editar" class="hide">
 		<!-- div para cargar el formulario para una nueva farmacia o editar una farmacia -->
 </div>

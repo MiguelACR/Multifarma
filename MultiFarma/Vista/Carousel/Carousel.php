@@ -1,4 +1,6 @@
-<?php include_once ("../../Funciones/sessiones.php"); ?>
+<?php include_once ("../../Funciones/sessiones.php"); 
+usuarioAutenticado(17);
+?>
 <div id="nuevo-editar" class="hide">
     <!-- div para cargar el formulario para una nueva imagen-->
 </div>

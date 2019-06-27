@@ -1,5 +1,6 @@
 <?php
   include_once ("./Funciones/sessiones.php");
+  usuarioAutenticado(0);
   include_once ('./templates/header.php');
 
   include_once ('./templates/barra.php');

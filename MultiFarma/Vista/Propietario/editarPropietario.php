@@ -1,4 +1,6 @@
-<?php include_once ("../../Funciones/sessiones.php"); ?>
+<?php include_once ("../../Funciones/sessiones.php"); 
+usuarioAutenticado(13);
+?>
 <div id="seccion-propietario">
     <div class="box-header">
         <i class="fa fa-building" aria-hidden="true">Gestion de Propietario</i>

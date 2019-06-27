@@ -1,4 +1,6 @@
-<?php include_once ("../../Funciones/sessiones.php"); ?>
+<?php include_once ("../../Funciones/sessiones.php"); 
+usuarioAutenticado(14);
+?>
 <div id="nuevo-editar" class="hide">
     <!-- div para cargar el formulario para un nuevo proveedor o editar un proveedor -->
 </div>

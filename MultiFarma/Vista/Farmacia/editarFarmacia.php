@@ -1,4 +1,6 @@
-<?php include_once ("../../Funciones/sessiones.php"); ?>
+<?php include_once ("../../Funciones/sessiones.php"); 
+usuarioAutenticado(6);
+?>
 <!-- quick email widget -->
 <div id="seccion-farmacia">
     <div class="box-header">
