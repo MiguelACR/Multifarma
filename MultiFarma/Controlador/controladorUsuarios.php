@@ -1,8 +1,10 @@
 <?php
- 
 require_once '../Modelo/modeloUsuarios.php';
-$datos = $_GET;
-switch ($_GET['accion']){
+
+if ($datos = $_POST){
+    
+switch ($_POST['accion']){
+    
     case 'editar':
         $usuario = new Usuario();
         $resultado = $usuario->editar($datos);
@@ -105,5 +107,68 @@ switch ($_GET['accion']){
         );
         echo json_encode($respuesta);
         break;
+
+        case 'login':
+        $usuario = htmlspecialchars(trim("$_POST[usuario]"));
+        $password = htmlspecialchars(trim("$_POST[password]"));
+        $datos = array("usuario"=>$usuario, "password"=>$password);
+          $usuario = new Usuario();
+          $usuario->consultarDatoslogin($datos);
+  
+          if($usuario->getId_usuario() == null) {
+              $respuesta = array(
+                  'respuesta' => 'no existe'
+              );
+          }  else {
+              if(password_verify($datos['password'],$usuario->getClave_usuario())){
+                  session_start();
+                  $_SESSION['usuario'] = $usuario->getNickname_usuario();
+                  $respuesta = array(
+                      'usuario' => $usuario->getId_usuario(),
+                      'estado' => $usuario->getId_estado(),
+                      'rol'    => $usuario->getId_rol(),
+                      'respuesta' =>'existe'
+                  );
+              } else {
+                  $respuesta = array(
+                      'respuesta' => 'no existe'
+                  );
+              }
+              
+          }
+          echo json_encode($respuesta);
+        break;
+        
+        case 'consultar_datos_login':
+          $usuario = new Usuario();
+ 
+          $datos = array('usuario' => $datos['codigo']);
+
+          $usuario->consultarDatoslogin($datos);
+  
+          if($usuario->getId_usuario() == null) {
+              $respuesta = array(
+                  'respuesta' => 'no existe'
+              );
+          }else {
+                  $respuesta = array(
+                      'usuario' => $usuario->getId_usuario(),
+                      'respuesta' =>'existe'
+                  );
+          } 
+          echo json_encode($respuesta);
+        break;
+
+        case 'editar_estado':
+        $usuario = new Usuario();
+		$resultado = $usuario->nuevo_editar($datos);
+        $respuesta = array(
+                'respuesta' => $resultado
+            );
+        echo json_encode($respuesta);
+        break;
+
+}
+
 }
 ?>

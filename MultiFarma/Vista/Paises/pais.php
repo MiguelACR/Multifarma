@@ -1,5 +1,5 @@
-<?php include_once ("../../Funciones/sessiones.php"); 
-usuarioAutenticado(10);
+<?php //include_once ("../../Funciones/sessiones.php"); 
+//usuarioAutenticado(10);
 ?>
 <div id="nuevo-editar" class="hide">
     <!-- div para cargar el formulario para una nuevo pais o editar una pais -->

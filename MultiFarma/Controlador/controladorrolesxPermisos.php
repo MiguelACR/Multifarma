@@ -1,7 +1,10 @@
 <?php
 require_once '../Modelo/modelorolesxPermisos.php';
-$datos = $_GET;
-switch ($_GET['accion']){
+
+if ($datos = $_POST){
+    
+switch ($_POST['accion']){
+
     case 'editar':
         $rolxpermiso = new Rolxpermiso();
         $resultado = $rolxpermiso->editar($datos['codigo'],$datos['codigoP'],$datos['codigoM'],$datos['codigoE']);
@@ -62,5 +65,32 @@ switch ($_GET['accion']){
         $listado = $rolxpermiso->listar($datos['codigo']);
         echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);    
         break;
+    
+    case 'listar_permisos':
+        $rolxpermiso = new Rolxpermiso();
+        $listado = $rolxpermiso->listar($datos['codigo']);
+        //echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE); 
+        $i = 1;
+        session_start();
+        foreach ($listado as $index => $value){
+           $index = $value;
+           foreach ($index as $key => $val) {
+            if($val == 1){
+                $_SESSION["".$i."NA"] = "block";
+                $i++;
+                }
+                else{
+                $_SESSION["".$i.'NA'] = "none";
+                $i++;
+                }  
+           }
+        }
+        $respuesta = array(
+            'respuesta' => 'Perfecto'
+        );  
+        echo json_encode($respuesta);
+    break;    
+}
+
 }
 ?>

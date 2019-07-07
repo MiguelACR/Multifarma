@@ -41,8 +41,12 @@
 			SELECT id_pais, nombre_pais, abreviatura_pais
 			FROM tb_paises ORDER BY nombre_pais
 			";
-			$this->obtener_resultados_query();
+			$this->obtener_resultados_query(0);
 			return $this->rows;
+		}
+
+        public function nuevo_editar(){
+			
 		}
 
 		public function nuevo($datos=array()) {

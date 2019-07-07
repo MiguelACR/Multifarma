@@ -53,6 +53,25 @@
 			endif;
 		}
 		
+		public function consultarDatoslogin($datos = array()) {
+			
+            $nickname_usuario = $datos['usuario'];
+            
+            $this->query = "
+            SELECT id_usuario, nickname_usuario, clave_usuario, id_estado, id_rol
+			FROM tb_usuarios
+			WHERE nickname_usuario = ?
+            ";
+            $this->primero = $nickname_usuario;
+            $this->obtener_resultados_query(1);
+			
+			if(count($this->rows) == 1):
+				foreach ($this->rows[0] as $propiedad=>$valor):
+					$this->$propiedad = $valor;
+				endforeach;
+            endif;
+        }
+		
 		public function listar() {
 			$this->query = "
             SELECT u.id_usuario, u.nickname_usuario, u.clave_usuario, e.nombre_estado , r.nombre_rol, 
@@ -67,6 +86,98 @@
 			
 		}
 		
+        public function nuevo_editar($datos=array()){
+			$resultado = false;
+			if(array_key_exists('id_usuario', $datos)):
+			try {
+            if($datos['accion'] == 'nuevo'){
+				foreach ($datos as $campo=>$valor):
+					$$campo = $valor;
+				endforeach;
+
+				$this->query = "
+				INSERT INTO tb_clientes
+				(id_cliente, nombre_cliente, apellido_cliente, direccion_cliente, 
+                telefono_cliente, id_pais, id_ciudad, email_cliente, update_at)
+				VALUES
+				(?, ?, ?, ?, ?, ?, ?, ?, ?)
+				";
+			    $stm = $this->abrir_preparar_cerrar('abrir');
+			
+			    $stm->execute([
+				  $id_cliente,
+				  $nombre_cliente,
+				  $apellido_cliente,
+				  $direccion_cliente,
+				  $telefono_cliente,
+				  $id_pais,
+				  $id_ciudad,
+				  $email_cliente,
+				  'NOW()'
+			    ]);
+
+				$this->abrir_preparar_cerrar('cerrar');    
+			}
+			else if($datos['accion'] == 'editar'){
+				foreach ($datos as $campo=>$valor):
+					$$campo = $valor;
+				endforeach;
+				$this->query = "
+				UPDATE tb_clientes
+				SET nombre_cliente = ?, 
+				apellido_cliente = ?,
+				direccion_cliente = ?, 
+				telefono_cliente = ?, 
+				id_pais = ?, 
+				id_ciudad = ?,
+				email_cliente = ?,
+				update_at = ?
+				WHERE id_cliente = ?
+				";
+				$stm = $this->abrir_preparar_cerrar('abrir');
+				
+				$stm->execute([
+					$nombre_cliente,
+					$apellido_cliente,
+					$direccion_cliente,
+					$telefono_cliente,
+					$id_pais,
+					$id_ciudad,
+					$email_cliente,
+					'NOW()',
+					$id_cliente
+				  ]);
+
+				$this->abrir_preparar_cerrar('cerrar'); 
+			}
+			else if($datos['accion'] == 'editar_estado'){
+		        foreach ($datos as $campo=>$valor):
+					$$campo = $valor;
+			    endforeach;
+			    $this->query = "
+			    UPDATE tb_usuarios
+			    SET id_estado = ?
+			    WHERE id_usuario = ?
+			    ";
+
+			    $stm = $this->abrir_preparar_cerrar('abrir');
+
+			    $stm->execute([
+				 $id_estado,
+				 $id_usuario
+			     ]);
+
+			    $this->abrir_preparar_cerrar('cerrar'); 
+			}
+			$resultado = true;
+			}
+			catch(Exception $e) {
+				throw new Exception($e->getMessage());
+			}
+			return $resultado;
+			endif;		
+		}
+
 		public function nuevo($nickname_usuario='',$clave_usuario='',$id_estado='',$id_rol='') {
 			
 			$this->query = "

@@ -1,8 +1,10 @@
 <?php
- 
-require_once '../Modelo/modelousuariosxEmpleados.php';
-$datos = $_GET;
-switch ($_GET['accion']){
+require_once '../Modelo/modeloUsuariosxempleados.php';
+
+if ($datos = $_POST){
+    
+switch ($_POST['accion']){
+
     case 'editar':
         $usuarioxempleado = new Usuarioxempleado();
         $resultado = $usuarioxempleado->editar($datos['codigoA'],$datos['codigoB'],$datos['codigoC']);
@@ -63,5 +65,8 @@ switch ($_GET['accion']){
     case 'listar':
             
         break;
+
+}
+
 }
 ?>

@@ -403,7 +403,7 @@ var alto = 800;
 var x = parseInt((window.screen.width / 2) - (ancho / 2));
 var y = parseInt((window.screen.height / 2) - (alto / 2));
 
-$url = 'factura/generaFactura.php?cl='+cliente+'&f='+factura;
+$url = 'Reportes/Factura/reporteFactura.php?cl='+cliente+'&f='+factura;
 window.open($url,"Factura","left="+x+",top="+y+"height="+alto+",width="+ancho+",scrollbar=si,location=no,resizable=si,menubar=no");
 }
     

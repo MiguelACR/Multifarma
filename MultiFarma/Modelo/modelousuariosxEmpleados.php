@@ -27,9 +27,10 @@
 				$this->query = "
 				SELECT id_usuarioxempleado, id_empleado
 				FROM tb_usuarioxempleado
-				WHERE id_usuario = '$id_usuario'
+				WHERE id_usuario = ?
 				";
-				$this->obtener_resultados_query();
+				$this->primero = $id_usuario;
+				$this->obtener_resultados_query(1);
 			endif;
 			if(count($this->rows) == 1):
 				foreach ($this->rows[0] as $propiedad=>$valor):
@@ -43,6 +44,10 @@
 			
 		}
 		
+        public function nuevo_editar(){
+			
+		}
+
 		public function nuevo($id_empleado='',$id_usuario='') {
 			
 				$this->query = "

@@ -1,8 +1,9 @@
 <?php
  
 require_once '../Modelo/modeloPais.php';
-$datos = $_GET;
-switch ($_GET['accion']){
+if($datos = $_POST){
+switch ($_POST['accion']){
+
     case 'editar':
         $pais = new Pais();
 		$resultado = $pais->editar($datos);
@@ -10,7 +11,8 @@ switch ($_GET['accion']){
                 'respuesta' => $resultado
             );
         echo json_encode($respuesta);
-        break;
+    break;
+
     case 'nuevo':
         $pais = new Pais();
 		$resultado = $pais->nuevo($datos);
@@ -24,7 +26,8 @@ switch ($_GET['accion']){
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
+
     case 'borrar':
 		$pais = new Pais();
 		$resultado = $pais->borrar($datos['codigo']);
@@ -38,7 +41,20 @@ switch ($_GET['accion']){
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;  
+
+}
+}
+else{
+
+    $datos = $_GET;    
+    switch ($_GET['accion']){
+
+    case 'listar':
+        $pais = new Pais();
+        $listado = $pais->listar();        
+        echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);
+    break;
 
     case 'consultar':
         $pais = new Pais();
@@ -57,12 +73,8 @@ switch ($_GET['accion']){
             );
         }
         echo json_encode($respuesta);
-        break;
-
-    case 'listar':
-        $pais = new Pais();
-        $listado = $pais->listar();        
-        echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);
-        break;
+    break;
+    
+}
 }
 ?>

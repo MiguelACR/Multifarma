@@ -14,6 +14,16 @@ p, label, span, table{
 	font-family: 'BrixSansBlack';
 	font-size: 16pt;
 }
+.h1{
+	font-family: 'BrixSansBlack';
+	font-size: 14pt;
+	display: block;
+	background: #ffffff;
+	color: black;
+	text-align: center;
+	padding: 3px;
+	margin-bottom: 5px;
+}
 .h3{
 	font-family: 'BrixSansBlack';
 	font-size: 12pt;
@@ -29,18 +39,18 @@ p, label, span, table{
 	margin: 15px auto 10px auto;
 }
 
-#factura_head, #factura_cliente, #factura_detalle{
+#html_head, #factura_cliente, #detalle_head{
 	width: 100%;
 	margin-bottom: 10px;
 }
-.logo_factura{
+.logo_empresa{
 	width: 25%;
 }
 .info_empresa{
 	width: 50%;
 	text-align: center;
 }
-.info_factura{
+.info_reporte{
 	width: 25%;
 }
 .info_cliente{
@@ -82,15 +92,15 @@ p, label, span, table{
 	padding: 0 15px;
 }
 
-#factura_detalle{
+#detalle_head{
 	border-collapse: collapse;
 }
-#factura_detalle thead th{
+#detalle_head thead th{
 	background: #058167;
 	color: #FFF;
 	padding: 5px;
 }
-#detalle_productos tr:nth-child(even) {
+#detalle_body tr:nth-child(even) {
     background: #ededed;
 }
 #detalle_totales span{

@@ -1,6 +1,7 @@
 <?php include_once ("../../Funciones/sessiones.php"); 
 usuarioAutenticado(1);
 ?>
+<!-- quick email widget -->
 <div class="box-body">
         <div class="panel-group"><div class="panel panel-primary">
             <div class="panel-heading">Datos</div>
@@ -42,12 +43,13 @@ usuarioAutenticado(1);
                 
 					 <div class="form-group">        
                         <div class="col-sm-offset-2 col-sm-10">
-                            <button type="button" id="actualizar" class="btn btn-primary" data-toggle="tooltip" title="Actualizar ciudad">Actualizar ciudad</button>
+                            <button type="button" id="grabar" class="btn btn-primary" data-toggle="tooltip" title="Grabar ciudad">Grabar ciudad</button>
                             <button type="button" id="cerrar" class="btn btn-success btncerrar" data-toggle="tooltip" title="Cancelar">Cancelar</button>
                         </div>
                     </div>
 
+					<input type="hidden" id="nuevo" value="nuevo" name="accion"/>
 			</fieldset>
 
 		</form>
-</div>
+	</div>

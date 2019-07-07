@@ -59,7 +59,7 @@ function factura (){
       confirmButtonText: 'Si, anularla!'
 }).then((decision) => {
         if (decision.value) {  
-          var request =    $.ajax({
+          var request =  $.ajax({
             type:"post",
             url:"./Controlador/controladorFactura.php",
             data: {codigo: id_factura, accion:'anular'},
@@ -107,12 +107,12 @@ function factura (){
  })
 }
 function generarPDF(cliente,factura){
-    var ancho = 1000;
-    var alto = 800;
-    
-    var x = parseInt((window.screen.width / 2) - (ancho / 2));
-    var y = parseInt((window.screen.height / 2) - (alto / 2));
-    
-    $url = 'factura/generaFactura.php?cl='+cliente+'&f='+factura;
-    window.open($url,"Factura","left="+x+",top="+y+"height="+alto+",width="+ancho+",scrollbar=si,location=no,resizable=si,menubar=no");
-    }
+  var ancho = 1000;
+  var alto = 800;
+  
+  var x = parseInt((window.screen.width / 2) - (ancho / 2));
+  var y = parseInt((window.screen.height / 2) - (alto / 2));
+  
+  $url = 'Reportes/Factura/reporteFactura.php?cl='+cliente+'&f='+factura;
+  window.open($url,"Factura","left="+x+",top="+y+"height="+alto+",width="+ancho+",scrollbar=si,location=no,resizable=si,menubar=no");
+  }

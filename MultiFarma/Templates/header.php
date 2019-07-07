@@ -32,3 +32,22 @@
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
+<div id="modal-reportes" class="modal fade" style="display: none;">
+ <div class="modal-dialog modal-sm">
+  <div class="modal-content">
+   <div class="modal-header">
+   <button class="close" data-dismiss="modal" aria-label="close">
+   <span aria-hidden="true">x</span></button>
+   <h4 class="modal-title">Menu de Reportes</h4>
+   </div>
+   <div class="modal-body">
+   <div align="center"><img src="Recursos/img/report.png" alt="No disponible"></div>
+   </div>
+   <div class="modal-footer">
+   <button class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+   <button id="generar_xls" class="btn btn-success" >Generar xls</button>
+   <button id="generar_pdf" class="btn btn-danger" >Generar pdf</button>
+   </div>                  
+  </div>
+ </div> 
+</div>

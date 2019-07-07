@@ -7,7 +7,7 @@ function login(){
         //console.log(datos)
         $.ajax({
             type:"post",
-            url:"./Controlador/controladorLogin.php",
+            url:"./Controlador/controladorUsuarios.php",
             data: datos,
             dataType:"json"
           }).done(function( resultado ) {
@@ -15,23 +15,23 @@ function login(){
                 var id_rol = resultado.rol;
                 $.ajax({
                     type:"post",
-                    url:"./Controlador/controladorLogin.php",
-                    data: {codigoU: resultado.usuario, accion: 'consultarIE'},
+                    url:"./Controlador/controladorUsuariosxempleados.php",
+                    data: {codigo: resultado.usuario, accion: 'consultar'},
                     dataType:"json"
                   }).done(function( resultado ) {
                      if(resultado.respuesta == 'existe'){
                       var id_empleado = resultado.empleado; 
                       $.ajax({
                         type:"post",
-                        url:"./Controlador/controladorLogin.php",
-                        data: {codigoE: id_empleado, accion: 'consultarNE'},
+                        url:"./Controlador/controladorEmpleados.php",
+                        data: {codigo: id_empleado, accion: 'consultar_datos_empleado_login'},
                         dataType:"json"
                       }).done(function( empleado ) {
                        if(empleado.respuesta == 'existe'){
                         $.ajax({
                             type:"post",
-                            url:"./Controlador/controladorLogin.php",
-                            data: {codigoL: id_rol, accion: 'listar'},
+                            url:"./Controlador/controladorRolesxpermisos.php",
+                            data: {codigo: id_rol, accion: 'listar_permisos'},
                             dataType:"json"
                           }).done(function( resultado ) {
                             if(resultado.respuesta){
@@ -60,18 +60,29 @@ function login(){
                 var usuario = document.forms['login-form']['usuario'].value;
                 $.ajax({
                     type:"post",
-                    url:"./Controlador/controladorLogin.php",
-                    data: {codigoA: usuario, accion:'bloqueo'},
+                    url:"./Controlador/controladorUsuarios.php",
+                    data: {codigo: usuario, accion:'consultar_datos_login'},
                     dataType:"json"
                   }).done(function( resultado ) {
                     if(cont > 2 && resultado.respuesta == 'existe'){
+                      this.usuario = new Editar_objeto({
+                        id_usuario: resultado.usuario,
+                        id_estado: 2,
+                        accion: 'editar_estado'        
+                      })
                         $.ajax({
                             type:"post",
-                            url:"./Controlador/controladorLogin.php",
-                            data: {codigoIU: resultado.usuario, codigoE: 2 ,accion: 'editar'},
+                            url:"./Controlador/controladorUsuarios.php",
+                            data: this.usuario,
                             dataType:"json"
                           }).done(function( resultado ) {
-                           console.log('Bloqueado');
+                            swal({
+                              position: 'center',
+                              type: 'error',
+                              title: 'Cuenta bloqueada',
+                              showConfirmButton: false,
+                              timer: 1500
+                          })
                            bloqueo = true;
                             } ); 
                     } 
@@ -89,4 +100,9 @@ function login(){
             }
         });
     })
+}
+function Editar_objeto(obj){
+  this.id_usuario = obj.id_usuario;
+  this.id_estado = obj.id_estado;
+  this.accion = obj.accion;
 }

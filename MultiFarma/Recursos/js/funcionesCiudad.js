@@ -1,257 +1,320 @@
-var dt;
+function ciudad (){
 
-function ciudad() {
-    $(".content-header").on("click", "a.editar", function() {
-        $("#titulo").html("Editar Ciudad");
-        //Recupera datos del fromulario
-        var codigo = $(this).data("codigo");
-        var pais;
+    var dt = $("#tabla").DataTable({
+        "ajax": "./Controlador/controladorCiudad.php?accion=listar",
+        "columns": [
+            { "data": "id_ciudad" },
+            { "data": "nombre_ciudad" },
+            { "data": "nombre_pais" },
 
-        $("#nuevo-editar").load("./Vista/Ciudades/editarCiudad.php");
-        $("#nuevo-editar").removeClass("hide");
-        $("#nuevo-editar").addClass("show");
-        $("#ciudad").removeClass("show");
-        $("#ciudad").addClass("hide");
-        $.ajax({
-            type: "get",
-            url: "./Controlador/controladorCiudad.php",
-            data: { codigo: codigo, accion: "consultar" },
-            dataType: "json"
-        }).done(function(ciudad) {
-            if (ciudad.respuesta === "no existe") {
-                swal({
-                    type: "error",
-                    title: "Oops...",
-                    text: "Ciudad no existe!"
-                });
-            } else {
-                $("#id_ciudad").val(ciudad.codigo);
-                $("#nombre_ciudad").val(ciudad.ciudad);
-                pais = ciudad.pais;
-            }
-        });
-
-        $.ajax({
-            type: "get",
-            url: "./Controlador/controladorPais.php",
-            data: { accion: 'listar' },
-            dataType: "json"
-        }).done(function(resultado) {
-            $("#id_pais option").remove();
-            $.each(resultado.data, function(index, value) {
-
-                if (pais === value.id_pais) {
-                    $("#id_pais").append("<option selected value='" + value.id_pais + "'>" + value.nombre_pais + "</option>")
-                } else {
-                    $("#id_pais").append("<option value='" + value.id_pais + "'>" + value.nombre_pais + "</option>")
-                }
-            });
-        });
-    });
-
-    $(".content-header").on("click", "a.borrar", function() {
-        //Recupera datos del formulario
-        var codigo = $(this).data("codigo");
-
-        swal({
-            title: "¿Está seguro?",
-            text: "¿Realmente desea borrar la ciudad con codigo : " + codigo + " ?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Si, Borrarlo!"
-        }).then(decision => {
-            if (decision.value) {
-                var request = $.ajax({
-                    method: "get",
-                    url: "./Controlador/controladorCiudad.php",
-                    data: { codigo: codigo, accion: "borrar" },
-                    dataType: "json"
-                });
-
-                request.done(function(resultado) {
-                    if (resultado.respuesta == "correcto") {
-                        swal(
-                            "Borrado!",
-                            "La ciudad con codigo : " + codigo + " fue borrada",
-                            "success"
-                        );
-                        dt.ajax.reload();
-                    } else {
-                        swal({
-                            type: "error",
-                            title: "Oops...",
-                            text: "Something went wrong!"
-                        });
-                    }
-                });
-
-                request.fail(function(jqXHR, textStatus) {
-                    swal({
-                        type: "error",
-                        title: "Oops...",
-                        text: "Something went wrong!" + textStatus
-                    });
-                });
-            }
-        });
-    });
-
-    $(".content-header").on("click", "button.btncerrar", function() {
-        $("#contenedor").removeClass("show");
-        $("#contenedor").addClass("hide");
-        $(".content-header").html("");
-    });
-
-    $(".content-header").on("click", "button.btncerrar2", function() {
-        $("#titulo").html("Listado de Ciudades");
-        $("#nuevo-editar").html("");
-        $("#nuevo-editar").removeClass("show");
-        $("#nuevo-editar").addClass("hide");
-        $("#ciudad").removeClass("hide");
-        $("#ciudad").addClass("show");
-    });
-
-    $(".content-header").on("click", "button#nuevo", function() {
-        $("#titulo").html("Nueva ciudad");
-        $("#nuevo-editar").load("./Vista/Ciudades/nuevoCiudad.php");
-        $("#nuevo-editar").removeClass("hide");
-        $("#nuevo-editar").addClass("show");
-        $("#ciudad").removeClass("show");
-        $("#ciudad").addClass("hide");
-        $.ajax({
-            type: "get",
-            url: "./Controlador/controladorPais.php",
-            data: { accion: 'listar' },
-            dataType: "json"
-        }).done(function(resultado) {
-            //console.log(resultado.data)
-            // DATOS DE PAIS
-            $("#id_pais option").remove()
-            $("#id_pais").append("<option selecte value=''>Seleccione un pais</option>")
-            $.each(resultado.data, function(index, value) {
-                $("#id_pais").append("<option value='" + value.id_pais + "'>" + value.nombre_pais + "</option>")
-            });
-        });
-    });
-
-    $(".content-header").on("click", "button#actualizar", function() {
-        var datos = $("#fciudad").serialize();
-        $.ajax({
-            type: "get",
-            url: "./Controlador/controladorCiudad.php",
-            data: datos,
-            dataType: "json"
-        }).done(function(resultado) {
-
-            if (resultado.respuesta) {
-                swal(
-                    "Actualizado!",
-                    "Se actualizaron los datos correctamente",
-                    "success"
-                );
-                dt.ajax.reload();
-                $("#titulo").html("Listado Ciudad");
-                $("#nuevo-editar").html("");
-                $("#nuevo-editar").removeClass("show");
-                $("#nuevo-editar").addClass("hide");
-                $("#ciudad").removeClass("hide");
-                $("#ciudad").addClass("show");
-            } else {
-                swal({
-                    type: "error",
-                    title: "Oops...",
-                    text: "Something went wrong!"
-                });
-            }
-        });
-    });
-
-    $(".content-header").on("click", "button#grabar", function() {
-        var codigo = document.forms["fciudad"]["id_ciudad"].value;
-        $.ajax({
-            type: "get",
-            url: "./Controlador/controladorCiudad.php",
-            data: { codigo: codigo, accion: 'consultar' },
-            dataType: "json"
-        }).done(function(ciudad) {
-            if (ciudad.respuesta == "no existe") {
-                var datos = $("#fciudad").serialize();
-
-                $.ajax({
-                    type: "get",
-                    url: "./Controlador/controladorCiudad.php",
-                    data: datos,
-                    dataType: "json"
-                }).done(function(resultado) {
-                    if (resultado.respuesta) {
-                        swal(
-                            'Grabado!!',
-                            'El registro se grabó correctamente',
-                            'success'
-                        )
-                        dt.ajax.reload();
-                        $("#titulo").html("Listado ciudades");
-                        $("#nuevo-editar").html("");
-                        $("#nuevo-editar").removeClass("show");
-                        $("#nuevo-editar").addClass("hide");
-                        $("#ciudad").removeClass("hide");
-                        $("#ciudad").addClass("show")
-                    } else {
-                        swal({
-                            type: 'error',
-                            title: 'Oops...',
-                            text: 'Something went wrong!'
-                        })
-                    }
-                });
-            } else {
-                swal({
-                    type: 'error',
-                    title: 'Oops...',
-                    text: 'La ciudad ya existe!!!!!'
-                })
-            }
-        });
-    });
-
-}
-$(document).ready(() => {
-    $(".content-header").off("click", "a.editar");
-    $(".content-header").off("click", "button#actualizar");
-    $(".content-header").off("click", "a.borrar");
-    $(".content-header").off("click", "button#nuevo");
-    $(".content-header").off("click", "button#grabar");
-    $("#titulo").html("Listado de Ciudades");
-    dt = $("#tabla").DataTable({
-        ajax: "./Controlador/controladorCiudad.php?accion=listar",
-        columns: [
-            { data: "id_ciudad" },
-            { data: "nombre_ciudad" },
-            { data: "nombre_pais" },
-            {
-                data: "id_ciudad",
-                render: function(data) {
-                    return (
-                        '<a href="#" data-codigo="' +
-                        data +
-                        '" class="btn btn-danger btn-sm borrar"> <i class="fa fa-trash"></i></a>'
-                    );
-                }
-            },
-            {
-                data: "id_ciudad",
-                render: function(data) {
-                    return (
-                        '<a href="#" data-codigo="' +
-                        data +
-                        '" class="btn btn-info btn-sm editar"> <i class="fa fa-edit"></i></a>'
-                    );
-                }
-            }
+            { "defaultContent": '<a href="#" class="btn btn-danger btn-sm borrar" title="Borrar ciudad"> <i class="fa fa-trash"></i></a>'},
+        
+            { "defaultContent": '<a href="#" class="btn btn-info btn-sm editar" title="Editar ciudad"> <i class="fa fa-edit"></i></a>'}
         ]
     });
 
-    ciudad();
-});
+    $("#editar").on("click",".btncerrar", function(){
+        $(".box-title").html("Listado de Ciudades");
+        $("#editar").addClass('hide');
+        $("#editar").removeClass('show');
+        $("#listado").addClass('show');
+        $("#listado").removeClass('hide');  
+        $(".box #nuevo").show(); 
+        $(".box #reportes").show();
+    })  
+
+    $(".box").on("click","#nuevo", function(){
+        $(this).hide();
+        $(".box #reportes").hide();
+        $(".box-title").html("Crear Ciudad");
+        $("#editar").addClass('show');
+        $("#editar").removeClass('hide');
+        $("#listado").addClass('hide');
+        $("#listado").removeClass('show');
+        $("#editar").load('./Vista/Ciudades/nuevaCiudad.php', function(){
+            $.ajax({
+               type:"get",
+               url:"./Controlador/controladorPais.php",
+               data: {accion:'listar'},
+               dataType:"json"
+            }).done(function( resultado ) {                    
+                $.each(resultado.data, function (index, value) { 
+                  $("#editar #id_pais").append("<option value='" + value.id_pais + "'>" + value.nombre_pais + "</option>")
+                });
+            });
+        });
+        
+    })
+
+    $("#editar").on("click","button#grabar", function(){
+        var datos=$("#fciudad").serialize();
+        $('.label-danger').text('');
+        $.ajax({
+          type:"post",
+          url:"./Validaciones/validacionCiudad.php",
+          data: datos,
+          dataType:"json"
+        }).done(function( r ) {
+            if(!r.response) {
+                for(var k in r.errors){
+                    $("span[data-key='" + k + "']").text(r.errors[k]);
+                }
+            }
+            else{
+                $.ajax({
+                    type:"get",
+                    url:"./Controlador/controladorCiudad.php",
+                    data: {codigo: document.forms["fciudad"]["id_ciudad"].value, accion:'consultar'},
+                    dataType:"json"
+                    }).done(function( ciudad ) {        
+                         if(ciudad.respuesta == "no existe"){
+                          if(document.forms["fciudad"]["nuevo"].value === 'nuevo'){
+                          $.ajax({
+                          type:"post",
+                          url:"./Controlador/controladorCiudad.php",
+                          data: datos,
+                          dataType:"json" 
+                          }).done(function(resultado){
+                          if(resultado.respuesta){
+                            swal({
+                                position: 'center',
+                                type: 'success',
+                                title: 'La ciudad fue grabada con éxito',
+                                showConfirmButton: false,
+                                timer: 1200
+                            })     
+                                $(".box-title").html("Listado de Ciudades");
+                                $(".box #nuevo").show();
+                                $(".box #reportes").show();
+                                $("#editar").html('');
+                                $("#editar").addClass('hide');
+                                $("#editar").removeClass('show');
+                                $("#listado").addClass('show');
+                                $("#listado").removeClass('hide');
+                                dt.page( 'last' ).draw( 'page' );
+                                dt.ajax.reload(null, false);  
+                          }
+                          else {
+                            swal({
+                                position: 'center',
+                                type: 'error',
+                                title: 'Ocurrió un erro al grabar',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                           
+                        }
+                          })
+                        }
+                        else{
+                            swal({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: 'Accion invalida!!!!!'                         
+                              })    
+                        }
+                         }
+                         else{
+                            swal({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: 'La ciudad ya existe!!!!!'                         
+                              })    
+                         }
+                        })
+            }
+        })
+    })
+
+    var id_ciudad;
+
+    $(".box-body").on("click","a.editar",function(){
+        var data = dt.row($(this).parents("tr")).data();
+        id_ciudad = data.id_ciudad;
+        var pais;
+        $(".box-title").html("Actualizar Ciudad");
+        $(".box #nuevo").hide();
+        $(".box #reportes").hide();
+        $("#editar").addClass('show');
+        $("#editar").removeClass('hide');
+        $("#listado").addClass('hide');
+        $("#listado").removeClass('show');
+        $("#editar").load("./Vista/Ciudades/editarCiudad.php",function(){
+             $.ajax({
+                 type:"get",
+                 url:"./Controlador/controladorCiudad.php",
+                 data: {codigo: id_ciudad, accion:'consultar'},
+                 dataType:"json"
+                 }).done(function( ciudad ) {        
+                     if(ciudad.respuesta === "no existe"){
+                         swal({
+                         type: 'error',
+                         title: 'Oops...',
+                         text: 'Ciudad no existe!'                         
+                         })
+                     } else {
+                         $("#id_ciudad").val(ciudad.codigo);                   
+                         $("#nombre_ciudad").val(ciudad.ciudad);
+                         $("#id_ciudad").attr('readonly','true');
+                         pais = ciudad.pais;
+ ;
+                         $.ajax({
+                           type:"get",
+                           url:"./Controlador/controladorPais.php",
+                           data: {accion:'listar'},
+                           dataType:"json"
+                       }).done(function( resultado ) {                      
+                           $.each(resultado.data, function (index, value) { 
+                           if(pais === value.id_pais){
+                               $("#editar #id_pais").append("<option selected value='" + value.id_pais + "'>" + value.nombre_pais + "</option>")
+                           }else {
+                               $("#editar #id_pais").append("<option value='" + value.id_pais + "'>" + value.nombre_pais + "</option>")
+                           }
+                           });
+                       });
+                     }
+             });
+         });
+     })
+
+     $("#editar").on("click","button#actualizar", function(){
+        var datos=$("#fciudad").serialize();
+        $('.label-danger').text('');
+        $.ajax({
+          type:"post",
+          url:"./Validaciones/validacionCiudad.php",
+          data: datos,
+          dataType:"json"
+        }).done(function( r ) {
+            if(!r.response) {
+                for(var k in r.errors){
+                    $("span[data-key='" + k + "']").text(r.errors[k]);
+                }
+            }
+            else{
+                this.ciudad = new Editar_objeto({
+                    id_ciudad: id_ciudad,
+                    nombre_ciudad: $("#nombre_ciudad").val(),
+                    id_pais: parseInt($("#id_pais").val()),
+                    accion: 'editar'        
+                  })
+                $.ajax({
+                type:"post",
+                url:"./Controlador/controladorCiudad.php",
+                data: this.ciudad,
+                dataType: "json"
+                }).done(function(resultado){
+                 if(resultado.respuesta){
+                    swal({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Se actualizaron los datos correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }) 
+                    $(".box-title").html("Listado de Ciudades");
+                    $(".box #nuevo").show(); 
+                    $(".box #reportes").show();
+                    $("#editar").html('');
+                    $("#editar").addClass('hide');
+                    $("#editar").removeClass('show');
+                    $("#listado").addClass('show');
+                    $("#listado").removeClass('hide');
+                    dt.ajax.reload(null, false); 
+                 }
+                 else {
+                    swal({
+                      type: 'error',
+                      title: 'Oops...',
+                      text: 'Something went wrong!'                         
+                    })
+                }
+                })  
+            }
+        })
+     
+     })
+
+     $(".box-body").on("click","a.borrar",function(){
+     var data = dt.row($(this).parents("tr")).data();
+     var id_ciudad = data.id_ciudad;
+     swal({
+        title: '¿Está seguro?',
+        text: "¿Realmente desea borrar la ciudad con codigo : " + id_ciudad + " ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, Borrarlo!'
+     }).then((decision) => {
+          if (decision.value) {
+              var request = $.ajax({
+                  method: "post",                  
+                  url: "./Controlador/controladorCiudad.php",
+                  data: {codigo: id_ciudad, accion:'borrar'},
+                  dataType: "json"
+              })
+              request.done(function( resultado ) {
+                  if(resultado.respuesta == 'correcto'){
+                      swal({
+                        position: 'center',
+                        type: 'success',
+                        title: 'La ciudad con codigo ' + id_ciudad + ' fue borrada',
+                        showConfirmButton: false,
+                        timer: 1500
+                      })       
+                      var info = dt.page.info();   
+                      if((info.end-1) == info.length)
+                          dt.page( info.page-1 ).draw( 'page' );
+                      dt.ajax.reload(null, false);
+                      
+                  } else {
+                      swal({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong!'                         
+                      })
+                  }
+              });
+               
+              request.fail(function( jqXHR, textStatus ) {
+                  swal({
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong!' + textStatus                          
+                  })
+              });
+          }
+  })
+  })
+
+  
+  $(".box").on("click","#reportes", function(){
+    $("#modal-reportes").removeClass('modal fade show');
+    $("#modal-reportes").addClass('modal fade in');
+  })
+   
+  $("#modal-reportes").on("click","#generar_xls", function(){
+    window.location.href = 'Reportes/Ciudad/xls/ciudad_xls.php';
+  })
+
+  $("#modal-reportes").on("click","#generar_pdf", function(){
+    generarPDF();
+  })
+}
+function Editar_objeto(obj){
+    this.id_ciudad = obj.id_ciudad;
+    this.nombre_ciudad = obj.nombre_ciudad;
+    this.id_pais = obj.id_pais;
+    this.accion = obj.accion;
+}
+function generarPDF(){
+    var ancho = 1000;
+    var alto = 800;
+    
+    var x = parseInt((window.screen.width / 2) - (ancho / 2));
+    var y = parseInt((window.screen.height / 2) - (alto / 2));
+    
+    $url = 'Reportes/Ciudad/pdf/reporteCiudad.php';
+    window.open($url,"Ciudad","left="+x+",top="+y+"height="+alto+",width="+ancho+",scrollbar=si,location=no,resizable=si,menubar=no");
+}

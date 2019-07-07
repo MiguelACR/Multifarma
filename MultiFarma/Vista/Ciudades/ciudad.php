@@ -1,43 +1,73 @@
 <?php include_once ("../../Funciones/sessiones.php"); 
 usuarioAutenticado(1);
 ?>
-<div id="nuevo-editar" class="hide">
-    <!-- div para cargar el formulario para una nueva ciudad o editar una ciudad -->
-</div>
+<h1>
+        Gestión de
+        <small>  Ciudades</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Ciudad</li>
+      </ol>
+    </section>
 
-<div id="ciudad">
-    <div class="box-header">
-        <!--<i class="ion ion-clipboard"></i>-->
-        <h1 class="alert alert-success" role="alert">CIUDADES</h1>
-        <!-- tools box -->
-        <div class="pull-right box-tools">
-            <button class="btn btn-info btn-sm" id="nuevo" data-toggle="tooltip" title="Nueva ciudad"><i
-                    class="fa fa-plus" aria-hidden="true"></i></button>
-            <button class="btn btn-info btn-sm btncerrar" data-toggle="tooltip" title="Ocultar"><i
-                    class="fa fa-times"></i></button>
-
-        </div><!-- /. tools -->
-
-    </div><!-- /.box-header -->
-
-    <div class="box-body">
-
-        <table id="tabla" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
-            <thead>
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+         <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Listado de Ciudades</h3>
+              <div class="box-tools pull-right">
+              <button class="btn btn-info btn-sm" id="nuevo"  data-toggle="tooltip" 
+                      title="Nueva ciudad"><i class="fa fa-plus" aria-hidden="true"></i></button> 
+              <button class="btn btn-danger btn-sm" id="reportes"  data-toggle="modal" 
+              data-target="#modal-reportes" title="Nuevo reporte"><i class="fa fa-file-text" aria-hidden="true"></i></button>
+            </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body bg-info">
+            <div id="editar"></div>
+            <div id="listado">
+              <table id="tabla" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+                <thead>
                 <tr>
-                    <th class="text-center">Codigo</th>
-                    <th class="text-center">Ciudad</th>
-                    <th class="text-center">Pais</th>
-                    <th>&nbsp;</th>
-                    <th>&nbsp;</th>
+                  <th>Codigo</th>
+                  <th>Descripcion</th>
+				          <th>Pais</th>
+                  <th>&nbsp;</th>
+                  <th>&nbsp;</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
 
-            </tbody>
+                </tbody>
+                <tfoot>
+                <tr>
+                  <th>Codigo</th>
+                  <th>Descripcion</th>
+				          <th>Pais</th>
+                  <th>&nbsp;</th>
+                  <th>&nbsp;</th>
+                </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+  </div>
+  <!-- /.content-wrapper -->
 
-        </table>
-
-    </div><!-- /.box-body -->
-    <script src="./Recursos/js/funcionesCiudad.js"></script>
-</div>
+<script src="./Recursos/js/funcionesCiudad.js"></script>
+<!-- Funciones de Lógica de neogcio -->
+<script>
+    $(document).ready(ciudad);
+</script>

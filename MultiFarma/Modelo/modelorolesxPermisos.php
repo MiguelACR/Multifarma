@@ -45,16 +45,22 @@
 		}
 		
 		public function listar($id_rol='') {
-	   if($id_rol != ''){
+	    if($id_rol != ''){
 			$this->query = "
 			SELECT estado_rolxpermiso
 			FROM tb_rolesxpermisos 
-			WHERE id_rol = '$id_rol'
+			WHERE id_rol = ?
 			";	
-			$this->obtener_resultados_query();
+			$this->primero = $id_rol;
+			$this->obtener_resultados_query(1);
 			return $this->rows;
-	   }	
+	    }	
 		}
+
+		public function nuevo_editar(){
+			
+		}
+
 		public function nuevo($id_rol=''){
 
 				$this->query = "

@@ -1,11 +1,13 @@
 <?php
 require_once '../Modelo/modeloCliente.php';
-if($datos = $_POST){
+
+if ($datos = $_POST){
+    
 switch ($_POST['accion']){
 
     case 'editar':
         $cliente = new Cliente();
-		$resultado = $cliente->editar($datos);
+		$resultado = $cliente->nuevo_editar($datos);
         $respuesta = array(
                 'respuesta' => $resultado
             );
@@ -14,8 +16,8 @@ switch ($_POST['accion']){
 
     case 'nuevo':
         $cliente = new Cliente();
-		$resultado = $cliente->nuevo($datos);
-        if($resultado > 0) {
+		$resultado = $cliente->nuevo_editar($datos);
+        if($resultado == true) {
             $respuesta = array(
                 'respuesta' => $resultado
             );
@@ -30,7 +32,7 @@ switch ($_POST['accion']){
     case 'borrar':
 		$cliente = new Cliente();
 		$resultado = $cliente->borrar($datos['codigo']);
-        if($resultado > 0) {
+        if($resultado == true) {
             $respuesta = array(
                 'respuesta' => 'correcto'
             );
@@ -42,11 +44,6 @@ switch ($_POST['accion']){
         echo json_encode($respuesta);
     break;
 
-}
-}
-else{
-$datos = $_GET;
-switch ($_GET['accion']) {
     case 'consultar':
         $cliente = new Cliente();
         $cliente->consultar($datos['codigo']);
@@ -64,6 +61,7 @@ switch ($_GET['accion']) {
                 'telefono_cliente' => $cliente->getTelefono_cliente(),
                 'id_pais' => $cliente->getId_pais(),
                 'id_ciudad' => $cliente->getId_ciudad(),
+                'email_cliente' => $cliente->getEmail_cliente(),
                 'respuesta' =>'existe'
             );
         }
@@ -74,14 +72,15 @@ switch ($_GET['accion']) {
         $cliente = new Cliente();
         $listado = $cliente->listar();        
         echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);
-        break;
+    break;
 
     case 'listarC':
         $cliente = new Cliente();
         $listado = $cliente->listar();
         echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);    
     break;
-}
+
 }
 
+}
 ?>

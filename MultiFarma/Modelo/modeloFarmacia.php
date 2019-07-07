@@ -83,7 +83,7 @@
 			INNER JOIN tb_paises AS pa ON (pa.id_pais=f.id_pais)
 			ORDER BY nombre_farmacia
 			';
-            $this->obtener_resultados_query();
+            $this->obtener_resultados_query(0);
 
             return $this->rows;
         }
@@ -98,6 +98,10 @@
             $this->obtener_resultados_query();
 
             return $this->rows;
+        }
+
+        public function nuevo_editar(){
+            
         }
 
         public function nuevo($datos = array())

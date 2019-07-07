@@ -3,14 +3,14 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Factura</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
 <img class="anulada" src="img/anulado.png" alt="Anulada">
 <div id="page_pdf">
-	<table id="factura_head">
+	<table id="html_head">
 		<tr>
-			<td class="logo_factura">
+			<td class="logo_empresa">
 				<div>
 					<img src="img/logo.png">
 				</div>
@@ -23,7 +23,7 @@
 					<p>Email: info@abelosh.com</p>
 				</div>
 			</td>
-			<td class="info_factura">
+			<td class="info_reporte">
 				<div class="round">
 					<span class="h3">Factura</span>
 					<p>No. Factura: <strong>000001</strong></p>
@@ -55,7 +55,7 @@
 		</tr>
 	</table>
 
-	<table id="factura_detalle">
+	<table id="detalle_head">
 			<thead>
 				<tr>
 					<th width="50px">Cant.</th>
@@ -64,7 +64,7 @@
 					<th class="textright" width="150px"> Precio Total</th>
 				</tr>
 			</thead>
-			<tbody id="detalle_productos">
+			<tbody id="detalle_body">
 				<tr>
 					<td class="textcenter">1</td>
 					<td>Plancha</td>

@@ -63,9 +63,10 @@
                 SELECT id_empleado, nombre_empleado, apellido_empleado, cargo_empleado, id_pais, id_ciudad,
                 direccion_empleado, telefono_empleado, email_empleado, id_farmacia
 				FROM tb_empleados
-				WHERE id_empleado = '$id_empleado' order by id_empleado
+				WHERE id_empleado = ? order by id_empleado
 				";
-				$this->obtener_resultados_query();
+				$this->primero = $id_empleado;
+				$this->obtener_resultados_query(1);
 			endif;
 			if(count($this->rows) == 1):
 				foreach ($this->rows[0] as $propiedad=>$valor):
@@ -83,7 +84,7 @@
 			inner join tb_farmacias as f ON (e.id_farmacia = f.id_farmacia) order by id_empleado
 			";
 			
-			$this->obtener_resultados_query();
+			$this->obtener_resultados_query(0);
 			return $this->rows;
 			
 		}
@@ -94,59 +95,114 @@
             FROM tb_empleados
 			";
 			
-			$this->obtener_resultados_query();
+			$this->obtener_resultados_query(0);
 			return $this->rows;
 			
 		}
 		
-		public function nuevo($datos=array()) {
+        public function nuevo_editar($datos=array()){
+			$resultado = false;
 			if(array_key_exists('id_empleado', $datos)):
+			try {
+            if($datos['accion'] == 'nuevo'){
+				foreach ($datos as $campo=>$valor):
+					$$campo = $valor;
+				endforeach;
+
+				$this->query = "
+				INSERT INTO tb_empleados
+				(id_empleado,nombre_empleado,apellido_empleado,cargo_empleado,id_pais,id_ciudad,
+				direccion_empleado,telefono_empleado,email_empleado,id_farmacia, update_at)
+				VALUES
+				(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				";
+			    $stm = $this->abrir_preparar_cerrar('abrir');
+			
+			    $stm->execute([
+				  $id_empleado,
+				  $nombre_empleado,
+				  $apellido_empleado,
+				  $cargo_empleado,
+				  $id_pais,
+				  $id_ciudad,
+				  $direccion_empleado,
+				  $telefono_empleado,
+				  $email_empleado,
+				  $id_farmacia,
+				  'NOW()'
+			    ]);
+
+				$this->abrir_preparar_cerrar('cerrar');    
+			}
+			else if($datos['accion'] == 'editar'){
 				foreach ($datos as $campo=>$valor):
 					$$campo = $valor;
 				endforeach;
 				$this->query = "
-					INSERT INTO tb_empleados
-                    (id_empleado,nombre_empleado,apellido_empleado,cargo_empleado,id_pais,id_ciudad,direccion_empleado,telefono_empleado,email_empleado,id_farmacia)
-					VALUES
-                    ('$id_empleado','$nombre_empleado','$apellido_empleado','$cargo_empleado','$id_pais','$id_ciudad','$direccion_empleado','$telefono_empleado','$email_empleado','$id_farmacia')
-					";
-					$resultado = $this->ejecutar_query_simple();
-					return $resultado;
-			endif;
-			
-		}
-		
-		public function editar($datos=array()) {
-			foreach ($datos as $campo=>$valor):
-				$$campo = $valor;
-			endforeach;
-			$this->query = "
-			UPDATE tb_empleados
-			SET nombre_empleado ='$nombre_empleado',
-			apellido_empleado ='$apellido_empleado',
-            cargo_empleado = '$cargo_empleado',
-            id_pais = '$id_pais',
-            id_ciudad = '$id_ciudad',
-            direccion_empleado = '$direccion_empleado',
-            telefono_empleado = '$telefono_empleado',
-			email_empleado = '$email_empleado',
-			id_farmacia = '$id_farmacia'
-			WHERE id_empleado = '$id_empleado'
-			";
-			$resultado = $this->ejecutar_query_simple();
+				UPDATE tb_empleados
+				SET nombre_empleado = ?, 
+				apellido_empleado = ?,
+				cargo_empleado = ?,
+				id_pais = ?, 
+				id_ciudad = ?,
+				direccion_empleado = ?, 
+				telefono_empleado = ?, 
+				email_empleado = ?,
+				id_farmacia = ?,
+				update_at = ?
+				WHERE id_empleado = ?
+				";
+				$stm = $this->abrir_preparar_cerrar('abrir');
+				
+				$stm->execute([
+					$nombre_empleado,
+					$apellido_empleado,
+					$cargo_empleado,
+					$id_pais,
+					$id_ciudad,
+					$direccion_empleado,
+					$telefono_empleado,
+					$email_empleado,
+					$id_farmacia,
+					'NOW()',
+					$id_empleado
+				  ]);
+
+				$this->abrir_preparar_cerrar('cerrar'); 
+			}
+			$resultado = true;
+			}
+			catch(Exception $e) {
+				throw new Exception($e->getMessage());
+			}
 			return $resultado;
-		}
-		
+			endif;	
+        }
+
 		public function borrar($id_empleado='') {
+			$resultado = false;
+		try{
 			$this->query = "
 			DELETE FROM tb_empleados
-			WHERE id_empleado = '$id_empleado'
+			WHERE id_empleado = ?
 			";
-			$resultado = $this->ejecutar_query_simple();
 
+			$stm = $this->abrir_preparar_cerrar('abrir');
+	
+			$stm->execute([
+				$id_empleado
+			  ]);
+	
+			$this->abrir_preparar_cerrar('cerrar');
+
+			$resultado = true;
+		}
+		catch(Exception $e) {
+		throw new Exception($e->getMessage());
+		}
 			return $resultado;
 		}
-		
+
 		function __destruct() {
 			//unset($this);
 		}

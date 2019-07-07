@@ -27,7 +27,7 @@
    </div>	
    <h1 style="font-size: 20px;color: teal;font-family: Constantia, 'Lucida Bright', 'DejaVu Serif', Georgia, 'serif';text-align: center">Menu Productos</h1>
 	
-   <div class="box box-info">
+   <div class="box box-primary">
     <form id="flocalidad" name="flocalidad" method="post" style="line-height: 30px">
      <div style="float:right">
       <button class="fa fa-cart-plus" title="Carrito de compras"></button>

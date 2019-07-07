@@ -1,11 +1,12 @@
 <?php
- 
 require_once '../Modelo/modeloEmpleados.php';
-$datos = $_GET;
-switch ($_GET['accion']){
+
+if ($datos = $_POST){
+
+switch ($_POST['accion']){
     case 'editar':
         $empleado = new Empleado();
-        $resultado = $empleado->editar($datos);
+        $resultado = $empleado->nuevo_editar($datos);
         $respuesta = array(
                 'respuesta' => $resultado
             );
@@ -14,8 +15,8 @@ switch ($_GET['accion']){
         
     case 'nuevo':
         $empleado = new Empleado();
-        $resultado = $empleado->nuevo($datos);
-        if($resultado > 0) {
+        $resultado = $empleado->nuevo_editar($datos);
+        if($resultado == true) {
             $respuesta = array(
                 'respuesta' => $resultado
             );
@@ -30,7 +31,7 @@ switch ($_GET['accion']){
     case 'borrar':
 		$empleado = new Empleado();
 		$resultado = $empleado->borrar($datos['codigo']);
-        if($resultado > 0) {
+        if($resultado == true) {
             $respuesta = array(
                 'respuesta' => 'correcto'
             );
@@ -79,5 +80,27 @@ switch ($_GET['accion']){
         $listado = $empleado->listar();
         echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);    
     break;
+
+    case 'consultar_datos_empleado_login':
+        $empleado = new Empleado();
+        $empleado->consultar($datos['codigo']);
+
+        if($empleado->getId_empleado() == null) {
+            $respuesta = array(
+                'respuesta' => 'no existe'
+            );
+        }  else {
+            session_start();
+            $_SESSION['id_farmacia'] = $empleado->getId_farmacia();
+            $_SESSION['id_empleado'] = $empleado->getId_empleado();
+            $_SESSION['nombre'] = $empleado->getNombre_empleado().' '.$empleado->getApellido_empleado();
+            $respuesta = array(
+                'respuesta' =>'existe'
+            );
+        }
+        echo json_encode($respuesta);
+        break;
+}
+
 }
 ?>
