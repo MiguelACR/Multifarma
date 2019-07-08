@@ -55,13 +55,6 @@ switch ($_GET['accion']){
         }
         echo json_encode($respuesta);
     break;
-
-    case 'listar_detalle':
-    $venta = new Venta();
-    $listado = $venta->listar($datos['codigoF']);        
-    echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);
-    break;
-
 }
 }
 ?>

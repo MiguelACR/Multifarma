@@ -1,9 +1,10 @@
 <?php
 require_once '../Modelo/modeloEmpleados.php';
 
-if ($datos = $_POST){
+$datos = $_POST;
 
 switch ($_POST['accion']){
+    
     case 'editar':
         $empleado = new Empleado();
         $resultado = $empleado->nuevo_editar($datos);
@@ -75,12 +76,7 @@ switch ($_POST['accion']){
         echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);    
         break;
 
-    case 'listarE':
-        $empleado = new Empleado();
-        $listado = $empleado->listar();
-        echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);    
-    break;
-
+    # Archivos js que utilizan este case: funcionesLogin
     case 'consultar_datos_empleado_login':
         $empleado = new Empleado();
         $empleado->consultar($datos['codigo']);
@@ -100,7 +96,6 @@ switch ($_POST['accion']){
         }
         echo json_encode($respuesta);
         break;
-}
-
+        
 }
 ?>

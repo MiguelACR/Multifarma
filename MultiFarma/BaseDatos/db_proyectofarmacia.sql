@@ -1077,7 +1077,7 @@ CREATE TABLE IF NOT EXISTS `tb_clientes` (
   CONSTRAINT `fk_clientes-paises` FOREIGN KEY (`id_pais`) REFERENCES `tb_paises` (`id_pais`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
--- Volcando datos para la tabla db_proyectofarmacia.tb_clientes: ~4 rows (aproximadamente)
+-- Volcando datos para la tabla db_proyectofarmacia.tb_clientes: ~5 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_clientes` DISABLE KEYS */;
 INSERT INTO `tb_clientes` (`id_cliente`, `nombre_cliente`, `apellido_cliente`, `direccion_cliente`, `telefono_cliente`, `id_pais`, `id_ciudad`, `email_cliente`, `update_at`) VALUES
 	(30144198, 'Jennifer', 'Ruiz Rodriguez', 'Cra 97 # 45 - 57', '3024605529', 205, 76001, 'Jenniferruiz@gmail.com', NULL),
@@ -1108,7 +1108,7 @@ CREATE TABLE IF NOT EXISTS `tb_empleados` (
   CONSTRAINT `fk_empleados-paises` FOREIGN KEY (`id_pais`) REFERENCES `tb_paises` (`id_pais`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
--- Volcando datos para la tabla db_proyectofarmacia.tb_empleados: ~3 rows (aproximadamente)
+-- Volcando datos para la tabla db_proyectofarmacia.tb_empleados: ~4 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_empleados` DISABLE KEYS */;
 INSERT INTO `tb_empleados` (`id_empleado`, `nombre_empleado`, `apellido_empleado`, `cargo_empleado`, `id_pais`, `id_ciudad`, `direccion_empleado`, `telefono_empleado`, `email_empleado`, `id_farmacia`, `update_at`) VALUES
 	(31856789, 'Yovani', 'Romo', 'Sensei', 205, 76001, 'Cra 55 # 45 - 12', '3104567895', 'yovani@hotmail.com', 2, NULL),
@@ -1149,9 +1149,6 @@ CREATE TABLE IF NOT EXISTS `tb_facturas` (
 
 -- Volcando datos para la tabla db_proyectofarmacia.tb_facturas: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_facturas` DISABLE KEYS */;
-INSERT INTO `tb_facturas` (`id_factura`, `id_cliente`, `id_empleado`, `fecha_factura`, `iva_factura`, `valor_factura`, `neto_factura`, `estado_factura`) VALUES
-	(39, 30144198, 1144198853, '2019-06-26 12:41:13', 3895, 20500, 24395, 1),
-	(40, 31862723, 1144198853, '2019-06-26 12:42:46', 5605, 29500, 35105, 0);
 /*!40000 ALTER TABLE `tb_facturas` ENABLE KEYS */;
 
 -- Volcando estructura para tabla db_proyectofarmacia.tb_farmacias
@@ -1215,9 +1212,9 @@ CREATE TABLE IF NOT EXISTS `tb_inventario` (
 -- Volcando datos para la tabla db_proyectofarmacia.tb_inventario: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_inventario` DISABLE KEYS */;
 INSERT INTO `tb_inventario` (`id_farmacia`, `id_producto`, `entradas`, `salidas`, `stock`, `valor_unitario`, `valor_venta`, `fecha_registro`) VALUES
-	(2, 8, 50, 3, 47, 2500, 3000, '2019-06-23'),
-	(2, 9, 50, 1, 49, 3000, 3500, '2019-06-23'),
-	(2, 12, 50, 4, 46, 1500, 2000, '2019-06-23'),
+	(2, 8, 50, 0, 50, 2500, 3000, '2019-06-23'),
+	(2, 9, 50, 0, 50, 3000, 3500, '2019-06-23'),
+	(2, 12, 50, 0, 50, 1500, 2000, '2019-06-23'),
 	(2, 13, 50, 0, 50, 2000, 3000, '2019-06-26');
 /*!40000 ALTER TABLE `tb_inventario` ENABLE KEYS */;
 
@@ -1251,14 +1248,6 @@ CREATE TABLE IF NOT EXISTS `tb_movimientosfacturas` (
 
 -- Volcando datos para la tabla db_proyectofarmacia.tb_movimientosfacturas: ~7 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_movimientosfacturas` DISABLE KEYS */;
-INSERT INTO `tb_movimientosfacturas` (`id_factura`, `id_producto`, `cantidad`, `precio`, `total`) VALUES
-	(39, 8, 3, 3000, 9000),
-	(39, 9, 1, 3500, 3500),
-	(39, 12, 4, 2000, 8000),
-	(40, 8, 1, 3000, 3000),
-	(40, 9, 3, 3500, 10500),
-	(40, 12, 2, 2000, 4000),
-	(40, 13, 4, 3000, 12000);
 /*!40000 ALTER TABLE `tb_movimientosfacturas` ENABLE KEYS */;
 
 -- Volcando estructura para tabla db_proyectofarmacia.tb_nominas

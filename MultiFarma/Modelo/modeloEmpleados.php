@@ -1,6 +1,5 @@
 <?php
-    require_once("modeloAbstractoDB.php");
-	
+    require_once ("modeloAbstractoDB.php");
     class Empleado extends ModeloAbstractoDB {
 		private $id_empleado;
 		private $nombre_empleado;
@@ -83,23 +82,10 @@
 			ON (e.id_pais = p.id_pais) inner join tb_ciudades as c ON (e.id_ciudad = c.id_ciudad) 
 			inner join tb_farmacias as f ON (e.id_farmacia = f.id_farmacia) order by id_empleado
 			";
-			
 			$this->obtener_resultados_query(0);
 			return $this->rows;
-			
 		}
 
-		public function listarE() {
-			$this->query = "
-			SELECT id_empleado, nombre_empleado, apellido_empleado
-            FROM tb_empleados
-			";
-			
-			$this->obtener_resultados_query(0);
-			return $this->rows;
-			
-		}
-		
         public function nuevo_editar($datos=array()){
 			$resultado = false;
 			if(array_key_exists('id_empleado', $datos)):
@@ -108,7 +94,6 @@
 				foreach ($datos as $campo=>$valor):
 					$$campo = $valor;
 				endforeach;
-
 				$this->query = "
 				INSERT INTO tb_empleados
 				(id_empleado,nombre_empleado,apellido_empleado,cargo_empleado,id_pais,id_ciudad,
@@ -117,7 +102,6 @@
 				(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 				";
 			    $stm = $this->abrir_preparar_cerrar('abrir');
-			
 			    $stm->execute([
 				  $id_empleado,
 				  $nombre_empleado,
@@ -153,7 +137,6 @@
 				WHERE id_empleado = ?
 				";
 				$stm = $this->abrir_preparar_cerrar('abrir');
-				
 				$stm->execute([
 					$nombre_empleado,
 					$apellido_empleado,
@@ -167,7 +150,6 @@
 					'NOW()',
 					$id_empleado
 				  ]);
-
 				$this->abrir_preparar_cerrar('cerrar'); 
 			}
 			$resultado = true;
@@ -186,15 +168,11 @@
 			DELETE FROM tb_empleados
 			WHERE id_empleado = ?
 			";
-
 			$stm = $this->abrir_preparar_cerrar('abrir');
-	
 			$stm->execute([
 				$id_empleado
 			  ]);
-	
 			$this->abrir_preparar_cerrar('cerrar');
-
 			$resultado = true;
 		}
 		catch(Exception $e) {

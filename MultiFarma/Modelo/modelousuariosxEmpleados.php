@@ -1,6 +1,5 @@
 <?php
-    require_once("modeloAbstractoDB.php");
-	
+    require_once ("modeloAbstractoDB.php");
     class Usuarioxempleado extends ModeloAbstractoDB {
 		private $id_usuarioxempleado;
 		private $id_empleado;
@@ -49,7 +48,6 @@
 		}
 
 		public function nuevo($id_empleado='',$id_usuario='') {
-			
 				$this->query = "
 					INSERT INTO tb_usuarioxempleado
 					(id_usuarioxempleado, id_empleado, id_usuario, update_at)
@@ -57,13 +55,10 @@
 					(NULL, '$id_empleado', '$id_usuario', NOW())
 					";
 					$resultado = $this->ejecutar_query_simple();
-					return $resultado;
-	
-			
+					return $resultado;	
 		}
 		
 		public function editar($id_usuarioxempleado='',$id_empleado='',$id_usuario='') {
-		  
 			$this->query = "
 			UPDATE tb_usuarioxempleado
 			SET id_empleado ='$id_empleado',
@@ -81,7 +76,6 @@
 			WHERE id_usuarioxempleado = '$id_usuarioxempleado'
 			";
 			$resultado = $this->ejecutar_query_simple();
-
 			return $resultado;
 		}
 		

@@ -1,7 +1,7 @@
 <?php
 require_once '../Modelo/modelorolesxPermisos.php';
 
-if ($datos = $_POST){
+$datos = $_POST;
     
 switch ($_POST['accion']){
 
@@ -65,11 +65,10 @@ switch ($_POST['accion']){
         $listado = $rolxpermiso->listar($datos['codigo']);
         echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);    
         break;
-    
+    # Archivos js que utilizan este case: funcionesLogin
     case 'listar_permisos':
         $rolxpermiso = new Rolxpermiso();
         $listado = $rolxpermiso->listar($datos['codigo']);
-        //echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE); 
         $i = 1;
         session_start();
         foreach ($listado as $index => $value){
@@ -90,7 +89,6 @@ switch ($_POST['accion']){
         );  
         echo json_encode($respuesta);
     break;    
-}
-
+    
 }
 ?>

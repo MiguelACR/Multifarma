@@ -1,6 +1,5 @@
 <?php
-    require_once("modeloAbstractoDB.php");
-	
+    require_once ("modeloAbstractoDB.php");
     class Rolxpermiso extends ModeloAbstractoDB {
 
 		private $id_rolxpermiso;
@@ -62,7 +61,6 @@
 		}
 
 		public function nuevo($id_rol=''){
-
 				$this->query = "
 					INSERT INTO tb_rolesxpermisos
 					(id_rolxpermiso, id_rol, modulo_rolxpermiso, estado_rolxpermiso)
@@ -76,10 +74,8 @@
 					";
 					$resultado = $this->ejecutar_query_simple();
 					return $resultado;
-			
 		}
 		public function editar($id_rol='',$id_rolxpermiso='',$modulo_rolxpermiso='',$estado_rolxpermiso='') {
-
 			$this->query = "
 			UPDATE tb_rolesxpermisos
 			SET id_rol ='$id_rol',
@@ -88,9 +84,7 @@
 			WHERE id_rolxpermiso = '$id_rolxpermiso'
 			";
 			$resultado = $this->ejecutar_query_simple();
-			
 			return $resultado;
-	
 		}
 		
 		public function borrar($id_rol='') {
@@ -99,7 +93,6 @@
 			WHERE id_rol = '$id_rol'
 			";
 			$resultado = $this->ejecutar_query_simple();
-
 			return $resultado;
 		}
 		

@@ -73,17 +73,19 @@
 				endforeach;
 			endif;
 		}
-      
-		public function listar($id_factura='') {
-			$this->query = "
-			SELECT id_producto, cantidad
-			FROM tb_movimientosfacturas 
-			WHERE id_factura = '$id_factura'
-			";
-			
-			$this->obtener_resultados_query();
-			return $this->rows;	
-		}
+        // # Archivos js que utilizan esta función: funcionesFactura
+		 public function listar() {
+		// 	if($id_factura != ''):
+		// 	$this->query = "
+		// 	SELECT id_producto, cantidad
+		// 	FROM tb_movimientosfacturas 
+		// 	WHERE id_factura = ?
+		// 	";
+		// 	$this->primero = $id_factura;
+		// 	$this->obtener_resultados_query(1);
+		// 	return $this->rows;	
+		// 	endif;
+		 }
 		
 		public function nuevo($id_cliente='', $subTotal='', $iva='', $total='') {
 		

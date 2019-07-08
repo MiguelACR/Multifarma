@@ -57,21 +57,18 @@
 				foreach ($datos as $campo=>$valor):
 					$$campo = $valor;
 				endforeach;
-
 				$this->query = "
 				INSERT INTO tb_ciudades
 				(id_ciudad, nombre_ciudad, id_pais, update_at) 
 				VALUES 
 				(?, ?, ?, ?)";
 			    $stm = $this->abrir_preparar_cerrar('abrir');
-			
 			    $stm->execute([
 				  $id_ciudad,
 				  $nombre_ciudad,
 				  $id_pais,
 				  'NOW()'
 			    ]);
-
 				$this->abrir_preparar_cerrar('cerrar');    
 			}
 			else if($datos['accion'] == 'editar'){
@@ -86,14 +83,12 @@
 				WHERE id_ciudad = ?
 				";
 				$stm = $this->abrir_preparar_cerrar('abrir');
-				
 				$stm->execute([
 					$nombre_ciudad,
 					$id_pais,
 					'NOW()',
 					$id_ciudad
 				  ]);
-
 				$this->abrir_preparar_cerrar('cerrar'); 
 			}
 			$resultado = true;
@@ -126,10 +121,9 @@
 			catch(Exception $e) {
 				throw new Exception($e->getMessage());
 			}
-		    
 			return $resultado;
 		}
-		
+		# Archivos js que utilizan esta función: funcionesCliente y funcionesEmpleado
 		public function listarCiudadespaises($id_pais='') {
 			if($id_pais != ''):
 			$this->query = "

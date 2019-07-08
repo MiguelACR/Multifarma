@@ -1,7 +1,12 @@
 function factura (){
 
  var dt = $("#tabla").DataTable({
-    "ajax": "./Controlador/controladorFactura.php?accion=listar",
+  "ajax": {
+    "method"   : "post",
+    "url"      : "./Controlador/controladorFactura.php",
+    "data"     : {"accion":"listar"},
+    "dataType" : "json"
+    },
     "columns": [
         { "data": "id_factura"} ,
         { "data": "nombre_completo_cliente" },
@@ -57,7 +62,7 @@ function factura (){
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Si, anularla!'
-}).then((decision) => {
+      }).then((decision) => {
         if (decision.value) {  
           var request =  $.ajax({
             type:"post",
@@ -68,16 +73,22 @@ function factura (){
            request.done(function( resultado ) {  
            if(resultado.respuesta === 'correcto'){
            $.ajax({
-           type:"get",
-           url:"./Controlador/controladorVenta.php",
-           data:{codigoF: id_factura, accion:'listar_detalle'},
+           type:"post",
+           url:"./Controlador/controladorFactura.php",
+           data:{codigo: id_factura, accion:'consultar_detalle'},
           dataType:"json"
           }).done(function(resultado){
           $.each(resultado.data, function(index,value){
+            this.factura = new Editar_objeto({
+              id_producto: value.id_producto,
+              cantidad: value.cantidad,
+              accion: 'editar_autonomo',
+              tipoAccion: 'devolucion'        
+            })
           $.ajax({
           type:"post",
           url:"./Controlador/controladorInventario.php",
-          data:{codigoP: value.id_producto, codigoC: value.cantidad, accion:'editar_inven_anular'},
+          data: this.factura,
           dataType:"json"  
           })
           })
@@ -105,6 +116,12 @@ function factura (){
   }) 
   }
  })
+}
+function Editar_objeto(obj){
+  this.id_producto = obj.id_producto;
+  this.cantidad = obj.cantidad;
+  this.accion = obj.accion;
+  this.tipoAccion = obj.tipoAccion;
 }
 function generarPDF(cliente,factura){
   var ancho = 1000;

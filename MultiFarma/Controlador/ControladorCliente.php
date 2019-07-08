@@ -1,7 +1,7 @@
 <?php
 require_once '../Modelo/modeloCliente.php';
 
-if ($datos = $_POST){
+$datos = $_POST;
     
 switch ($_POST['accion']){
 
@@ -73,14 +73,6 @@ switch ($_POST['accion']){
         $listado = $cliente->listar();        
         echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);
     break;
-
-    case 'listarC':
-        $cliente = new Cliente();
-        $listado = $cliente->listar();
-        echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);    
-    break;
-
-}
 
 }
 ?>

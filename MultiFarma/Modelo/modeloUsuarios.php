@@ -1,6 +1,5 @@
 <?php
-    require_once("modeloAbstractoDB.php");
-	
+    require_once ("modeloAbstractoDB.php");
     class Usuario extends ModeloAbstractoDB {
 		private $id_usuario;
 		private $nickname_usuario;
@@ -52,11 +51,9 @@
 				endforeach;
 			endif;
 		}
-		
+		# Archivos js que utilizan esta función: funcionesLogin
 		public function consultarDatoslogin($datos = array()) {
-			
             $nickname_usuario = $datos['usuario'];
-            
             $this->query = "
             SELECT id_usuario, nickname_usuario, clave_usuario, id_estado, id_rol
 			FROM tb_usuarios
@@ -64,7 +61,6 @@
             ";
             $this->primero = $nickname_usuario;
             $this->obtener_resultados_query(1);
-			
 			if(count($this->rows) == 1):
 				foreach ($this->rows[0] as $propiedad=>$valor):
 					$this->$propiedad = $valor;
@@ -80,10 +76,8 @@
             INNER JOIN tb_estados e ON (u.id_estado = e.id_estado) 
             INNER JOIN tb_roles r ON (u.id_rol = r.id_rol);
 			";
-			
 			$this->obtener_resultados_query();
-			return $this->rows;
-			
+			return $this->rows;	
 		}
 		
         public function nuevo_editar($datos=array()){
@@ -94,7 +88,6 @@
 				foreach ($datos as $campo=>$valor):
 					$$campo = $valor;
 				endforeach;
-
 				$this->query = "
 				INSERT INTO tb_clientes
 				(id_cliente, nombre_cliente, apellido_cliente, direccion_cliente, 
@@ -103,7 +96,6 @@
 				(?, ?, ?, ?, ?, ?, ?, ?, ?)
 				";
 			    $stm = $this->abrir_preparar_cerrar('abrir');
-			
 			    $stm->execute([
 				  $id_cliente,
 				  $nombre_cliente,
@@ -115,7 +107,6 @@
 				  $email_cliente,
 				  'NOW()'
 			    ]);
-
 				$this->abrir_preparar_cerrar('cerrar');    
 			}
 			else if($datos['accion'] == 'editar'){
@@ -135,7 +126,6 @@
 				WHERE id_cliente = ?
 				";
 				$stm = $this->abrir_preparar_cerrar('abrir');
-				
 				$stm->execute([
 					$nombre_cliente,
 					$apellido_cliente,
@@ -147,9 +137,9 @@
 					'NOW()',
 					$id_cliente
 				  ]);
-
 				$this->abrir_preparar_cerrar('cerrar'); 
 			}
+			# Archivos js que utilizan esta función: funcionesLogin
 			else if($datos['accion'] == 'editar_estado'){
 		        foreach ($datos as $campo=>$valor):
 					$$campo = $valor;
@@ -159,14 +149,11 @@
 			    SET id_estado = ?
 			    WHERE id_usuario = ?
 			    ";
-
 			    $stm = $this->abrir_preparar_cerrar('abrir');
-
 			    $stm->execute([
 				 $id_estado,
 				 $id_usuario
 			     ]);
-
 			    $this->abrir_preparar_cerrar('cerrar'); 
 			}
 			$resultado = true;
@@ -179,7 +166,6 @@
 		}
 
 		public function nuevo($nickname_usuario='',$clave_usuario='',$id_estado='',$id_rol='') {
-			
 			$this->query = "
 				INSERT INTO tb_usuarios
 				(id_usuario, nickname_usuario, clave_usuario, id_estado, id_rol, fechacreacion_usuario,update_at)
@@ -188,8 +174,6 @@
 				";
 				$resultado = $this->ejecutar_query_simple();
 				return $resultado;
-		 
-			
 		}
 		
 		public function editar($datos=array()) {
@@ -212,7 +196,6 @@
 
 		public function editarconC($id_usuario='',$nickname_usuario='',$clave_usuario='',$id_estado='',
 		$id_rol='',$fechacreacion_usuario='') {
-			
 			$this->query = "
 			UPDATE tb_usuarios
 			SET nickname_usuario ='$nickname_usuario',
@@ -233,19 +216,15 @@
 			WHERE id_usuario = '$id_usuario'
 			";
 			$resultado = $this->ejecutar_query_simple();
-
 			return $resultado;
 		}
 
 		public function identificarM(){
-
 			$this->query = "
 			SELECT MAX(id_usuario) id_usuario
 			FROM tb_usuarios
 			";
-
 			$this->obtener_resultados_query();
-
 			if(count($this->rows) == 1):
 				foreach ($this->rows[0] as $propiedad=>$valor):
 					$this->$propiedad = $valor;
@@ -258,7 +237,6 @@
 				'cost' => 12,
 			];
 			$resultado = password_hash($clave_usuario, PASSWORD_BCRYPT, $opciones);
-		
 			return $resultado;
 		}
 

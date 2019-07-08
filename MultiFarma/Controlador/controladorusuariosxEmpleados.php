@@ -1,7 +1,7 @@
 <?php
 require_once '../Modelo/modeloUsuariosxempleados.php';
 
-if ($datos = $_POST){
+$datos = $_POST;
     
 switch ($_POST['accion']){
 
@@ -65,8 +65,6 @@ switch ($_POST['accion']){
     case 'listar':
             
         break;
-
-}
-
+        
 }
 ?>

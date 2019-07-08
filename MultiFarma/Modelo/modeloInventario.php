@@ -51,9 +51,11 @@
 				SELECT id_farmacia, id_producto, entradas, salidas,
 				stock, valor_unitario, valor_venta, fecha_registro
 				FROM tb_inventario
-				WHERE id_farmacia = '$id_farmacia' AND id_producto = '$id_producto'
+				WHERE id_farmacia = ? AND id_producto = ?
 				";
-				$this->obtener_resultados_query();
+				$this->primero = $id_farmacia;
+				$this->segundo = $id_producto;
+				$this->obtener_resultados_query(2);
 			endif;
 			if(count($this->rows) == 1):
 				foreach ($this->rows[0] as $propiedad=>$valor):
@@ -75,12 +77,113 @@
 			return $this->rows;
 		}
 		
-		public function nuevo($datos=array()) {
-			if(array_key_exists('id_farmacia', $datos) && array_key_exists('id_producto', $datos)):
+        public function nuevo_editar($datos=array()){
+			$resultado = false;
+			if((array_key_exists('id_farmacia', $datos) && array_key_exists('id_producto', $datos))||
+			(array_key_exists('id_producto', $datos) && array_key_exists('cantidad', $datos))):
+			try {
+            if($datos['accion'] == 'nuevo'){
 				foreach ($datos as $campo=>$valor):
 					$$campo = $valor;
 				endforeach;
+				$this->query = "
+				INSERT INTO tb_clientes
+				(id_cliente, nombre_cliente, apellido_cliente, direccion_cliente, 
+                telefono_cliente, id_pais, id_ciudad, email_cliente, update_at)
+				VALUES
+				(?, ?, ?, ?, ?, ?, ?, ?, ?)
+				";
+			    $stm = $this->abrir_preparar_cerrar('abrir');
+			    $stm->execute([
+				  $id_cliente,
+				  $nombre_cliente,
+				  $apellido_cliente,
+				  $direccion_cliente,
+				  $telefono_cliente,
+				  $id_pais,
+				  $id_ciudad,
+				  $email_cliente,
+				  'NOW()'
+			    ]);
+				$this->abrir_preparar_cerrar('cerrar');    
+			}
+			else if($datos['accion'] == 'editar'){
+				foreach ($datos as $campo=>$valor):
+					$$campo = $valor;
+				endforeach;
+				$this->query = "
+				UPDATE tb_clientes
+				SET nombre_cliente = ?, 
+				apellido_cliente = ?,
+				direccion_cliente = ?, 
+				telefono_cliente = ?, 
+				id_pais = ?, 
+				id_ciudad = ?,
+				email_cliente = ?,
+				update_at = ?
+				WHERE id_cliente = ?
+				";
+				$stm = $this->abrir_preparar_cerrar('abrir');
+				$stm->execute([
+					$nombre_cliente,
+					$apellido_cliente,
+					$direccion_cliente,
+					$telefono_cliente,
+					$id_pais,
+					$id_ciudad,
+					$email_cliente,
+					'NOW()',
+					$id_cliente
+				  ]);
+				$this->abrir_preparar_cerrar('cerrar'); 
+			}
+		    else if($datos['accion'] == 'editar_autonomo'){
+				foreach ($datos as $campo=>$valor):
+					$$campo = $valor;
+				endforeach;
+			    session_start();
+				$id_farmacia = $_SESSION['id_farmacia'];
+				$this->consultar($id_farmacia,$id_producto);
+				$salidas = $this->getSalidas();
+				$stock = $this->getStock();
+				if($datos['tipoAccion'] == 'devolucion'){
+				$salidas = $salidas - $cantidad;
+				$stock = $stock + $cantidad;
+				}
+				else if($datos['tipoAccion'] == 'factura'){
+				$salidas = $salidas + $cantidad;
+				$stock = $stock - $cantidad;
+				}
+				$this->query = "
+			    UPDATE tb_inventario
+			    SET salidas = ?,
+			    stock = ?
+			    WHERE id_farmacia = ?
+			    AND id_producto = ?
+			    ";
+				$stm = $this->abrir_preparar_cerrar('abrir');
+				$stm->execute([
+					$salidas,
+					$stock,
+					$id_farmacia,
+					$id_producto
+    				]);
+				$this->abrir_preparar_cerrar('cerrar'); 
+				unset($this->rows);
+			}
+			$resultado = true;
+			}
+			catch(Exception $e) {
+				throw new Exception($e->getMessage());
+			}
+			return $resultado;
+			endif;		
+		}
 
+		public function nuevo() {
+				foreach ($datos as $campo=>$valor):
+					$$campo = $valor;
+				endforeach;
 				$this->query = "
 				INSERT INTO tb_inventario
 				(id_farmacia, id_producto, entradas, salidas, stock, valor_unitario, valor_venta, fecha_registro)
@@ -89,16 +192,10 @@
 				";
 				$resultado = $this->ejecutar_query_simple();
 				return $resultado;
-			endif;
 		}
 		
 		public function editar($datos=array()) {
-			foreach ($datos as $campo=>$valor):
-				$$campo = $valor;
-			endforeach;
-
 			$stock = $stock + $entradas;
-
 			$this->query = "
 			UPDATE tb_inventario
 			SET entradas='$entradas', 
@@ -114,75 +211,6 @@
 			return $resultado;
 		}
 		
-		public function editar_inven_venta($datos=array()) {
-		    session_start();
-		    $id_farmacia = $_SESSION['id_farmacia'];			
-
-			foreach ($datos['datos'] as $campo=>$valor){
-			$id_producto = $valor['id'];
-			$cantidad = $valor['cantidad'];
-
-			$this->query = "
-			SELECT salidas, stock
-			FROM tb_inventario
-			WHERE id_farmacia = '$id_farmacia' AND id_producto = '$id_producto'
-			";
-			$this->obtener_resultados_query();
-		 
-			$salidas = $this->rows[0]['salidas'];
-			$stock = $this->rows[0]['stock'];
-			 
-			unset($this->rows);
-
-			$salidas = $salidas + $cantidad;
-			$stock = $stock - $cantidad;
-
-			$this->query = "
-			UPDATE tb_inventario
-			SET 
-			salidas='$salidas', 
-			stock='$stock'
-			WHERE id_farmacia = '$id_farmacia'
-			AND id_producto = '$id_producto'
-			";
-			$resultado = $this->ejecutar_query_simple();
-			  
-			}
-			   return $resultado;
-		}
-
-		public function editar_inven_anular($id_producto='',$cantidad='') {
-			session_start();
-			$id_farmacia = $_SESSION['id_farmacia'];
-
-			$this->query = "
-			SELECT salidas, stock
-			FROM tb_inventario
-			WHERE id_farmacia = '$id_farmacia' AND id_producto = '$id_producto'
-			";
-			
-			$this->obtener_resultados_query();
-
-			$salidas = $this->rows[0]['salidas'];
-			$stock = $this->rows[0]['stock'];			
-
-			unset($this->rows);
-
-			$salidas = $salidas - $cantidad;
-			$stock = $stock + $cantidad;
-
-			$this->query = "
-			UPDATE tb_inventario
-			SET salidas='$salidas', 
-			stock='$stock' 
-			WHERE id_farmacia = '$id_farmacia'
-			AND id_producto = '$id_producto'
-			";
-			$resultado = $this->ejecutar_query_simple();
-
-			return $resultado;
-		}
-
 		public function borrar($id_farmacia='', $id_producto='') {
 			$this->query = "
 			DELETE FROM tb_inventario
@@ -190,7 +218,6 @@
 			AND id_producto = '$id_producto'
 			";
 			$resultado = $this->ejecutar_query_simple();
-
 			return $resultado;
 		}
 		

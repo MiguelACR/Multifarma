@@ -1,5 +1,5 @@
 <?php
-	require_once('modeloAbstractoDB.php');
+	require_once ('modeloAbstractoDB.php');
 	class Cliente extends ModeloAbstractoDB {
 		private $id_cliente;
 		private $nombre_cliente;
@@ -76,17 +76,6 @@
 			return $this->rows;
 		}
 	
-		public function listarC() {
-			$this->query = "
-			SELECT id_cliente, nombre_cliente, apellido_cliente
-            FROM tb_clientes
-			";
-			
-			$this->obtener_resultados_query();
-			return $this->rows;
-			
-		}
-
 		public function nuevo_editar($datos=array()){
 			$resultado = false;
 			if(array_key_exists('id_cliente', $datos)):
@@ -104,7 +93,6 @@
 				(?, ?, ?, ?, ?, ?, ?, ?, ?)
 				";
 			    $stm = $this->abrir_preparar_cerrar('abrir');
-			
 			    $stm->execute([
 				  $id_cliente,
 				  $nombre_cliente,
@@ -116,7 +104,6 @@
 				  $email_cliente,
 				  'NOW()'
 			    ]);
-
 				$this->abrir_preparar_cerrar('cerrar');    
 			}
 			else if($datos['accion'] == 'editar'){
@@ -136,7 +123,6 @@
 				WHERE id_cliente = ?
 				";
 				$stm = $this->abrir_preparar_cerrar('abrir');
-				
 				$stm->execute([
 					$nombre_cliente,
 					$apellido_cliente,
@@ -148,7 +134,6 @@
 					'NOW()',
 					$id_cliente
 				  ]);
-
 				$this->abrir_preparar_cerrar('cerrar'); 
 			}
 			$resultado = true;
@@ -167,21 +152,16 @@
 			DELETE FROM tb_clientes
 			WHERE id_cliente = ?
 			";
-
 			$stm = $this->abrir_preparar_cerrar('abrir');
-	
 				$stm->execute([
 					$id_cliente
 				  ]);
-		
-				$this->abrir_preparar_cerrar('cerrar'); 
-
+				$this->abrir_preparar_cerrar('cerrar');
                 $resultado = true;
 			}
 			catch(Exception $e) {
 				throw new Exception($e->getMessage());
 			}
-		    
 			return $resultado;
 		}
 		

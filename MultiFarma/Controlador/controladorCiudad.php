@@ -76,7 +76,7 @@ else{
         }
         echo json_encode($respuesta);
     break;
-
+    # Archivos js que utilizan este case: funcionesCliente y funcionesEmpleado
     case 'listar_ciudades_paises':
         $ciudad = new Ciudad();
         $listado = $ciudad->listarCiudadespaises($datos['codigo']);        

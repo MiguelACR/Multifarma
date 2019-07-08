@@ -1,7 +1,7 @@
 <?php
 require_once '../Modelo/modeloUsuarios.php';
 
-if ($datos = $_POST){
+$datos = $_POST;
     
 switch ($_POST['accion']){
     
@@ -107,7 +107,7 @@ switch ($_POST['accion']){
         );
         echo json_encode($respuesta);
         break;
-
+        # Archivos js que utilizan este case: funcionesLogin
         case 'login':
         $usuario = htmlspecialchars(trim("$_POST[usuario]"));
         $password = htmlspecialchars(trim("$_POST[password]"));
@@ -138,7 +138,7 @@ switch ($_POST['accion']){
           }
           echo json_encode($respuesta);
         break;
-        
+        # Archivos js que utilizan este case: funcionesLogin
         case 'consultar_datos_login':
           $usuario = new Usuario();
  
@@ -158,7 +158,7 @@ switch ($_POST['accion']){
           } 
           echo json_encode($respuesta);
         break;
-
+        # Archivos js que utilizan este case: funcionesLogin
         case 'editar_estado':
         $usuario = new Usuario();
 		$resultado = $usuario->nuevo_editar($datos);
@@ -167,8 +167,6 @@ switch ($_POST['accion']){
             );
         echo json_encode($respuesta);
         break;
-
-}
-
+        
 }
 ?>
