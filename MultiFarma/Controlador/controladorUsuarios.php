@@ -13,7 +13,7 @@ switch ($_POST['accion']){
             );
         echo json_encode($respuesta);
         break;
-
+    # Archivos js que utilizan este case: funcionesUsuario
     case 'editarconC':
         $usuario = new Usuario();
         $resultado = $usuario->editarconC($datos['codigoF'],$datos['codigoG'],$datos['codigoH'],$datos['codigoI'],
@@ -81,7 +81,7 @@ switch ($_POST['accion']){
         $listado = $usuario->listar();
         echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);    
         break;
-
+    # Archivos js que utilizan este case: funcionesUsuario
     case 'identificarM':
         $usuario = new Usuario();
         $usuario->identificarM();
@@ -98,7 +98,7 @@ switch ($_POST['accion']){
             }
         echo json_encode($respuesta);
         break; 
-
+        # Archivos js que utilizan este case: funcionesUsuario
         case 'generarContraseña':
         $usuario = new Usuario();
         $resultado = $usuario->generarContraseña($datos['pass']);  

@@ -61,10 +61,6 @@ switch ($_POST['accion']){
         }
         echo json_encode($respuesta);
         break;
-
-    case 'listar':
-            
-        break;
         
 }
 ?>

@@ -7,13 +7,13 @@ switch ($_POST['accion']){
     
     case 'editar':
         $inventario = new Inventario();
-		$resultado = $inventario->editar($datos);
+		$resultado = $inventario->nuevo_editar($datos);
         $respuesta = array(
                 'respuesta' => $resultado
             );
         echo json_encode($respuesta);
     break;
-
+    # Archivos js que utilizan este case: funcionesFactura y funcionesVenta
     case 'editar_autonomo':
     $inventario = new Inventario();
     $resultado = $inventario->nuevo_editar($datos);

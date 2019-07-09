@@ -59,13 +59,17 @@
 			
 		}
 
+        public function listar(){
+
+		}
+
 		public function identificarM() {
 			$this->query = "
 			SELECT MAX(id_factura) id_factura
 			FROM tb_facturas
 			";
 
-			$this->obtener_resultados_query();
+			$this->obtener_resultados_query(0);
 
 			if(count($this->rows) == 1):
 				foreach ($this->rows[0] as $propiedad=>$valor):
@@ -73,60 +77,66 @@
 				endforeach;
 			endif;
 		}
-        // # Archivos js que utilizan esta función: funcionesFactura
-		 public function listar() {
-		// 	if($id_factura != ''):
-		// 	$this->query = "
-		// 	SELECT id_producto, cantidad
-		// 	FROM tb_movimientosfacturas 
-		// 	WHERE id_factura = ?
-		// 	";
-		// 	$this->primero = $id_factura;
-		// 	$this->obtener_resultados_query(1);
-		// 	return $this->rows;	
-		// 	endif;
-		 }
-		
-		public function nuevo($id_cliente='', $subTotal='', $iva='', $total='') {
-		
-		session_start();
-		$id_empleado = $_SESSION['id_empleado'];
-				$this->query = "
-				INSERT INTO tb_facturas
-				(id_factura, id_cliente, id_empleado,
-				fecha_factura, iva_factura, valor_factura, neto_factura, estado_factura)
-				VALUES
-				(NULL, '$id_cliente', '$id_empleado', NOW(), '$iva',
-				'$subTotal', '$total', 1)
-				";
-				$resultado = $this->ejecutar_query_simple();
-				return $resultado;
-		}
-		
-		public function nuevoD($datos=array(), $id_factura='') {
-			  
-			foreach ($datos['datos'] as $campo=>$valor){
-			
-			  	 $id_producto = $valor['id'];
-			 	 $cantidad = $valor['cantidad'];
-			 	 $precio = $valor['precio'];
-			 	 $total = $valor['total'];
-			 	 $this->query = "
-			  	 INSERT INTO tb_movimientosfacturas
-			  	 (id_factura, id_producto, cantidad, precio, total)
-			  	 VALUES
-			 	 ('$id_factura', '$id_producto', '$cantidad', '$precio', '$total')
-			 	 ";
-			 	  $resultado = $this->ejecutar_query_simple();
-			 
-		}
-		    
-			    return $resultado;
-			 
-		}
-
-		public function editar($datos=array()) {
-			
+       
+		public function nuevo_editar($datos=array()){
+		 $resultado = false;
+		 if(array_key_exists('id_cliente', $datos)|| array_key_exists('id_producto', $datos)):
+			try {
+				if($datos['accion'] == 'nuevo'){
+					if($datos['tipoAccion'] == 'factura'){
+					session_start();
+		            $id_empleado = $_SESSION['id_empleado'];
+					foreach ($datos as $campo=>$valor):
+						$$campo = $valor;
+					endforeach;
+					$this->query = "
+				    INSERT INTO tb_facturas
+				    (id_factura, id_cliente, id_empleado,
+				    fecha_factura, iva_factura, valor_factura, neto_factura, estado_factura)
+				    VALUES
+				    (?, ?, ?, ?, ?, ?, ?, ?)
+				    ";
+					$stm = $this->abrir_preparar_cerrar('abrir');
+					$stm->execute([
+					  'NULL',
+					  $id_cliente,
+					  $id_empleado,
+					  'NOW()',
+					  $iva,
+					  $subTotal,
+					  $total_venta,
+					  '1',
+					]);
+					$this->abrir_preparar_cerrar('cerrar'); 
+					} 
+					else if($datos['tipoAccion'] == 'detalle'){
+					foreach ($datos as $campo=>$valor):
+						$$campo = $valor;
+					endforeach;
+					$this->query = "
+					INSERT INTO tb_movimientosfacturas
+					(id_factura, id_producto, cantidad, precio, total)
+					VALUES
+				   (?, ?, ?, ?, ?)
+				   ";
+				   $stm = $this->abrir_preparar_cerrar('abrir');
+					$stm->execute([
+					  $id_factura,
+					  $id_producto,
+					  $cantidad,
+					  $precio,
+					  $total
+					]);
+					$this->abrir_preparar_cerrar('cerrar'); 
+					}  
+				}
+				$resultado = true;
+			}
+			catch(Exception $e) {
+				throw new Exception($e->getMessage());
+			}
+			return $resultado;
+		 endif;
 		}
 		
 		public function borrar($id_factura='') {

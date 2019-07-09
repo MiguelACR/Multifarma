@@ -15,10 +15,23 @@ require_once '../../../Modelo/modeloFactura.php';
 			$model = new Factura();
 
 			$registroFactura = 	$model->consultar($noFactura,$codCliente);
-	
-			if($registroFactura['estado_factura'] == 0){
-				$anulada = '<img class="anulada" src="img/anulado.png" alt="Anulada">';
-			}	
+			foreach ($registroFactura as $value) {
+				$fecha = $value->fecha;
+				$hora = $value->hora;
+				$vendedor = $value->vendedor;
+				$id_cliente = $value->id_cliente;
+				$telefono_cliente = $value->telefono_cliente;
+				$nombre = $value->nombre;
+				$direccion_cliente = $value->direccion_cliente;
+				$valor_factura = $value->valor_factura;
+				$iva_factura = $value->iva_factura;
+				$neto_factura = $value->neto_factura;
+				$estado_factura = $value->estado_factura;
+			}
+	     
+			  if($estado_factura == 0){
+			  	$anulada = '<img class="anulada" src="img/anulado.png" alt="Anulada">';
+			  }	
 		
 			
             $detalle_productos = $model->consultar_detalle($noFactura);
@@ -27,7 +40,7 @@ require_once '../../../Modelo/modeloFactura.php';
 		    include(dirname('__FILE__').'/factura.php');
 		    $html = ob_get_clean();
 
-            $nombre_archivo = 'factura numero: '.$noFactura.''; 
+            $nombre_archivo = 'factura_numero_'.$noFactura.''; 
 
 			$reporte = new Reporte();
 			$reporte->generarPDF($html,$nombre_archivo);

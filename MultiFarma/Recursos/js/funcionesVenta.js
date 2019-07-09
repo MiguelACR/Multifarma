@@ -4,7 +4,7 @@ function venta(){
    e.preventDefault();
    var id_cliente = $(this).val();
    $.ajax({
-    type:"get",
+    type:"post",
     url:"./Controlador/controladorCliente.php",
     data: {codigo: id_cliente,accion:'consultar'},
     dataType:"json"
@@ -18,10 +18,10 @@ function venta(){
       $('#nuevo').show();
 
       $("#id_pais").find('option').remove().end().append(
-        '<option value="whatever">Seleccione ...</option>').val("whatever");
+        '<option value="">Seleccione ...</option>').val("");
 
       $("#id_ciudad").find('option').remove().end().append(
-        '<option value="whatever">Seleccione ...</option>').val("whatever");
+        '<option value="">Seleccione ...</option>').val("");
     }
     else{
         $("#nombre_cliente").attr('readonly','true');
@@ -58,7 +58,7 @@ function venta(){
         $.ajax({
             type:"get",
             url:"./Controlador/controladorCiudad.php",
-            data: {codigo: id_pais, accion:'listarC'},
+            data: {codigo: id_pais, accion:'listar_ciudades_paises'},
             dataType:"json"
          }).done(function( resultado ) {                    
              $.each(resultado.data, function (index, value) { 
@@ -77,8 +77,9 @@ function venta(){
  $("#box-panel-two").on("click","#nuevo", function(){
 
   if($("#id_cliente").val() != ''){
+    $("#cancelarCliente").show();
+    $("#nuevo").hide();
     $("#id_cliente").attr('readonly','true');
-
     $("#nombre_cliente").removeAttr('readonly');
     $("#telefono_cliente").removeAttr('readonly');
     $("#apellido_cliente").removeAttr('readonly');
@@ -102,11 +103,11 @@ function venta(){
         var id_pais = document.forms['fventa']['id_pais'].value;
         $("#id_ciudad").removeAttr('disabled');
         $("#id_ciudad").find('option').remove().end().append(
-        '<option value="whatever">Seleccione ...</option>').val("whatever");
+        '<option value="">Seleccione ...</option>').val("");
         $.ajax({
             type:"get",
             url:"./Controlador/controladorCiudad.php",
-            data: {codigo: id_pais, accion:'listarC'},
+            data: {codigo: id_pais, accion:'listar_ciudades_paises'},
             dataType:"json"
          }).done(function( resultado ) {                    
              $.each(resultado.data, function (index, value) { 
@@ -127,6 +128,35 @@ function venta(){
         }) 
     }
  })
+
+$("#box-panel-two").on('click', "#cancelarCliente", function(){
+
+  $("#id_cliente").val('');
+  $("#id_cliente").removeAttr('readonly');
+  $("#nombre_cliente").val('');
+  $("#telefono_cliente").val('');
+  $("#direccion_cliente").val('');
+  $("#apellido_cliente").val('');
+  $("#nombre_cliente").attr('readonly','true');
+  $("#telefono_cliente").attr('readonly','true');
+  $("#apellido_cliente").attr('readonly','true');
+  $("#direccion_cliente").attr('readonly','true');
+
+  $('#nuevo').show();
+  $('#grabar').hide();
+
+  $("#id_pais").find('option').remove().end().append(
+    '<option value="">Seleccione ...</option>').val("");
+
+  $("#id_ciudad").find('option').remove().end().append(
+    '<option value="">Seleccione ...</option>').val("");
+
+  $("#id_pais").attr('disabled','true');
+  $("#id_ciudad").attr('disabled','true'); 
+
+  $("#cancelarCliente").hide();  
+
+})
 
  $("#box-panel-two").on("click","#grabar", function(){
     var datos=$("#fventa").serialize();
@@ -209,15 +239,6 @@ function venta(){
     self.model = new Comprobante();
     self.producto = null;
 
-    function Producto(obj){
-      this.id = obj.id;
-      this.nombre = obj.nombre;
-      this.cantidad = obj.cantidad;
-      this.precio = obj.precio;
-      this.total = obj.total;
-  }
-
-  
 function Comprobante() {
     this.detalle = [];
 }
@@ -245,7 +266,7 @@ function Cargar_detalle(){
   $.each(self.model.detalle, function (index, value) { 
 
     movimiento_factura = movimiento_factura + '<tr>'+
-    '<td>'+value.id+'</td>'+
+    '<td>'+value.id_producto+'</td>'+
     '<td>'+value.nombre+'</td>'+
     '<td>'+value.cantidad+'</td>'+
     '<td>'+value.precio+'</td>'+
@@ -253,7 +274,7 @@ function Cargar_detalle(){
     '<td>'+'<a href="#" data-codigo="'+ posicion + 
     '" class="btn btn-danger btn-sm borrar"> <i class="fa fa-trash"></i></a>'+'</td>'+'</tr>';  
   
-   self.calcular_totales = new Calcular_totales({
+    self.calcular_totales = new Calcular_totales({
     total: value.total 
     });    
     posicion++; 
@@ -272,16 +293,16 @@ function Cargar_detalle(){
   }
 
   movimiento_factura = '';   
-  self.producto = new Producto({
-      id: parseInt($("#id_producto").val()),
+      self.producto = new Producto({
+      id_producto: parseInt($("#id_producto").val()),
       nombre: $("#nombre_producto").html(),
       cantidad: parseInt($("#cantidad_producto").val()),
       precio: parseInt($("#valor_venta").html()),
       total: parseInt($("#valor_venta_total").html())
   });
-            
+          
      self.model.detalle.push(self.producto);
-
+     console.log(self.model.detalle);  
      self.cargar_detalle = new Cargar_detalle();
 
       $("#id_producto").val('');
@@ -326,10 +347,10 @@ function Cargar_detalle(){
     $("#apellido_cliente").val('');
     
     $("#id_pais").find('option').remove().end().append(
-      '<option value="whatever">Seleccione ...</option>').val("whatever");
+      '<option value="">Seleccione ...</option>').val("");
 
     $("#id_ciudad").find('option').remove().end().append(
-      '<option value="whatever">Seleccione ...</option>').val("whatever");
+      '<option value="">Seleccione ...</option>').val("");
     }
 
     $("#id_producto").val('');
@@ -351,50 +372,105 @@ function Cargar_detalle(){
 
   $("#box-panel-one").on("click","#procesar", function(){
    var id_cliente = document.forms['fventa']['id_cliente'].value;
+   if(id_cliente != ''){
+    self.venta = new registrarVenta({
+      id_cliente: id_cliente,
+      subTotal: subTotal,
+      iva: iva,
+      total_venta: total_venta,
+      accion: 'nuevo',
+      tipoAccion: 'factura'
+  });  
    $.ajax({
     type:"post",
     url:"./Controlador/controladorVenta.php",
-    data: {codigo: id_cliente, codigoS: subTotal, codigoI: iva, codigoT: total_venta, accion:"nuevo"},
+    data: self.venta,
     dataType:"json"
    }).done(function(resultado){
      if(resultado.respuesta){
       $.ajax({
-        type:"get",
+        type:"post",
         url:"./Controlador/controladorVenta.php",
         data: {accion:"identificarM"},
         dataType:"json"
        }).done(function(resultado){
          if(resultado.respuesta == 'existe'){
           var id_factura = resultado.id_factura;
-          var datos = {};
-          for(i in self.model.detalle){
-            datos[i] = self.model.detalle[i];
-          }
-          $.ajax({
-           type:"post",
-           url:"./Controlador/controladorVenta.php",
-           data: {datos: datos, codigoF: id_factura, accion:"nuevoD"},
-           dataType:"json"
-          }).done(function(resultado){
-            if(resultado.respuesta){
-              $.ajax({
-                type:"post",
-                url:"./Controlador/controladorInventario.php",
-                data: {datos: datos, accion:"editar_inven_venta"},
-                dataType:"json"
-               }).done(function(resultado){
-                 if(resultado.respuesta){
-                 generarPDF(id_cliente,id_factura);
-                 location.reload();
-                 }
-               })
-            }
+          $.each(self.model.detalle, function(index,value){
+          self.detalle = new Editar_objeto({
+            id_producto: value.id_producto,
+            nombre: value.nombre,
+            cantidad: value.cantidad,
+            precio: value.precio,
+            total: value.total,
+            id_factura: id_factura,
+            accion: 'nuevo',
+            tipoAccion: 'detalle'                
           })
+          $.ajax({
+            type:"post",
+            url:"./Controlador/controladorVenta.php",
+            data: self.detalle,
+            dataType:"json"
+           }).done(function(resultado){
+             if(resultado.respuesta){
+              self.inventario = new Editar_objeto({
+                id_producto: value.id_producto,
+                cantidad: value.cantidad,
+                accion: 'editar_autonomo',
+                tipoAccion: 'factura'                
+              })
+               $.ajax({
+                 type:"post",
+                 url:"./Controlador/controladorInventario.php",
+                 data: self.inventario,
+                 dataType:"json"
+                })
+             }
+           })
+        }); 
+          generarPDF(id_cliente,id_factura);
+          location.reload();
          }
         })
      }
    })
+  }
+  else{
+    swal({
+      position: 'center',
+      type: 'error',
+      title: 'El cliente no esta definido',
+      showConfirmButton: false,
+      timer: 1200
+  }) 
+  }
   })  
+}
+function registrarVenta(obj){
+  this.id_cliente = obj.id_cliente;
+  this.subTotal = obj.subTotal;
+  this.iva = obj.iva;
+  this.total_venta = obj.total_venta;
+  this.accion = obj.accion;
+  this.tipoAccion = obj.tipoAccion;
+}
+function Editar_objeto(obj){
+  this.id_producto = obj.id_producto;
+  this.nombre = obj.nombre;
+  this.cantidad = obj.cantidad;
+  this.precio = obj.precio;
+  this.total = obj.total;
+  this.id_factura = obj.id_factura;
+  this.accion = obj.accion;
+  this.tipoAccion = obj.tipoAccion;
+}
+function Producto(obj){
+  this.id_producto = obj.id_producto;
+  this.nombre = obj.nombre;
+  this.cantidad = obj.cantidad;
+  this.precio = obj.precio;
+  this.total = obj.total;
 }
 function generarPDF(cliente,factura){
 var ancho = 1000;
@@ -403,7 +479,7 @@ var alto = 800;
 var x = parseInt((window.screen.width / 2) - (ancho / 2));
 var y = parseInt((window.screen.height / 2) - (alto / 2));
 
-$url = 'Reportes/Factura/reporteFactura.php?cl='+cliente+'&f='+factura;
+$url = 'Reportes/Factura/pdf/reporteFactura.php?cl='+cliente+'&f='+factura;
 window.open($url,"Factura","left="+x+",top="+y+"height="+alto+",width="+ancho+",scrollbar=si,location=no,resizable=si,menubar=no");
 }
     

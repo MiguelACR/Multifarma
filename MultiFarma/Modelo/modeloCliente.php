@@ -119,7 +119,7 @@
 				id_pais = ?, 
 				id_ciudad = ?,
 				email_cliente = ?,
-				update_at = ?
+				update_at = NOW()
 				WHERE id_cliente = ?
 				";
 				$stm = $this->abrir_preparar_cerrar('abrir');
@@ -131,7 +131,6 @@
 					$id_pais,
 					$id_ciudad,
 					$email_cliente,
-					'NOW()',
 					$id_cliente
 				  ]);
 				$this->abrir_preparar_cerrar('cerrar'); 

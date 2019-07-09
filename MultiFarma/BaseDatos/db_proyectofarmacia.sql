@@ -1080,8 +1080,8 @@ CREATE TABLE IF NOT EXISTS `tb_clientes` (
 -- Volcando datos para la tabla db_proyectofarmacia.tb_clientes: ~5 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_clientes` DISABLE KEYS */;
 INSERT INTO `tb_clientes` (`id_cliente`, `nombre_cliente`, `apellido_cliente`, `direccion_cliente`, `telefono_cliente`, `id_pais`, `id_ciudad`, `email_cliente`, `update_at`) VALUES
-	(30144198, 'Jennifer', 'Ruiz Rodriguez', 'Cra 97 # 45 - 57', '3024605529', 205, 76001, 'Jenniferruiz@gmail.com', NULL),
-	(30456789, 'Carlos Alberto', 'Erazo Torres', 'Ave 45 # 40 - 85', '3005891436', 205, 68162, 'dsalazar@gmail.com', NULL),
+	(30144198, 'Jennifer', 'Ruiz Rodriguez', 'Cra 97 # 45 - 57', '3024605529', 205, 76001, 'Jenniferruiz@gmail.com', '2019-07-08 23:44:34'),
+	(30456789, 'Carlos Alberto', 'Erazo Torres', 'Ave 45 # 40 - 85', '3005891436', 205, 68162, 'dsalazar@gmail.com', '0000-00-00 00:00:00'),
 	(30471589, 'Vicente', 'Fernandez', 'Ave 100 # 15 - 87', '3007892546', 218, 100000, 'vicentico55@gmail.com', NULL),
 	(31862723, 'Evelyn', 'Rodriguez Obando', 'Cra 97 # 45 - 57', '3966446', 205, 76001, 'evelyn35@hotmail.com', '0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `tb_clientes` ENABLE KEYS */;
@@ -1145,9 +1145,9 @@ CREATE TABLE IF NOT EXISTS `tb_facturas` (
   KEY `id_empleado` (`id_empleado`),
   CONSTRAINT `fk_facturas-clientes` FOREIGN KEY (`id_cliente`) REFERENCES `tb_clientes` (`id_cliente`),
   CONSTRAINT `fk_facturas-empleados` FOREIGN KEY (`id_empleado`) REFERENCES `tb_empleados` (`id_empleado`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
--- Volcando datos para la tabla db_proyectofarmacia.tb_facturas: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla db_proyectofarmacia.tb_facturas: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_facturas` DISABLE KEYS */;
 /*!40000 ALTER TABLE `tb_facturas` ENABLE KEYS */;
 
@@ -1246,7 +1246,7 @@ CREATE TABLE IF NOT EXISTS `tb_movimientosfacturas` (
   CONSTRAINT `fk_movimientosfacturas-productos` FOREIGN KEY (`id_producto`) REFERENCES `tb_productos` (`id_producto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
--- Volcando datos para la tabla db_proyectofarmacia.tb_movimientosfacturas: ~7 rows (aproximadamente)
+-- Volcando datos para la tabla db_proyectofarmacia.tb_movimientosfacturas: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_movimientosfacturas` DISABLE KEYS */;
 /*!40000 ALTER TABLE `tb_movimientosfacturas` ENABLE KEYS */;
 

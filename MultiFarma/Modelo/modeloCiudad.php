@@ -123,7 +123,7 @@
 			}
 			return $resultado;
 		}
-		# Archivos js que utilizan esta función: funcionesCliente y funcionesEmpleado
+		# Archivos js que utilizan esta función: funcionesCliente, funcionesEmpleado y funcionesVenta
 		public function listarCiudadespaises($id_pais='') {
 			if($id_pais != ''):
 			$this->query = "

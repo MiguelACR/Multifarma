@@ -40,6 +40,8 @@ usuarioAutenticado(5);
 					  title="Crear cliente"><i class="fa fa-plus" aria-hidden="true"></i></button>
         <button class="btn btn-default btn-sm" id="grabar"  data-toggle="tooltip" 
 					  title="Grabar cliente"><i class="fa fa-save" aria-hidden="true"></i></button>	
+        <button class="btn btn-default btn-sm" id="cancelarCliente"  data-toggle="tooltip" 
+					   title="Cancelar"><i class="fa fa-ban" aria-hidden="true"></i></button>   
        </div>
        </div>
 
@@ -226,6 +228,7 @@ usuarioAutenticado(5);
      $("#id_pais").attr('disabled','true');
      $("#id_ciudad").attr('disabled','true');
     
+     $("#cancelarCliente").hide();
      $("#procesar").attr('disabled','true');
      $('#nuevo').hide();
      $('#grabar').hide();

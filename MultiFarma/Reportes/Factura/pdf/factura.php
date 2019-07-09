@@ -1,6 +1,5 @@
 <?php
-
- //print_r($configuracion); ?>
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,32 +14,25 @@
 		<tr>
 			<td class="logo_empresa">
 				<div>
-					<img src="img/logo.png">
+					<img src="../../logo.png">
 				</div>
 			</td>
 			<td class="info_empresa">
-				<?php
-					//if($result_config > 0){
-						//$iva = $configuracion['iva'];
-				 ?>
 				<div>
 					<span class="h2">Multifarma</span>
-					<!--<p><?php //echo $configuracion['razon_social']; ?></p>-->
 					<p>Sede principal: cra 88 # 10 - 13 Bogota</p>
 					<p>NIT: 58-15963251256</p>
 					<p>Teléfono: +57 1 7449405</p>
 					<p>Email: multifarma@gmail.com</p>
 				</div>
-				<?php
-				 ?>
 			</td>
 			<td class="info_reporte">
 				<div class="round">
 					<span class="h3">Factura</span>
 					<p>No. Factura: <strong><?php echo $noFactura; ?></strong></p>
-					<p>Fecha: <?php echo $registroFactura->fecha; ?></p>
-					<p>Hora: <?php echo $registroFactura->hora; ?></p>
-					<p>Vendedor: <?php echo $registroFactura->vendedor; ?></p>
+					<p>Fecha: <?php echo $fecha; ?></p>
+					<p>Hora: <?php echo $hora; ?></p>
+					<p>Vendedor: <?php echo $vendedor; ?></p>
 				</div>
 			</td>
 		</tr>
@@ -52,12 +44,12 @@
 					<span class="h3">Cliente</span>
 					<table class="datos_cliente">
 						<tr>
-							<td><label>Identificación:</label><p><?php echo $registroFactura->id_cliente; ?></p></td>
-							<td><label>Teléfono:</label> <p><?php echo $registroFactura->telefono_cliente; ?></p></td>
+							<td><label>Identificación:</label><p><?php echo $id_cliente; ?></p></td>
+							<td><label>Teléfono:</label> <p><?php echo $telefono_cliente; ?></p></td>
 						</tr>
 						<tr>
-							<td><label>Nombre:</label> <p><?php echo $registroFactura->nombre; ?></p></td>
-							<td><label>Dirección:</label> <p><?php echo $registroFactura->direccion_cliente; ?></p></td>
+							<td><label>Nombre:</label> <p><?php echo $nombre; ?></p></td>
+							<td><label>Dirección:</label> <p><?php echo $direccion_cliente; ?></p></td>
 						</tr>
 					</table>
 				</div>
@@ -91,23 +83,21 @@
 				</tr>
 			<?php
 					}
-				}
-
-				
+				}	
 			?>
 			</tbody>
 			<tfoot id="detalle_totales">
 				<tr>
 					<td colspan="3" class="textright"><span>Subtotal:</span></td>
-					<td class="textright"><span><?php echo $registroFactura->valor_factura; ?></span></td>
+					<td class="textright"><span><?php echo $valor_factura; ?></span></td>
 				</tr>
 				<tr>
 					<td colspan="3" class="textright"><span>Iva (19 %):</span></td>
-					<td class="textright"><span><?php echo $registroFactura->iva_factura; ?></span></td>
+					<td class="textright"><span><?php echo $iva_factura; ?></span></td>
 				</tr>
 				<tr>
 					<td colspan="3" class="textright"><span>Total:</span></td>
-					<td class="textright"><span><?php echo $registroFactura->neto_factura; ?></span></td>
+					<td class="textright"><span><?php echo $neto_factura; ?></span></td>
 				</tr>
 		</tfoot>
 	</table>
@@ -120,6 +110,5 @@
 	</div>
 
 </div>
-
 </body>
 </html>

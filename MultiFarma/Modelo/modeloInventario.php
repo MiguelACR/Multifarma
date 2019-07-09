@@ -73,7 +73,7 @@
 			INNER JOIN tb_presentaciones AS pe ON (p.id_presentacion = pe.id_presentacion)
 			INNER JOIN tb_proveedores AS pr ON (p.id_proveedor = pr.id_proveedor)
 			";
-			$this->obtener_resultados_query();
+			$this->obtener_resultados_query(0);
 			return $this->rows;
 		}
 		
@@ -137,6 +137,7 @@
 				  ]);
 				$this->abrir_preparar_cerrar('cerrar'); 
 			}
+			# Archivos js que utilizan esta función: funcionesFactura y funcionesVenta
 		    else if($datos['accion'] == 'editar_autonomo'){
 				foreach ($datos as $campo=>$valor):
 					$$campo = $valor;

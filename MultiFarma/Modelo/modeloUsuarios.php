@@ -193,7 +193,7 @@
 			$resultado = $this->ejecutar_query_simple();
 			return $resultado;
 		}
-
+        # Archivos js que utilizan esta función: funcionesUsuario
 		public function editarconC($id_usuario='',$nickname_usuario='',$clave_usuario='',$id_estado='',
 		$id_rol='',$fechacreacion_usuario='') {
 			$this->query = "
@@ -218,7 +218,7 @@
 			$resultado = $this->ejecutar_query_simple();
 			return $resultado;
 		}
-
+        # Archivos js que utilizan esta función: funcionesUsuario
 		public function identificarM(){
 			$this->query = "
 			SELECT MAX(id_usuario) id_usuario
@@ -231,7 +231,7 @@
 				endforeach;
 			endif;
 		}
-
+        # Archivos js que utilizan esta función: funcionesUsuario
 		public function generarContraseña($clave_usuario=''){
 			$opciones = [
 				'cost' => 12,

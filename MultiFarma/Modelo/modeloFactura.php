@@ -52,7 +52,7 @@
 		{
 				return $this->estado_factura;
         }
-        # Función utilizada para los reportes de la factura
+     
 		public function consultar(String $id_factura = '', String $id_cliente = '') {
 
 			if($id_factura != '' && $id_cliente != ''):
@@ -77,37 +77,8 @@
 
 			endif;
 		}
-        # -----------------------------------------------------
-		public function consultar_prod_venta($id_producto='') {
-
-			session_start();
-			$id_farmacia = $_SESSION['id_farmacia'];
-			if($id_producto != ''):
-
-				$this->query = "
-				SELECT p.id_producto, f.id_farmacia, CONCAT (p.nombre_producto, ' ',pe.nombre_presentacion, ' ',pr.nombre_proveedor)as detalle_producto,
-	            i.stock, i.valor_venta
-	            FROM tb_productos AS p 
-                INNER JOIN tb_presentaciones AS pe ON (p.id_presentacion = pe.id_presentacion)
-                INNER JOIN tb_proveedores AS pr ON (p.id_proveedor = pr.id_proveedor)
-                INNER JOIN tb_inventario AS i ON (i.id_producto = p.id_producto)
-                INNER JOIN tb_farmacias AS f ON (i.id_farmacia = f.id_farmacia)
-	            WHERE i.id_producto = '$id_producto' AND i.id_farmacia = '$id_farmacia' 
-				";
-
-				$this->obtener_resultados_query();
-
-			endif;
-
-			if(count($this->rows) == 1):
-
-				foreach ($this->rows[0] as $propiedad=>$valor):
-					$this->$propiedad = $valor;
-				endforeach;
-
-			endif;
-		}
-	    # Función utilizada para los reportes de la factura
+  
+	    # Archivos js que utilizan esta función: funcionesFactura como tambien, reporteFactura.php
 		public function consultar_detalle(String $id_factura=''){
 
 			if($id_factura != ''):
@@ -153,7 +124,7 @@
 		public function borrar() {
 			
 		}
-
+        # Archivos js que utilizan esta función: funcionesFactura
 		public function anular($id_factura='') {
 
 		$resultado = false;

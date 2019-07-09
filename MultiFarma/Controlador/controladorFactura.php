@@ -4,7 +4,7 @@ require_once '../Modelo/modeloFactura.php';
 $datos = $_POST;
 
 switch ($_POST['accion']){
-
+    # Archivos js que utilizan este case: funcionesFactura
     case 'anular':
 		$factura = new Factura();
 		$resultado = $factura->anular($datos['codigo']);
@@ -25,12 +25,12 @@ switch ($_POST['accion']){
     $listado = $factura->listar();        
     echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);
     break;
-
-     case 'consultar_detalle':
+    # Archivos js que utilizan este case: funcionesFactura
+    case 'consultar_detalle':
      $factura = new Factura();
      $listado = $factura->consultar_detalle($datos['codigo']);        
      echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);
-     break;
+    break;
 
 }
 ?>

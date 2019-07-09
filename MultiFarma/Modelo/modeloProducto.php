@@ -83,9 +83,11 @@
                 INNER JOIN tb_proveedores AS pr ON (p.id_proveedor = pr.id_proveedor)
                 INNER JOIN tb_inventario AS i ON (i.id_producto = p.id_producto)
                 INNER JOIN tb_farmacias AS f ON (i.id_farmacia = f.id_farmacia)
-	            WHERE i.id_producto = '$id_producto' AND i.id_farmacia = '$id_farmacia' 
+	            WHERE i.id_producto = ? AND i.id_farmacia = ?
 				";
-				$this->obtener_resultados_query();
+				$this->primero = $id_producto;
+				$this->segundo = $id_farmacia;
+				$this->obtener_resultados_query(2);
 			endif;
 			if(count($this->rows) == 1):
 				foreach ($this->rows[0] as $propiedad=>$valor):
@@ -105,6 +107,10 @@
 			return $this->rows;
 		}
 		
+        public function nuevo_editar(){
+
+		}
+
 		public function nuevo($datos=array()) {
 			 if(array_key_exists('id_producto', $datos)):
 			 	foreach ($datos as $campo=>$valor):
