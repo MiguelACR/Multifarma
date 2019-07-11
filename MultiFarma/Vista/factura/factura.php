@@ -22,10 +22,10 @@ usuarioAutenticado(4);
             </div>
            
             <!-- /.box-header -->
-            <div class="box-body">
+            <div class="box-body bg-info">
             <div id="editar"></div>
             <div id="listado">
-              <table id="tabla" class="table table-bordered table-striped">
+              <table id="tabla" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
                 <thead>
                 <tr>
                   <th>Codigo factura</th>
@@ -36,7 +36,8 @@ usuarioAutenticado(4);
                   <th>Iva</th>
                   <th>Total</th>
                   <th>Estado</th>
-                  <th>Acciones</th>
+                  <th>&nbsp;</th>
+                  <th>&nbsp;</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -52,7 +53,8 @@ usuarioAutenticado(4);
                   <th>Iva</th>
                   <th>Total</th>
                   <th>Estado</th>
-                  <th>Acciones</th>
+                  <th>&nbsp;</th>
+                  <th>&nbsp;</th>
                 </tr>
                 </tfoot>
               </table>

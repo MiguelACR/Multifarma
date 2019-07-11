@@ -1,21 +1,23 @@
 <?php
 require_once '../Modelo/modeloFarmacia.php';
-if($datos = $_POST){
+
+$datos = $_POST;
+
 switch ($_POST['accion']) {
 
     case 'editar':
         $farmacia = new Farmacia();
-        $resultado = $farmacia->editar($datos);
+        $resultado = $farmacia->nuevo_editar($datos);
         $respuesta = array(
                 'respuesta' => $resultado,
             );
         echo json_encode($respuesta);
-        break;
+     break;
 
     case 'nuevo':
         $farmacia = new Farmacia();
-        $resultado = $farmacia->nuevo($datos);
-        if ($resultado > 0) {
+        $resultado = $farmacia->nuevo_editar($datos);
+        if ($resultado == true) {
             $respuesta = array(
                 'respuesta' => 'correcto',
             );
@@ -25,12 +27,12 @@ switch ($_POST['accion']) {
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
 
     case 'borrar':
         $farmacia = new Farmacia();
         $resultado = $farmacia->borrar($datos['codigo']);
-        if ($resultado > 0) {
+        if ($resultado == true) {
             $respuesta = array(
                 'respuesta' => 'correcto',
             );
@@ -40,13 +42,7 @@ switch ($_POST['accion']) {
             );
         }
         echo json_encode($respuesta);
-        break;
-
-}
-}
-else{
-$datos = $_GET;
-switch ($_GET['accion']) {
+    break;
 
     case 'consultar':
         $farmacia = new Farmacia();
@@ -65,19 +61,19 @@ switch ($_GET['accion']) {
                 'ciudad' => $farmacia->getId_ciudad(),
                 'pais' => $farmacia->getId_pais(),
                 'propietario' => $farmacia->getId_propietario(),
+                'rol' => $farmacia->getId_rol(),
                 'administrador' => $farmacia->getId_usuario(),
                 'respuesta' => 'existe',
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
 
     case 'listar':
         $farmacia = new Farmacia();
         $listado = $farmacia->listar();
         echo json_encode(array('data' => $listado), JSON_UNESCAPED_UNICODE);
-        break;
-
-}    
+    break;
 }
+
 ?>

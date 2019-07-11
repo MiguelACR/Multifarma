@@ -1145,10 +1145,12 @@ CREATE TABLE IF NOT EXISTS `tb_facturas` (
   KEY `id_empleado` (`id_empleado`),
   CONSTRAINT `fk_facturas-clientes` FOREIGN KEY (`id_cliente`) REFERENCES `tb_clientes` (`id_cliente`),
   CONSTRAINT `fk_facturas-empleados` FOREIGN KEY (`id_empleado`) REFERENCES `tb_empleados` (`id_empleado`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
--- Volcando datos para la tabla db_proyectofarmacia.tb_facturas: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla db_proyectofarmacia.tb_facturas: ~1 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_facturas` DISABLE KEYS */;
+INSERT INTO `tb_facturas` (`id_factura`, `id_cliente`, `id_empleado`, `fecha_factura`, `iva_factura`, `valor_factura`, `neto_factura`, `estado_factura`) VALUES
+	(1, 31862723, 1144198853, '2019-07-10 15:40:39', 6365, 33500, 39865, 0);
 /*!40000 ALTER TABLE `tb_facturas` ENABLE KEYS */;
 
 -- Volcando estructura para tabla db_proyectofarmacia.tb_farmacias
@@ -1161,6 +1163,7 @@ CREATE TABLE IF NOT EXISTS `tb_farmacias` (
   `id_ciudad` int(11) DEFAULT NULL,
   `id_propietario` int(11) DEFAULT NULL,
   `id_usuario` int(11) DEFAULT NULL,
+  `update_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id_farmacia`),
   KEY `id_ciudad` (`id_ciudad`),
   KEY `id_propietario` (`id_propietario`),
@@ -1170,12 +1173,12 @@ CREATE TABLE IF NOT EXISTS `tb_farmacias` (
   CONSTRAINT `fk_farmacias-paises` FOREIGN KEY (`id_pais`) REFERENCES `tb_paises` (`id_pais`),
   CONSTRAINT `fk_farmacias-propietarios` FOREIGN KEY (`id_propietario`) REFERENCES `tb_propietarios` (`id_propietario`),
   CONSTRAINT `fk_farmacias-usuarios` FOREIGN KEY (`id_usuario`) REFERENCES `tb_usuarios` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
--- Volcando datos para la tabla db_proyectofarmacia.tb_farmacias: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla db_proyectofarmacia.tb_farmacias: ~1 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_farmacias` DISABLE KEYS */;
-INSERT INTO `tb_farmacias` (`id_farmacia`, `nombre_farmacia`, `direccion_farmacia`, `telefono_farmacia`, `id_pais`, `id_ciudad`, `id_propietario`, `id_usuario`) VALUES
-	(2, 'Multifarma la 97', 'cra 97 # 55 - 89', '3964778', 205, 76001, 30456789, 1);
+INSERT INTO `tb_farmacias` (`id_farmacia`, `nombre_farmacia`, `direccion_farmacia`, `telefono_farmacia`, `id_pais`, `id_ciudad`, `id_propietario`, `id_usuario`, `update_at`) VALUES
+	(2, 'Multifarma la 97', 'cra 97 # 55 - 89', '3964778', 205, 76001, 30456789, 1, NULL);
 /*!40000 ALTER TABLE `tb_farmacias` ENABLE KEYS */;
 
 -- Volcando estructura para tabla db_proyectofarmacia.tb_formaspago
@@ -1246,8 +1249,13 @@ CREATE TABLE IF NOT EXISTS `tb_movimientosfacturas` (
   CONSTRAINT `fk_movimientosfacturas-productos` FOREIGN KEY (`id_producto`) REFERENCES `tb_productos` (`id_producto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
--- Volcando datos para la tabla db_proyectofarmacia.tb_movimientosfacturas: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla db_proyectofarmacia.tb_movimientosfacturas: ~4 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_movimientosfacturas` DISABLE KEYS */;
+INSERT INTO `tb_movimientosfacturas` (`id_factura`, `id_producto`, `cantidad`, `precio`, `total`) VALUES
+	(1, 8, 3, 3000, 9000),
+	(1, 9, 5, 3500, 17500),
+	(1, 12, 2, 2000, 4000),
+	(1, 13, 1, 3000, 3000);
 /*!40000 ALTER TABLE `tb_movimientosfacturas` ENABLE KEYS */;
 
 -- Volcando estructura para tabla db_proyectofarmacia.tb_nominas
@@ -1690,7 +1698,7 @@ CREATE TABLE IF NOT EXISTS `tb_usuarios` (
 /*!40000 ALTER TABLE `tb_usuarios` DISABLE KEYS */;
 INSERT INTO `tb_usuarios` (`id_usuario`, `nickname_usuario`, `clave_usuario`, `id_estado`, `id_rol`, `fechacreacion_usuario`, `update_at`) VALUES
 	(1, 'miguel.cerquera', '$2y$12$Q52qyXdqdleAcCAoPS3ZyOYNqr5qWB/bHsWyrHlaF7wwkrnVghROC', 1, 1, '2019-05-22', NULL),
-	(6, 'yovani.romo', '$2y$12$SEpIqaTA/VtteLh9TUNVxOR07/k5fBS1ZI1upPyc2JvczZr4KFipa', 2, 3, '2019-05-22', '2019-06-26 13:29:51'),
+	(6, 'yovani.romo', '$2y$12$SEpIqaTA/VtteLh9TUNVxOR07/k5fBS1ZI1upPyc2JvczZr4KFipa', 1, 3, '2019-05-22', '2019-06-26 13:29:51'),
 	(7, 'daniel.salazar', '$2y$12$QIXFlulh/FZX0/Kf8cshiOshOfm/EbDbnu02icapgtlyvfjnhfEGC', 1, 3, '2019-06-26', '2019-06-26 13:30:33');
 /*!40000 ALTER TABLE `tb_usuarios` ENABLE KEYS */;
 

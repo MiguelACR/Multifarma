@@ -75,7 +75,7 @@ function empleado(){
             });             
             });
             $.ajax({
-              type:"get",
+              type:"post",
               url:"./Controlador/controladorFarmacia.php",
               data: {accion:'listar'},
               dataType:"json"
@@ -314,7 +314,6 @@ function empleado(){
                       pais = empleado.pais;
                       ciudad = empleado.ciudad;
                       farmacia = empleado.farmacia;
-                      var id_pais = empleado.pais;
                       $.ajax({
                         type:"get",
                         url:"./Controlador/controladorPais.php",
@@ -332,7 +331,7 @@ function empleado(){
                     $.ajax({
                       type:"get",
                       url:"./Controlador/controladorCiudad.php",
-                      data: {codigo: id_pais, accion:'listar_ciudades_paises'},
+                      data: {codigo: pais, accion:'listar_ciudades_paises'},
                       dataType:"json"
                    }).done(function( resultado ) {                    ;
                        $.each(resultado.data, function (index, value) { 
@@ -345,7 +344,7 @@ function empleado(){
                        });
                    });
                    $.ajax({
-                    type:"get",
+                    type:"post",
                     url:"./Controlador/controladorFarmacia.php",
                     data: {accion:'listar'},
                     dataType:"json"

@@ -99,7 +99,7 @@
 				(id_empleado,nombre_empleado,apellido_empleado,cargo_empleado,id_pais,id_ciudad,
 				direccion_empleado,telefono_empleado,email_empleado,id_farmacia, update_at)
 				VALUES
-				(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
 				";
 			    $stm = $this->abrir_preparar_cerrar('abrir');
 			    $stm->execute([
@@ -112,8 +112,7 @@
 				  $direccion_empleado,
 				  $telefono_empleado,
 				  $email_empleado,
-				  $id_farmacia,
-				  'NOW()'
+				  $id_farmacia
 			    ]);
 
 				$this->abrir_preparar_cerrar('cerrar');    
@@ -133,7 +132,7 @@
 				telefono_empleado = ?, 
 				email_empleado = ?,
 				id_farmacia = ?,
-				update_at = ?
+				update_at = NOW()
 				WHERE id_empleado = ?
 				";
 				$stm = $this->abrir_preparar_cerrar('abrir');
@@ -147,7 +146,6 @@
 					$telefono_empleado,
 					$email_empleado,
 					$id_farmacia,
-					'NOW()',
 					$id_empleado
 				  ]);
 				$this->abrir_preparar_cerrar('cerrar'); 

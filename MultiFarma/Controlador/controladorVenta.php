@@ -19,7 +19,7 @@ switch ($_POST['accion']){
         }
         echo json_encode($respuesta);
         break;
-
+    # Archivos js que utilizan este case: funcionesVenta
     case 'identificarM':
             $venta = new Venta();
             $venta->identificarM();

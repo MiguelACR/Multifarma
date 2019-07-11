@@ -12,7 +12,7 @@ switch ($_POST['accion']){
                 'respuesta' => $resultado
             );
         echo json_encode($respuesta);
-        break;
+    break;
         
     case 'nuevo':
         $empleado = new Empleado();
@@ -27,7 +27,7 @@ switch ($_POST['accion']){
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
 
     case 'borrar':
 		$empleado = new Empleado();
@@ -42,7 +42,7 @@ switch ($_POST['accion']){
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
 
     case 'consultar':
         $empleado = new Empleado();
@@ -68,13 +68,13 @@ switch ($_POST['accion']){
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
 
     case 'listar':
         $empleado = new Empleado();
         $listado = $empleado->listar();
         echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);    
-        break;
+    break;
 
     # Archivos js que utilizan este case: funcionesLogin
     case 'consultar_datos_empleado_login':
@@ -95,7 +95,7 @@ switch ($_POST['accion']){
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
         
 }
 ?>

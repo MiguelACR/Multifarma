@@ -37,7 +37,7 @@ switch ($_POST['accion']){
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
        
     case 'borrar':
 		$usuario = new Usuario();
@@ -52,7 +52,7 @@ switch ($_POST['accion']){
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
 
     case 'consultar':
         $usuario = new Usuario();
@@ -74,13 +74,19 @@ switch ($_POST['accion']){
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
 
     case 'listar':
         $usuario = new Usuario();
         $listado = $usuario->listar();
         echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);    
-        break;
+    break;
+    # Archivos js que utilizan este case: funcionesFarmacia
+    case 'listar_usuarios_roles':
+        $usuario = new Usuario();
+        $listado = $usuario->listarUsuariosroles($datos['codigo']);
+        echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);    
+    break;
     # Archivos js que utilizan este case: funcionesUsuario
     case 'identificarM':
         $usuario = new Usuario();
@@ -97,18 +103,18 @@ switch ($_POST['accion']){
                 );   
             }
         echo json_encode($respuesta);
-        break; 
-        # Archivos js que utilizan este case: funcionesUsuario
-        case 'generarContraseña':
+    break; 
+    # Archivos js que utilizan este case: funcionesUsuario
+    case 'generarContraseña':
         $usuario = new Usuario();
         $resultado = $usuario->generarContraseña($datos['pass']);  
         $respuesta = array(
             'respuesta' => $resultado
         );
         echo json_encode($respuesta);
-        break;
-        # Archivos js que utilizan este case: funcionesLogin
-        case 'login':
+    break;
+    # Archivos js que utilizan este case: funcionesLogin
+    case 'login':
         $usuario = htmlspecialchars(trim("$_POST[usuario]"));
         $password = htmlspecialchars(trim("$_POST[password]"));
         $datos = array("usuario"=>$usuario, "password"=>$password);
@@ -137,9 +143,9 @@ switch ($_POST['accion']){
               
           }
           echo json_encode($respuesta);
-        break;
-        # Archivos js que utilizan este case: funcionesLogin
-        case 'consultar_datos_login':
+    break;
+    # Archivos js que utilizan este case: funcionesLogin
+    case 'consultar_datos_login':
           $usuario = new Usuario();
  
           $datos = array('usuario' => $datos['codigo']);
@@ -157,16 +163,16 @@ switch ($_POST['accion']){
                   );
           } 
           echo json_encode($respuesta);
-        break;
+    break;
         # Archivos js que utilizan este case: funcionesLogin
-        case 'editar_estado':
+    case 'editar_estado':
         $usuario = new Usuario();
 		$resultado = $usuario->nuevo_editar($datos);
         $respuesta = array(
                 'respuesta' => $resultado
             );
         echo json_encode($respuesta);
-        break;
+    break;
         
 }
 ?>

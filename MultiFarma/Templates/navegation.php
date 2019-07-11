@@ -23,7 +23,7 @@
     <li style="visibility: visible; display: <?php echo $_SESSION["1NA"]; ?>;"><a href="./Vista/Ciudades/ciudad.php"><i class="fa fa-globe"></i> <span>Ciudades</span></a></li>
     <li style="visibility: visible; display: <?php echo $_SESSION["2NA"]; ?>;"><a href="./Vista/Clientes/clientes.php"><i class="fa fa-user"></i> <span>Clientes</span></a></li>  
     <li style="visibility: visible; display: <?php echo $_SESSION["3NA"]; ?>;"><a href="./Vista/Empleados/empleados.php"><i class="fa fa-male"></i> <span>Empleados</span></a></li>
-    <li style="visibility: visible; display: <?php echo $_SESSION["4NA"]; ?>;"><a href="./Vista/factura/factura.php"><i class="fa fa-calculator"></i> <span>Facturas</span></a></li>
+    <li style="visibility: visible; display: <?php echo $_SESSION["4NA"]; ?>;"><a href="./Vista/Factura/factura.php"><i class="fa fa-calculator"></i> <span>Facturas</span></a></li>
 	  <li style="visibility: visible; display: <?php echo $_SESSION["5NA"]; ?>;"><a href="./Vista/Venta/venta.php"><i class="fa  fa-money"></i> <span>Ventas</span></a></li>
 		<li style="visibility: visible; display: <?php echo $_SESSION["6NA"]; ?>;"><a href="./Vista/Farmacia/farmacia.php"><i class="fa fa-hospital-o"></i> <span>Farmacias</span></a></li>
 		<li style="visibility: visible; display: <?php echo $_SESSION["7NA"]; ?>;"><a href="./Vista/Inventario/inventario.php"><i class="fa fa-table"></i> <span>Inventario</span></a></li>

@@ -1,8 +1,10 @@
 <?php
- 
 require_once '../Modelo/modeloPropietario.php';
-$datos = $_GET;
-switch ($_GET['accion']){
+
+$datos = $_POST;
+
+switch ($_POST['accion']){
+
     case 'editar':
         $propietario = new Propietario();
 		$resultado = $propietario->editar($datos);
@@ -10,7 +12,8 @@ switch ($_GET['accion']){
                 'respuesta' => $resultado
             );
         echo json_encode($respuesta);
-        break;
+    break;
+
     case 'nuevo':
         $propietario = new Propietario();
 		$resultado = $propietario->nuevo($datos);
@@ -24,7 +27,8 @@ switch ($_GET['accion']){
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
+
     case 'borrar':
 		$propietario = new Propietario();
 		$resultado = $propietario->borrar($datos['codigo']);
@@ -38,7 +42,7 @@ switch ($_GET['accion']){
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
 
     case 'consultar':
         $propietario = new Propietario();
@@ -59,12 +63,13 @@ switch ($_GET['accion']){
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
 
     case 'listar':
         $propietario = new Propietario();
         $listado = $propietario->listar();        
         echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);
-        break;
+    break;
+    
 }
 ?>

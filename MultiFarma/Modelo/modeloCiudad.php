@@ -61,13 +61,12 @@
 				INSERT INTO tb_ciudades
 				(id_ciudad, nombre_ciudad, id_pais, update_at) 
 				VALUES 
-				(?, ?, ?, ?)";
+				(?, ?, ?, NOW())";
 			    $stm = $this->abrir_preparar_cerrar('abrir');
 			    $stm->execute([
 				  $id_ciudad,
 				  $nombre_ciudad,
-				  $id_pais,
-				  'NOW()'
+				  $id_pais
 			    ]);
 				$this->abrir_preparar_cerrar('cerrar');    
 			}
@@ -79,14 +78,13 @@
 				UPDATE tb_ciudades
 				SET nombre_ciudad = ?, 
 				id_pais = ?,
-				update_at = ?
+				update_at = NOW()
 				WHERE id_ciudad = ?
 				";
 				$stm = $this->abrir_preparar_cerrar('abrir');
 				$stm->execute([
 					$nombre_ciudad,
 					$id_pais,
-					'NOW()',
 					$id_ciudad
 				  ]);
 				$this->abrir_preparar_cerrar('cerrar'); 

@@ -2,15 +2,16 @@
     require_once 'modeloAbstractoDB.php';
     class Farmacia extends ModeloAbstractoDB
     {
-        public $id_farmacia;
-        public $nombre_farmacia;
-        public $direccion_farmacia;
-        public $telefono_farmacia;
-        public $id_ciudad;
-        public $id_pais;
-        public $id_propietario;
-        public $id_usuario;
-
+        private $id_farmacia;
+        private $nombre_farmacia;
+        private $direccion_farmacia;
+        private $telefono_farmacia;
+        private $id_ciudad;
+        private $id_pais;
+        private $id_propietario;
+        private $id_rol;
+        private $id_usuario;
+       
         public function __construct()
         {
         }
@@ -50,6 +51,11 @@
             return $this->id_propietario;
         }
 
+        public function getId_rol()
+        {
+            return $this->id_rol;
+        }
+
         public function getId_usuario()
         {
             return $this->id_usuario;
@@ -59,11 +65,14 @@
         {
             if ($id_farmacia != ''):
                 $this->query = "
-				SELECT id_farmacia, nombre_farmacia, direccion_farmacia, telefono_farmacia, id_ciudad, id_pais, id_propietario, id_usuario 
-				FROM tb_farmacias
-				WHERE id_farmacia = '$id_farmacia'
-				";
-            $this->obtener_resultados_query();
+				SELECT id_farmacia, nombre_farmacia, direccion_farmacia, telefono_farmacia, id_ciudad, id_pais, id_propietario, r.id_rol, f.id_usuario 
+                FROM tb_farmacias f
+                INNER JOIN tb_usuarios u ON u.id_usuario = f.id_usuario
+			    INNER JOIN tb_roles r ON u.id_rol = r.id_rol 
+				WHERE id_farmacia = ?
+                ";
+            $this->primero = $id_farmacia;    
+            $this->obtener_resultados_query(1);
             endif;
             if (count($this->rows) == 1):
                 foreach ($this->rows[0] as $propiedad => $valor):
@@ -84,73 +93,90 @@
 			ORDER BY nombre_farmacia
 			';
             $this->obtener_resultados_query(0);
-
             return $this->rows;
         }
 
-        public function listafarmacia()
-        {
-            $this->query = '
-			SELECT id_farmacia, nombre_farmacia, direccion_farmacia,
-			telefono_farmacia, id_ciudad, id_propietario, id_usuario 
-			FROM tb_farmacias as d order by nombre_farmacia
-			';
-            $this->obtener_resultados_query();
-
-            return $this->rows;
-        }
-
-        public function nuevo_editar(){
-            
-        }
-
-        public function nuevo($datos = array())
-        {
-            if (array_key_exists('id_farmacia', $datos)):
-                foreach ($datos as $campo => $valor):
-                    $$campo = $valor;
-            endforeach;
-       
-            $this->query = "
+        public function nuevo_editar($datos=array()){
+            $resultado = false;
+			try {
+            if($datos['accion'] == 'nuevo'){
+				foreach ($datos as $campo=>$valor):
+					$$campo = $valor;
+				endforeach;
+				$this->query = "
 				INSERT INTO tb_farmacias
-				(id_farmacia, nombre_farmacia, direccion_farmacia,
-                telefono_farmacia, id_pais, id_ciudad, id_propietario, id_usuario)
+				(id_farmacia, nombre_farmacia, direccion_farmacia, 
+                telefono_farmacia, id_pais, id_ciudad, id_propietario, id_usuario, update_at)
 				VALUES
-				(NULL, '$nombre_farmacia', '$direccion_farmacia',
-				'$telefono_farmacia', '$id_pais', '$id_ciudad', '$id_propietario',
-				'$id_usuario')
+				(NULL, ?, ?, ?, ?, ?, ?, ?, NOW())
 				";
-            $resultado = $this->ejecutar_query_simple();
-
-            return $resultado;
-            endif;
-        }
-
-        public function editar($datos = array())
-        {
-            foreach ($datos as $campo => $valor):
-                $$campo = $valor;
-            endforeach;
-            $this->query = "
-			UPDATE tb_farmacias
-            SET nombre_farmacia='$nombre_farmacia', direccion_farmacia='$direccion_farmacia', 
-            telefono_farmacia='$telefono_farmacia', id_ciudad='$id_ciudad', id_pais='$id_pais',
-            id_propietario='$id_propietario', id_usuario='$id_usuario'
-			WHERE id_farmacia = '$id_farmacia'
+			    $stm = $this->abrir_preparar_cerrar('abrir');
+			    $stm->execute([
+				  $nombre_farmacia,
+				  $direccion_farmacia,
+				  $telefono_farmacia,
+				  $id_pais,
+				  $id_ciudad,
+                  $id_propietario,
+                  $id_usuario
+			    ]);
+				$this->abrir_preparar_cerrar('cerrar');    
+			}
+			else if($datos['accion'] == 'editar'){
+				foreach ($datos as $campo=>$valor):
+					$$campo = $valor;
+				endforeach;
+				$this->query = "
+			    UPDATE tb_farmacias
+                SET nombre_farmacia = ?, 
+                direccion_farmacia = ?, 
+                telefono_farmacia = ?,
+                id_pais = ?, 
+                id_ciudad = ?,
+                id_propietario = ?,
+                id_usuario = ?,
+                update_at = NOW()
+			    WHERE id_farmacia = ?
 			";
-            $resultado = $this->ejecutar_query_simple();
-
-            return $resultado;
+				$stm = $this->abrir_preparar_cerrar('abrir');
+				$stm->execute([
+					$nombre_farmacia,
+					$direccion_farmacia,
+					$telefono_farmacia,
+                    $id_pais,
+					$id_ciudad,
+					$id_propietario,
+                    $id_usuario,
+                    $id_farmacia
+				  ]);
+				$this->abrir_preparar_cerrar('cerrar'); 
+			}
+			$resultado = true;
+			}
+			catch(Exception $e) {
+				throw new Exception($e->getMessage());
+			}
+			return $resultado;
         }
 
         public function borrar($id_farmacia = '')
         {
+            $resultado = false;
+            try{
             $this->query = "
 			DELETE FROM tb_farmacias
-			WHERE id_farmacia = '$id_farmacia'
+			WHERE id_farmacia = ?
 			";
-            $resultado = $this->ejecutar_query_simple();
-
+            $stm = $this->abrir_preparar_cerrar('abrir');
+				$stm->execute([
+                    $id_farmacia
+				  ]);
+            $this->abrir_preparar_cerrar('cerrar'); 
+            $resultado = true;
+            }
+            catch(Exception $e) {
+				throw new Exception($e->getMessage());
+			}
             return $resultado;
         }
 

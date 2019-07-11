@@ -90,7 +90,7 @@
 				(id_cliente, nombre_cliente, apellido_cliente, direccion_cliente, 
                 telefono_cliente, id_pais, id_ciudad, email_cliente, update_at)
 				VALUES
-				(?, ?, ?, ?, ?, ?, ?, ?, ?)
+				(?, ?, ?, ?, ?, ?, ?, ?, NOW())
 				";
 			    $stm = $this->abrir_preparar_cerrar('abrir');
 			    $stm->execute([
@@ -101,8 +101,7 @@
 				  $telefono_cliente,
 				  $id_pais,
 				  $id_ciudad,
-				  $email_cliente,
-				  'NOW()'
+				  $email_cliente
 			    ]);
 				$this->abrir_preparar_cerrar('cerrar');    
 			}

@@ -39,10 +39,15 @@
 			FROM tb_roles 
 			";
 			
-			$this->obtener_resultados_query();
+			$this->obtener_resultados_query(0);
 			return $this->rows;
 			
 		}
+
+		public function nuevo_editar(){
+
+		}
+		
 		public function nuevo($datos=array()) {
 			if(array_key_exists('id_rol', $datos)):
 				foreach ($datos as $campo=>$valor):

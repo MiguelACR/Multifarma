@@ -1,374 +1,475 @@
-var dt;
+function farmacia(){
 
-function farmacia() {
-    $(".content-header").on("click", "button#actualizar", function() {
-        var datos = $("#ffarmacia").serialize();
-        $.ajax({
-            type: "post",
-            url: "./Controlador/controladorFarmacia.php",
-            data: datos,
-            dataType: "json"
-        }).done(function(resultado) {
-            if (resultado.respuesta) {
-                swal(
-                    'Actualizado!',
-                    'Se actualizaron los datos correctamente',
-                    'success'
-                )
-                dt.ajax.reload();
-                $("#titulo").html("Listado Farmacias");
-                $("#nuevo-editar").html("");
-                $("#nuevo-editar").removeClass("show");
-                $("#nuevo-editar").addClass("hide");
-                $("#farmacia").removeClass("hide");
-                $("#farmacia").addClass("show")
-            } else {
-                swal({
-                    type: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong!'
-                })
-            }
-        });
+    var dt = $("#tabla").DataTable({
+            "ajax": {
+                      "method"   : "post",
+                      "url"      : "./Controlador/controladorFarmacia.php",
+                      "data"     : {"accion":"listar"},
+                      "dataType" : "json"
+            },
+            "columns": [
+                { "data": "id_farmacia"} ,
+                { "data": "nombre_farmacia" },
+                { "data": "direccion_farmacia" },
+                { "data": "telefono_farmacia" },
+                { "data": "nombre_pais" },
+                { "data": "nombre_ciudad" },
+                { "data": "nombre_propietario"},
+                { "data": "nickname_usuario"},
+                { "defaultContent": '<a href="#" class="btn btn-danger btn-sm borrar" title="Borrar cliente"> <i class="fa fa-trash"></i></a>'},
+        
+                { "defaultContent": '<a href="#" class="btn btn-info btn-sm editar" title="Editar cliente"> <i class="fa fa-edit"></i></a>'}
+            ]
+    });
+
+  $("#editar").on("click",".btncerrar", function(){
+      $(".box-title").html("Listado de Clientes");
+      $("#editar").addClass('hide');
+      $("#editar").removeClass('show');
+      $("#listado").addClass('show');
+      $("#listado").removeClass('hide');  
+      $(".box #nuevo").show(); 
+      $(".box #reportes").show();
+  })  
+
+//$("#editar").on("click", function(){
+
+
+
+//});
+
+  $(".box").on("click","#nuevo", function(){
+      $(this).hide();
+      $(".box #reportes").hide();
+      $(".box-title").html("Crear Farmacia");
+      $("#editar").addClass('show');
+      $("#editar").removeClass('hide');
+      $("#listado").addClass('hide');
+      $("#listado").removeClass('show');
+      $("#editar").load('./Vista/Farmacia/nuevoFarmacia.php', function(){
+        $("#id_ciudad_group").hide();
+        $("#id_usuario_group").hide();
+        $("#id_farmacia_group").hide();
+          $.ajax({
+             type:"get",
+             url:"./Controlador/controladorPais.php",
+             data: {accion:'listar'},
+             dataType:"json"
+          }).done(function( resultado ) {                    
+              $.each(resultado.data, function (index, value) { 
+                $("#editar #id_pais").append("<option value='" + value.id_pais + "'>" + value.nombre_pais + "</option>")
+              });
+          });
+          $.ajax({
+            type:"post",
+            url:"./Controlador/controladorPropietario.php",
+            data: {accion:'listar'},
+            dataType:"json"
+         }).done(function( resultado ) {                    
+             $.each(resultado.data, function (index, value) { 
+               $("#editar #id_propietario").append("<option value='" + value.id_propietario + "'>" + value.nombre_propietario +' '+ value.apellido_propietario + "</option>")
+             });
+         });
+          $.ajax({
+            type:"get",
+            url:"./Controlador/controladorRoles.php",
+            data: {accion:'listar'},
+            dataType:"json"
+         }).done(function( resultado ) {                    
+             $.each(resultado.data, function (index, value) { 
+               $("#editar #id_rol").append("<option value='" + value.id_rol + "'>" + value.nombre_rol + "</option>")
+             });
+         });
+          $("#id_pais").change(function(){
+            $("#id_pais option:selected").each(function(){
+            $("#id_ciudad_group").show();  
+            var id_pais = document.forms['ffarmacia']['id_pais'].value;
+            $("#id_ciudad").find('option').remove().end().append(
+            '<option value="">Seleccione ...</option>').val("");
+            $.ajax({
+                type:"get",
+                url:"./Controlador/controladorCiudad.php",
+                data: {codigo: id_pais, accion:'listar_ciudades_paises'},
+                dataType:"json"
+             }).done(function( resultado ) {                    
+                 $.each(resultado.data, function (index, value) { 
+                   $("#editar #id_ciudad").append("<option value='" + value.id_ciudad + "'>" + value.nombre_ciudad + "</option>")
+                 });
+             });
+            });             
+            });
+            $("#id_rol").change(function(){
+              $("#id_rol option:selected").each(function(){
+              $("#id_usuario_group").show();  
+              var id_rol = document.forms['ffarmacia']['id_rol'].value;
+              $("#id_usuario").find('option').remove().end().append(
+              '<option value="">Seleccione ...</option>').val("");
+              $.ajax({
+                  type:"post",
+                  url:"./Controlador/controladorUsuarios.php",
+                  data: {codigo: id_rol, accion:'listar_usuarios_roles'},
+                  dataType:"json"
+               }).done(function( resultado ) {                    
+                   $.each(resultado.data, function (index, value) { 
+                     $("#editar #id_usuario").append("<option value='" + value.id_usuario + "'>" + value.nickname_usuario + "</option>")
+                   });
+               });
+              });             
+              });
+      });
+      
+  })
+
+  $("#editar").on("click","button#grabar",function(){
+    var datos=$("#ffarmacia").serialize();
+    $('.label-danger').text('');
+    $.ajax({
+      type:"post",
+      url:"./Validaciones/validacionFarmacia.php",
+      data: datos,
+      dataType:"json"
+    }).done(function( r ) {
+        if(!r.response) {
+            for(var k in r.errors){
+                $("span[data-key='" + k + "']").text(r.errors[k]);
+            }   
+        }
+    else{       
+            if(document.forms["ffarmacia"]["nuevo"].value === 'nuevo'){
+            $.ajax({
+                  type:"post",
+                  url:"./Controlador/controladorFarmacia.php",
+                  data: datos,
+                  dataType:"json"
+                }).done(function( resultado ) {
+                    if(resultado.respuesta){
+                      swal({
+                          position: 'center',
+                          type: 'success',
+                          title: 'La farmacia fue grabada con éxito',
+                          showConfirmButton: false,
+                          timer: 1200
+                      })     
+                          $(".box-title").html("Listado de Farmacias");
+                          $(".box #nuevo").show();
+                          $(".box #reportes").show();
+                          $("#editar").html('');
+                          $("#editar").addClass('hide');
+                          $("#editar").removeClass('show');
+                          $("#listado").addClass('show');
+                          $("#listado").removeClass('hide');
+                          dt.page( 'last' ).draw( 'page' );
+                          dt.ajax.reload(null, false);                   
+                   } else {
+                      swal({
+                          position: 'center',
+                          type: 'error',
+                          title: 'Ocurrió un erro al grabar',
+                          showConfirmButton: false,
+                          timer: 1500
+                      });
+                     
+                  }
+              });
+              }
+      }
     })
+  });
 
-    $(".content-header").on("click", "a.borrar", function() {
-        //Recupera datos del formulario
-        var codigo = $(this).data("codigo");
+  $("#editar").on("click","button#actualizar",function(){
+    var datos=$("#ffarmacia").serialize();
+    $('.label-danger').text('');
+    $.ajax({
+      type:"post",
+      url:"./Validaciones/validacionFarmacia.php",
+      data: datos,
+      dataType:"json"
+    }).done(function( r ) {
+        if(!r.response) {
+            for(var k in r.errors){
+                $("span[data-key='" + k + "']").text(r.errors[k]);
+            }
+        }
+       else{
+        this.farmacia = new Editar_objeto({
+          id_farmacia: id_farmacia,
+          nombre_farmacia: $("#nombre_farmacia").val(),
+          direccion_farmacia: $("#direccion_farmacia").val(),
+          telefono_farmacia: $("#telefono_farmacia").val(),
+          id_pais: parseInt($("#id_pais").val()),
+          id_ciudad: parseInt($("#id_ciudad").val()),
+          id_propietario: $("#id_propietario").val(),
+          id_usuario: $("#id_usuario").val(),
+          accion: 'editar'        
+        })
+       $.ajax({
+          type:"post",
+          url:"./Controlador/controladorFarmacia.php",
+          data: this.farmacia,
+          dataType:"json"
+        }).done(function( resultado ) {
+ 
+            if(resultado.respuesta){    
+              swal({
+                  position: 'center',
+                  type: 'success',
+                  title: 'Se actualizaron los datos correctamente',
+                  showConfirmButton: false,
+                  timer: 1500
+              }) 
+              $(".box-title").html("Listado de Farmacias");
+              $(".box #nuevo").show(); 
+              $(".box #reportes").show();
+              $("#editar").html('');
+              $("#editar").addClass('hide');
+              $("#editar").removeClass('show');
+              $("#listado").addClass('show');
+              $("#listado").removeClass('hide');
+              dt.ajax.reload(null, false);       
+           } else {
+              swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!'                         
+              })
+          }
+      });
+    }
+  })
+  })
 
-        swal({
+  $(".box-body").on("click","a.borrar",function(){
+    var data = dt.row($(this).parents("tr")).data();
+    var id_farmacia = data.id_farmacia;
+      swal({
             title: '¿Está seguro?',
-            text: "¿Realmente desea borrar la Farmacia con codigo : " + codigo + " ?",
+            text: "¿Realmente desea borrar la farmacia con codigo : " + id_farmacia + " ?",
             type: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Si, Borrarlo!'
-        }).then((decision) => {
-            if (decision.value) {
-
-                var request = $.ajax({
-                    method: "post",
-                    url: "./Controlador/controladorFarmacia.php",
-                    data: { codigo: codigo, accion: 'borrar' },
-                    dataType: "json"
-                })
-
-                request.done(function(resultado) {
-                    if (resultado.respuesta == 'correcto') {
-                        swal(
-                            'Borrado!',
-                            'Farmacia con codigo : ' + codigo + ' fue borrada',
-                            'success'
-                        )
-                        dt.ajax.reload();
-                    } else {
-                        swal({
+      }).then((decision) => {
+              if (decision.value) {
+                  var request = $.ajax({
+                      method: "post",                  
+                      url: "./Controlador/controladorFarmacia.php",
+                      data: {codigo: id_farmacia, accion:'borrar'},
+                      dataType: "json"
+                  })
+                  request.done(function( resultado ) {
+                      if(resultado.respuesta == 'correcto'){
+                          swal({
+                            position: 'center',
+                            type: 'success',
+                            title: 'La farmacia con codigo ' + id_farmacia + ' fue borrada',
+                            showConfirmButton: false,
+                            timer: 1500
+                          })       
+                          var info = dt.page.info();   
+                          if((info.end-1) == info.length)
+                              dt.page( info.page-1 ).draw( 'page' );
+                          dt.ajax.reload(null, false);
+                          
+                      } else {
+                          swal({
                             type: 'error',
                             title: 'Oops...',
-                            text: 'Something went wrong!'
-                        })
-                    }
-                });
-
-                request.fail(function(jqXHR, textStatus) {
-                    swal({
+                            text: 'Something went wrong!'                         
+                          })
+                      }
+                  });
+                   
+                  request.fail(function( jqXHR, textStatus ) {
+                      swal({
                         type: 'error',
                         title: 'Oops...',
-                        text: 'Something went wrong!' + textStatus
-                    })
-                });
-            }
-        })
+                        text: 'Something went wrong!' + textStatus                          
+                      })
+                  });
+              }
+      })
 
-    });
+  });
+  
+  var id_farmacia;
 
-    $(".content-header").on("click", "button.btncerrar2", function() {
-        $("#titulo").html("Listado de Farmacias");
-        $("#nuevo-editar").html("");
-        $("#nuevo-editar").removeClass("show");
-        $("#nuevo-editar").addClass("hide");
-        $("#farmacia").removeClass("hide");
-        $("#farmacia").addClass("show");
-
-    })
-
-    $(".content-header").on("click", "button.btncerrar", function() {
-        $("#contenedor").removeClass("show");
-        $("#contenedor").addClass("hide");
-        $(".content-header").html('')
-    })
-
-    $(".content-header").on("click", "button#nuevo", function() {
-
-        $("#titulo").html("Crear Farmacia");
-        $("#nuevo-editar").load('./Vista/Farmacia/nuevoFarmacia.php', function() {
-            $("#id_farmacia").attr('readonly','true');
-            $("#nuevo-editar").removeClass('hide');
-            $("#nuevo-editar").addClass('show');
-            $("#farmacia").removeClass('show');
-            $("#farmacia").addClass('hide');
-
-            $.ajax({
-                type: "get",
-                url: "./Controlador/controladorPais.php",
-                data: { accion: 'listar' },
-                dataType: "json"
-            }).done(function(resultado) {;
-                $("#id_pais option").remove()
-                $("#id_pais").append("<option selecte value=''>Seleccione un pais</option>")
-                $("#id_ciudad").append("<option selecte value=''>Seleccione primero un pais</option>")
-                $.each(resultado.data, function(index, value) {
-                    $("#id_pais").append("<option value='" + value.id_pais + "'>" + value.nombre_pais + "</option>")
-                });
-            });
-            $("#id_pais").change(function() {
-                $("#id_pais option:selected").each(function() {
-                    var id_pais = document.forms['ffarmacia']['id_pais'].value;
-                    $.ajax({
-                        type: "get",
-                        url: "./Controlador/controladorCiudad.php",
-                        data: { codigo: id_pais, accion: 'listarC' },
-                        dataType: "json"
-                    }).done(function(resultado) {;
-                        $("#id_ciudad option").remove()
-                        if (id_pais === "") {
-                            $("#id_ciudad").append("<option selecte value=''>Seleccione primero un pais</option>")
-                        } else {
-                            $("#id_ciudad").append("<option selecte value=''>Seleccione una ciudad</option>")
-                            $.each(resultado.data, function(index, value) {
-                                $("#id_ciudad").append("<option value='" + value.id_ciudad + "'>" + value.nombre_ciudad + "</option>")
-                            });
+  $(".box-body").on("click","a.editar",function(){
+    var data = dt.row($(this).parents("tr")).data();
+    id_farmacia = data.id_farmacia;
+     var pais, ciudad, propietario, rol,usuario;
+     $(".box-title").html("Actualizar Farmacia");
+     $(".box #nuevo").hide();
+     $(".box #reportes").hide();
+     $("#editar").addClass('show');
+     $("#editar").removeClass('hide');
+     $("#listado").addClass('hide');
+     $("#listado").removeClass('show');
+     $("#editar").load("./Vista/Farmacia/editarFarmacia.php",function(){
+          $.ajax({
+              type:"post",
+              url:"./Controlador/controladorFarmacia.php",
+              data: {codigo: id_farmacia, accion:'consultar'},
+              dataType:"json"
+              }).done(function( farmacia ) {        
+                  if(farmacia.respuesta === "no existe"){
+                      swal({
+                      type: 'error',
+                      title: 'Oops...',
+                      text: 'Farmacia no existe!'                         
+                      })
+                  } else {               
+                      $("#nombre_farmacia").val(farmacia.farmacia);
+                      $("#direccion_farmacia").val(farmacia.direccion);
+                      $("#telefono_farmacia").val(farmacia.telefono);
+                      pais = farmacia.pais;
+                      ciudad = farmacia.ciudad;
+                      propietario = farmacia.propietario;
+                      rol = farmacia.rol;
+                      usuario = farmacia.administrador;
+                      $.ajax({
+                        type:"get",
+                        url:"./Controlador/controladorPais.php",
+                        data: {accion:'listar'},
+                        dataType:"json"
+                    }).done(function( resultado ) {                      
+                        $.each(resultado.data, function (index, value) { 
+                        if(pais === value.id_pais){
+                            $("#editar #id_pais").append("<option selected value='" + value.id_pais + "'>" + value.nombre_pais + "</option>")
+                        }else {
+                            $("#editar #id_pais").append("<option value='" + value.id_pais + "'>" + value.nombre_pais + "</option>")
                         }
-                    });
-                });
-            });
-
-            $.ajax({
-                type: "get",
-                url: "./Controlador/controladorPropietario.php",
-                data: { accion: 'listar' },
-                dataType: "json"
-            }).done(function(resultado) {;
-                $("#id_propietario option").remove()
-                $("#id_propietario").append("<option selecte value=''>Seleccione un propietario</option>")
-                $.each(resultado.data, function(index, value) {
-                    $("#id_propietario").append("<option value='" + value.id_propietario + "'>" + value.nombre_propietario + " " + value.apellido_propietario + "</option>")
-                });
-            });
-
-            $.ajax({
-                type: "get",
-                url: "./Controlador/controladorUsuarios.php",
-                data: { accion: 'listar' },
-                dataType: "json"
-            }).done(function(resultado) {;
-                $("#id_usuario option").remove()
-                $("#id_usuario").append("<option selecte value=''>Seleccione un administrador de sistema</option>")
-                $.each(resultado.data, function(index, value) {
-                    $("#id_usuario").append("<option value='" + value.id_usuario + "'>" + value.nickname_usuario + "</option>")
-                });
-            });
-
-
-
-
-        });
-    })
-
-    $(".content-header").on("click", "button#grabar", function() {
-
-                var datos = $("#ffarmacia").serialize();
-
-                $.ajax({
-                    type: "post",
-                    url: "./Controlador/controladorFarmacia.php",
-                    data: datos,
-                    dataType: "json"
-                }).done(function(resultado) {
-                    if (resultado.respuesta) {
-                        swal(
-                            'Grabado!!',
-                            'El registro se grabó correctamente',
-                            'success'
-                        )
-                        dt.ajax.reload();
-                        $("#titulo").html("Listado Farmacias");
-                        $("#nuevo-editar").html("");
-                        $("#nuevo-editar").removeClass("show");
-                        $("#nuevo-editar").addClass("hide");
-                        $("#farmacia").removeClass("hide");
-                        $("#farmacia").addClass("show")
-                    } else {
-                        swal({
-                            type: 'error',
-                            title: 'Oops...',
-                            text: 'Something went wrong!'
-                        })
-                    }
-                });  
-    });
-
-    $(".content-header").on("click", "a.editar", function() {
-        $("#titulo").html("Editar Farmacia");
-        //Recupera datos del formulario
-        var codigo = $(this).data("codigo");
-        var pais;
-        var ciudad;
-        var propietario;
-        var administrador;
-
-        $("#nuevo-editar").load("./Vista/Farmacia/editarfarmacia.php", function() {
-            $("#id_farmacia").attr('readonly','true');
-            $("#nuevo-editar").removeClass("hide");
-            $("#nuevo-editar").addClass("show");
-            $("#farmacia").removeClass("show");
-            $("#farmacia").addClass("hide");
-            $.ajax({
-                type: "get",
-                url: "./Controlador/controladorFarmacia.php",
-                data: { codigo: codigo, accion: 'consultar' },
-                dataType: "json"
-            }).done(function(farmacia) {
-                if (farmacia.respuesta === "no existe") {
-                    swal({
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'Farmacia no existe!'
-                    })
-                } else {
-                    $("#id_farmacia").val(farmacia.codigo);
-                    $("#nombre_farmacia").val(farmacia.farmacia);
-                    $("#direccion_farmacia").val(farmacia.direccion);
-                    $("#telefono_farmacia").val(farmacia.telefono);
-                    propietario = farmacia.propietario;
-                    administrador = farmacia.administrador;
-                    ciudad = farmacia.ciudad;
-                    pais = farmacia.pais;
-
-                    var id_pais = farmacia.pais;
-                    $.ajax({
-                        type: "get",
-                        url: "./Controlador/controladorPais.php",
-                        data: { accion: 'listar' },
-                        dataType: "json"
-                    }).done(function(resultado) {
-                        $("#id_pais").append("<option selecte value=''>Seleccione un pais</option>")
-                        $.each(resultado.data, function(index, value) {
-                            if (pais === value.id_pais) {
-                                $("#id_pais").append("<option selected value='" + value.id_pais + "'>" + value.nombre_pais + "</option>")
-                            } else {
-                                $("#id_pais").append("<option value='" + value.id_pais + "'>" + value.nombre_pais + "</option>")
-                            }
                         });
                     });
-
                     $.ajax({
-                        type: "get",
-                        url: "./Controlador/controladorCiudad.php",
-                        data: { codigo: id_pais, accion: 'listarC' },
-                        dataType: "json"
-                    }).done(function(resultado) {;
-                        $.each(resultado.data, function(index, value) {
-                            if (ciudad === value.id_ciudad) {
-                                $("#id_ciudad").append("<option selected value='" + value.id_ciudad + "'>" + value.nombre_ciudad + "</option>")
-                            } else {
-                                $("#id_pais").change(function() {
-                                    $("#id_pais option:selected").each(function() {
-                                        var id_pais = document.forms['ffarmacia']['id_pais'].value;
-                                        $.ajax({
-                                            type: "get",
-                                            url: "./Controlador/controladorCiudad.php",
-                                            data: { codigo: id_pais, accion: 'listarC' },
-                                            dataType: "json"
-                                        }).done(function(resultado) {;
-                                            $("#id_ciudad option").remove()
-                                            if (id_pais === "") {
-                                                $("#id_ciudad").append("<option selecte value=''>Seleccione primero un pais</option>")
-                                            } else {
-                                                $("#id_ciudad").append("<option selecte value=''>Seleccione una ciudad</option>")
-                                                $.each(resultado.data, function(index, value) {
-                                                    $("#id_ciudad").append("<option value='" + value.id_ciudad + "'>" + value.nombre_ciudad + "</option>")
-                                                });
-                                            }
-                                        });
-                                    });
-                                });
-                            }
-                        });
-                    });
-
+                      type:"get",
+                      url:"./Controlador/controladorCiudad.php",
+                      data: {codigo: pais, accion:'listar_ciudades_paises'},
+                      dataType:"json"
+                   }).done(function( resultado ) {                    
+                       $.each(resultado.data, function (index, value) { 
+                          if(ciudad === value.id_ciudad){
+                          $("#editar #id_ciudad").append("<option selected value='" + value.id_ciudad + "'>" + value.nombre_ciudad + "</option>")
+                          }
+                          else{
+                          $("#editar #id_ciudad").append("<option value='" + value.id_ciudad + "'>" + value.nombre_ciudad + "</option>")
+                          } 
+                       });
+                   });
                     $.ajax({
-                        type: "get",
-                        url: "./Controlador/controladorPropietario.php",
-                        data: { accion: 'listar' },
-                        dataType: "json"
-                    }).done(function(resultado) {
-                        $("#id_propietario").append("<option selecte value=''>Seleccione un propietario </option>")
-                        $.each(resultado.data, function(index, value) {
-                            if (propietario === value.id_propietario) {
-                                $("#id_propietario").append("<option selected value='" + value.id_propietario + "'>" + value.nombre_propietario + " " + value.nombre_propietario + "</option>")
-                            } else {
-                                $("#id_propietario").append("<option value='" + value.id_propietario + "'>" + value.nombre_propietario + " " + value.nombre_propietario + "</option>")
-                            }
-                        });
-                    });
-
+                      type:"post",
+                      url:"./Controlador/controladorPropietario.php",
+                      data: {accion:'listar'},
+                      dataType:"json"
+                   }).done(function( resultado ) {                      
+                       $.each(resultado.data, function (index, value) { 
+                          if(propietario === value.id_propietario){
+                          $("#editar #id_propietario").append("<option selected value='" + value.id_propietario + "'>" + value.nombre_propietario +' '+ value.apellido_propietario + "</option>")
+                          }else {
+                          $("#editar #id_propietario").append("<option value='" + value.id_propietario + "'>" + value.nombre_propietario +' '+ value.apellido_propietario + "</option>")
+                          }
+                       });
+                   });
                     $.ajax({
-                        type: "get",
-                        url: "./Controlador/controladorUsuarios.php",
-                        data: { accion: 'listar' },
-                        dataType: "json"
-                    }).done(function(resultado) {
-                        $("#id_usuario").append("<option selecte value=''>Seleccione un administrador de sistemas </option>")
-                        $.each(resultado.data, function(index, value) {
-                            if (administrador === value.id_usuario) {
-                                $("#id_usuario").append("<option selected value='" + value.id_usuario + "'>" + value.nickname_usuario + "</option>")
-                            } else {
-                                $("#id_usuario").append("<option value='" + value.id_usuario + "'>" + value.nickname_usuario + "</option>")
-                            }
-                        });
+                      type:"get",
+                      url:"./Controlador/controladorRoles.php",
+                      data: {accion:'listar'},
+                      dataType:"json"
+                   }).done(function( resultado ) {                      
+                      $.each(resultado.data, function (index, value) { 
+                         if(rol === value.id_rol){
+                         $("#editar #id_rol").append("<option selected value='" + value.id_rol + "'>" + value.nombre_rol + "</option>")
+                         }else {
+                         $("#editar #id_rol").append("<option value='" + value.id_rol + "'>" + value.nombre_rol + "</option>")
+                         }
+                     });
+                   });
+                   $.ajax({
+                    type:"post",
+                    url:"./Controlador/controladorUsuarios.php",
+                    data: {codigo: rol, accion:'listar_usuarios_roles'},
+                    dataType:"json"
+                 }).done(function( resultado ) {                    
+                     $.each(resultado.data, function (index, value) { 
+                        if(usuario === value.id_usuario){
+                        $("#editar #id_usuario").append("<option selected value='" + value.id_usuario + "'>" + value.nickname_usuario + "</option>")
+                        }
+                        else{
+                        $("#editar #id_usuario").append("<option value='" + value.id_usuario + "'>" + value.nickname_usuario + "</option>")
+                        } 
+                     });
+                 });
+
+                   }
+                  $("#id_pais").change(function(){
+                    $("#id_pais option:selected").each(function(){
+                    var id_pais = document.forms['ffarmacia']['id_pais'].value;
+                    $("#id_ciudad").find('option').remove().end().append(
+                    '<option value="">Seleccione ...</option>').val("");
+                    $.ajax({
+                        type:"get",
+                        url:"./Controlador/controladorCiudad.php",
+                        data: {codigo: id_pais, accion:'listar_ciudades_paises'},
+                        dataType:"json"
+                     }).done(function( resultado ) {                    
+                         $.each(resultado.data, function (index, value) {           
+                           $("#editar #id_ciudad").append("<option value='" + value.id_ciudad + "'>" + value.nombre_ciudad + "</option>") 
+                         });
+                     });
+                    });             
                     });
-                }
-            });
-        })
-    })
+                  $("#id_rol").change(function(){
+                      $("#id_rol option:selected").each(function(){
+                      var id_rol = document.forms['ffarmacia']['id_rol'].value;
+                      $("#id_usuario").find('option').remove().end().append(
+                      '<option value="">Seleccione ...</option>').val("");
+                    $.ajax({
+                        type:"post",
+                        url:"./Controlador/controladorUsuarios.php",
+                        data: {codigo: id_rol, accion:'listar_usuarios_roles'},
+                        dataType:"json"
+                     }).done(function( resultado ) {                    
+                        $.each(resultado.data, function (index, value) {           
+                           $("#editar #id_usuario").append("<option value='" + value.id_usuario + "'>" + value.nickname_usuario + "</option>") 
+                        });
+                       });
+                      });             
+                      });
+          });
+      });
+  })
+
+  $(".box").on("click","#reportes", function(){
+    $("#modal-reportes").removeClass('modal fade show');
+    $("#modal-reportes").addClass('modal fade in');
+  })
+   
+  $("#modal-reportes").on("click","#generar_xls", function(){
+    window.location.href = 'Reportes/Farmacia/xls/farmacia_xls.php';
+  })
+
+  $("#modal-reportes").on("click","#generar_pdf", function(){
+    generarPDF();
+  })
 }
-
-$(document).ready(() => {
-    $(".content-header").off("click", "a.editar");
-    $(".content-header").off("click", "button#actualizar");
-    $(".content-header").off("click", "a.borrar");
-    $(".content-header").off("click", "button#nuevo");
-    $(".content-header").off("click", "button#grabar");
-    $("#titulo").html("Listado de Farmacias");
-    dt = $("#tabla").DataTable({
-        ajax: "./Controlador/controladorFarmacia.php?accion=listar",
-        columns: [
-            { data: "id_farmacia" },
-            { data: "nombre_farmacia" },
-            { data: "direccion_farmacia" },
-            { data: "telefono_farmacia" },
-            { data: "nombre_propietario" },
-            { data: "nickname_usuario" },
-            { data: "nombre_ciudad" },
-            { data: "nombre_pais" },
-            {
-                data: "id_farmacia",
-                render: function(data) {
-                    return '<a href="#" data-codigo="' + data +
-                        '" class="btn btn-danger btn-sm borrar"> <i class="fa fa-trash"></i></a>'
-                }
-            },
-            {
-                data: "id_farmacia",
-                render: function(data) {
-                    return '<a href="#" data-codigo="' + data +
-                        '" class="btn btn-info btn-sm editar"> <i class="fa fa-edit"></i></a>';
-                }
-            }
-        ]
-    });
-
-    farmacia();
-});
+function Editar_objeto(obj){
+  this.id_farmacia = obj.id_farmacia;
+  this.nombre_farmacia = obj.nombre_farmacia;
+  this.direccion_farmacia = obj.direccion_farmacia;
+  this.telefono_farmacia = obj.telefono_farmacia;
+  this.id_pais = obj.id_pais;
+  this.id_ciudad = obj.id_ciudad;
+  this.id_propietario = obj.id_propietario;
+  this.id_usuario = obj.id_usuario;
+  this.accion = obj.accion;
+}
+function generarPDF(){
+  var ancho = 1000;
+  var alto = 800;
+  
+  var x = parseInt((window.screen.width / 2) - (ancho / 2));
+  var y = parseInt((window.screen.height / 2) - (alto / 2));
+  
+  $url = 'Reportes/Farmacia/pdf/reporteFarmacia.php';
+  window.open($url,"Farmacia","left="+x+",top="+y+"height="+alto+",width="+ancho+",scrollbar=si,location=no,resizable=si,menubar=no");
+}

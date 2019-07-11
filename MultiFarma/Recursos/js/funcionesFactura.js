@@ -26,18 +26,16 @@ function factura (){
         }
         },
         { "data": "estado_factura",
-          render: function (data) {
-           var boton_generarPDF =  "<a href='#' class= 'btn btn-danger btn-sm generarF'> <i class='fa fa-file-pdf-o'></i></a>"; 
+          render: function (data) { 
            if(data == 1){
-            return boton_generarPDF
-            +"<a href='#' class='btn btn-info btn-sm anular'> <i class='fa fa-ban'></i></a>"   
+            return "<a href='#' class='btn btn-danger btn-sm anular' title='Anular factura'> <i class='fa fa-ban'></i></a>"   
            }
            else{
-            return boton_generarPDF
-            +"<a href='#' class='btn btn-info btn-sm anular' disabled='true'> <i class='fa fa-ban'></i></a>"   
+            return "<a href='#' class='btn btn-danger btn-sm anular' disabled='true' title='Anular factura'> <i class='fa fa-ban'></i></a>"   
            }   
          }
-          }
+          },
+          { "defaultContent": "<a href='#' class= 'btn btn-info btn-sm generarF' title='Generar factura'> <i class='fa fa-file-pdf-o'></i></a>"}
     ] 
  });
 

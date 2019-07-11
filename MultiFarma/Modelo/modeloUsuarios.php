@@ -76,10 +76,23 @@
             INNER JOIN tb_estados e ON (u.id_estado = e.id_estado) 
             INNER JOIN tb_roles r ON (u.id_rol = r.id_rol);
 			";
-			$this->obtener_resultados_query();
+			$this->obtener_resultados_query(0);
 			return $this->rows;	
 		}
-		
+		# Archivos js que utilizan esta función: funcionesFarmacia
+		public function listarUsuariosroles($id_rol='') {
+			if($id_rol != ''):
+			$this->query = "
+			SELECT id_usuario, nickname_usuario
+			FROM tb_usuarios
+			WHERE id_rol = ? ORDER BY nickname_usuario
+			";
+			$this->primero = $id_rol;
+			$this->obtener_resultados_query(1);
+			return $this->rows;
+		    endif;
+		}
+
         public function nuevo_editar($datos=array()){
 			$resultado = false;
 			if(array_key_exists('id_usuario', $datos)):

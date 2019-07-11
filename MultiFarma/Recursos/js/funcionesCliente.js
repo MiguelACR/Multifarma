@@ -302,7 +302,6 @@ function cliente(){
                       $("#email_cliente").val(cliente.email_cliente);
                       pais = cliente.id_pais;
                       ciudad = cliente.id_ciudad;
-                      var id_pais = cliente.id_pais;
                       $.ajax({
                         type:"get",
                         url:"./Controlador/controladorPais.php",
@@ -320,7 +319,7 @@ function cliente(){
                     $.ajax({
                       type:"get",
                       url:"./Controlador/controladorCiudad.php",
-                      data: {codigo: id_pais, accion:'listar_ciudades_paises'},
+                      data: {codigo: pais, accion:'listar_ciudades_paises'},
                       dataType:"json"
                    }).done(function( resultado ) {                    
                        $.each(resultado.data, function (index, value) { 
@@ -337,7 +336,7 @@ function cliente(){
                     $("#id_pais option:selected").each(function(){
                     var id_pais = document.forms['fcliente']['id_pais'].value;
                     $("#id_ciudad").find('option').remove().end().append(
-                    '<option value="whatever">Seleccione ...</option>').val("whatever");
+                    '<option value="">Seleccione ...</option>').val("");
                     $.ajax({
                         type:"get",
                         url:"./Controlador/controladorCiudad.php",

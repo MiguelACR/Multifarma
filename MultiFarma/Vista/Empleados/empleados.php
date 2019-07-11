@@ -21,7 +21,7 @@ usuarioAutenticado(3);
               <h3 class="box-title">Listado de Empleados</h3>
               <div class="box-tools pull-right">
                   <button class="btn btn-info btn-sm" id="nuevo"  data-toggle="tooltip" 
-                      title="Nueva Empleado"><i class="fa fa-plus" aria-hidden="true"></i></button> 
+                      title="Nuevo empleado"><i class="fa fa-plus" aria-hidden="true"></i></button> 
                   <button class="btn btn-danger btn-sm" id="reportes"  data-toggle="modal" 
                   data-target="#modal-reportes" title="Nuevo reporte"><i class="fa fa-file-text" aria-hidden="true"></i></button> 
               </div>

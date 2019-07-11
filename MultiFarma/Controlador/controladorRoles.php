@@ -1,8 +1,11 @@
 <?php
  
 require_once '../Modelo/modeloRoles.php';
+
 $datos = $_GET;
+
 switch ($_GET['accion']){
+
     case 'editar':
         $rol = new Rol();
         $resultado = $rol->editar($datos['codigo'],$datos['codigoN']);
@@ -10,7 +13,8 @@ switch ($_GET['accion']){
                 'respuesta' => $resultado
             );
         echo json_encode($respuesta);
-        break;
+    break;
+
     case 'nuevo':
         $rol = new Rol();
         $resultado = $rol->nuevo($datos);
@@ -24,7 +28,7 @@ switch ($_GET['accion']){
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
        
     case 'borrar':
 		$rol = new Rol();
@@ -39,7 +43,7 @@ switch ($_GET['accion']){
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
 
     case 'consultar':
         $rol = new Rol();
@@ -57,13 +61,13 @@ switch ($_GET['accion']){
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
 
     case 'listar':
         $rol = new Rol();
         $listado = $rol->listar();
         echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);    
-        break;
+    break;
     
     case 'identificarM':
         $rol = new Rol();
@@ -80,6 +84,7 @@ switch ($_GET['accion']){
             );   
         }
         echo json_encode($respuesta);
-        break;
+    break;
+    
 }
 ?>

@@ -51,8 +51,12 @@
 			FROM tb_propietarios 
 			ORDER BY nombre_propietario
 			";
-			$this->obtener_resultados_query();
+			$this->obtener_resultados_query(0);
 			return $this->rows;
+		}
+
+		public function nuevo_editar(){
+			
 		}
 
 		public function nuevo($datos=array()) {

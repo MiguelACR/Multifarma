@@ -62,7 +62,7 @@
         public function listar(){
 
 		}
-
+        # Archivos js que utilizan esta función: funcionesCliente, funcionesVenta
 		public function identificarM() {
 			$this->query = "
 			SELECT MAX(id_factura) id_factura
@@ -94,18 +94,15 @@
 				    (id_factura, id_cliente, id_empleado,
 				    fecha_factura, iva_factura, valor_factura, neto_factura, estado_factura)
 				    VALUES
-				    (?, ?, ?, ?, ?, ?, ?, ?)
+				    (NULL, ?, ?, NOW(), ?, ?, ?, 1)
 				    ";
 					$stm = $this->abrir_preparar_cerrar('abrir');
 					$stm->execute([
-					  'NULL',
 					  $id_cliente,
 					  $id_empleado,
-					  'NOW()',
 					  $iva,
 					  $subTotal,
-					  $total_venta,
-					  '1',
+					  $total_venta
 					]);
 					$this->abrir_preparar_cerrar('cerrar'); 
 					} 
