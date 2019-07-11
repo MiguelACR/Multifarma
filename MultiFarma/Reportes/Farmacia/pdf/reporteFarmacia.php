@@ -3,7 +3,7 @@ require_once '../../generarReporte.php';
 require_once '../../../Modelo/modeloFarmacia.php';
 
 	        $model = new Farmacia();
-            $detalle_empleados = $model->listar();
+            $detalle_farmacias = $model->listar();
 			
 			 ob_start();
 		     include(dirname('__FILE__').'/farmacia.php');

@@ -188,7 +188,7 @@ $("#box-panel-two").on('click', "#cancelarCliente", function(){
     
     var id_producto = $(this).val();
     $.ajax({
-        type:"get",
+        type:"post",
         url:"./Controlador/controladorProducto.php",
         data: {codigo: id_producto, accion:"consultar_prod_venta"},
         dataType:"json"

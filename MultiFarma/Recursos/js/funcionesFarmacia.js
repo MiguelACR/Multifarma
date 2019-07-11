@@ -32,12 +32,6 @@ function farmacia(){
       $(".box #reportes").show();
   })  
 
-//$("#editar").on("click", function(){
-
-
-
-//});
-
   $(".box").on("click","#nuevo", function(){
       $(this).hide();
       $(".box #reportes").hide();

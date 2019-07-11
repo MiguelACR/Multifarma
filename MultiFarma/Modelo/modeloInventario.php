@@ -87,23 +87,20 @@
 					$$campo = $valor;
 				endforeach;
 				$this->query = "
-				INSERT INTO tb_clientes
-				(id_cliente, nombre_cliente, apellido_cliente, direccion_cliente, 
-                telefono_cliente, id_pais, id_ciudad, email_cliente, update_at)
+				INSERT INTO tb_inventario
+				(id_farmacia, id_producto, entradas, salidas, stock, 
+				valor_unitario, valor_venta, fecha_registro)
 				VALUES
-				(?, ?, ?, ?, ?, ?, ?, ?, ?)
+				(?, ?, ?, 0, ?, ?, ?, NOW())
 				";
 			    $stm = $this->abrir_preparar_cerrar('abrir');
 			    $stm->execute([
-				  $id_cliente,
-				  $nombre_cliente,
-				  $apellido_cliente,
-				  $direccion_cliente,
-				  $telefono_cliente,
-				  $id_pais,
-				  $id_ciudad,
-				  $email_cliente,
-				  'NOW()'
+				  $id_farmacia,
+				  $id_producto,
+				  $entradas,
+				  $entradas,
+				  $valor_unitario,
+				  $valor_venta
 			    ]);
 				$this->abrir_preparar_cerrar('cerrar');    
 			}
@@ -111,29 +108,26 @@
 				foreach ($datos as $campo=>$valor):
 					$$campo = $valor;
 				endforeach;
+				$stock = $stock + $entradas;
 				$this->query = "
-				UPDATE tb_clientes
-				SET nombre_cliente = ?, 
-				apellido_cliente = ?,
-				direccion_cliente = ?, 
-				telefono_cliente = ?, 
-				id_pais = ?, 
-				id_ciudad = ?,
-				email_cliente = ?,
-				update_at = ?
-				WHERE id_cliente = ?
-				";
+			    UPDATE tb_inventario
+			    SET entradas = ?, 
+			    salidas = 0, 
+			    stock = ?, 
+			    valor_unitario = ?, 
+			    valor_venta = ?, 
+			    fecha_registro = NOW() 
+			    WHERE id_farmacia = ?
+			    AND id_producto = ?
+			";
 				$stm = $this->abrir_preparar_cerrar('abrir');
 				$stm->execute([
-					$nombre_cliente,
-					$apellido_cliente,
-					$direccion_cliente,
-					$telefono_cliente,
-					$id_pais,
-					$id_ciudad,
-					$email_cliente,
-					'NOW()',
-					$id_cliente
+					$entradas,
+					$stock,
+					$valor_unitario,
+					$valor_venta,
+					$id_farmacia,
+					$id_producto
 				  ]);
 				$this->abrir_preparar_cerrar('cerrar'); 
 			}
@@ -181,44 +175,25 @@
 			endif;		
 		}
 
-		public function nuevo() {
-				foreach ($datos as $campo=>$valor):
-					$$campo = $valor;
-				endforeach;
-				$this->query = "
-				INSERT INTO tb_inventario
-				(id_farmacia, id_producto, entradas, salidas, stock, valor_unitario, valor_venta, fecha_registro)
-				VALUES
-				('$id_farmacia', '$id_producto', '$entradas', 0, '$entradas', '$valor_unitario', '$valor_venta', '$fecha_registro')
-				";
-				$resultado = $this->ejecutar_query_simple();
-				return $resultado;
-		}
-		
-		public function editar($datos=array()) {
-			$stock = $stock + $entradas;
-			$this->query = "
-			UPDATE tb_inventario
-			SET entradas='$entradas', 
-			salidas='$salidas', 
-			stock='$stock', 
-			valor_unitario='$valor_unitario', 
-			valor_venta='$valor_venta', 
-			fecha_registro='$fecha_registro'
-			WHERE id_farmacia = '$id_farmacia'
-			AND id_producto = '$id_producto'
-			";
-			$resultado = $this->ejecutar_query_simple();
-			return $resultado;
-		}
-		
 		public function borrar($id_farmacia='', $id_producto='') {
+			$resultado = false;
+			try{
 			$this->query = "
 			DELETE FROM tb_inventario
-			WHERE id_farmacia = '$id_farmacia'
-			AND id_producto = '$id_producto'
+			WHERE id_farmacia = ?
+			AND id_producto = ?
 			";
-			$resultado = $this->ejecutar_query_simple();
+			$stm = $this->abrir_preparar_cerrar('abrir');
+				$stm->execute([
+					$id_farmacia,
+					$id_producto
+				  ]);
+            $this->abrir_preparar_cerrar('cerrar'); 
+            $resultado = true;
+			}
+			catch(Exception $e) {
+				throw new Exception($e->getMessage());
+			}
 			return $resultado;
 		}
 		

@@ -25,8 +25,8 @@ switch ($_POST['accion']){
 
     case 'nuevo':
         $inventario = new Inventario();
-		$resultado = $inventario->nuevo($datos);
-        if($resultado > 0) {
+		$resultado = $inventario->nuevo_editar($datos);
+        if($resultado == true) {
             $respuesta = array(
                 'respuesta' => 'correcto'
             );
@@ -41,7 +41,7 @@ switch ($_POST['accion']){
     case 'borrar':
 		$inventario = new Inventario();
 		$resultado = $inventario->borrar($datos['codigo'],$datos['codigoP']);
-        if($resultado > 0) {
+        if($resultado == true) {
             $respuesta = array(
                 'respuesta' => 'correcto'
             );

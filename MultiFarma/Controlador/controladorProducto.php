@@ -1,6 +1,8 @@
 <?php
 require_once '../Modelo/modeloProducto.php';
-if($datos = $_POST){
+
+$datos = $_POST;
+
 switch ($_POST['accion']){
 
     case 'editar':
@@ -41,13 +43,7 @@ switch ($_POST['accion']){
         }
         echo json_encode($respuesta);
     break;
-
-}
-}
-else{
-$datos = $_GET;    
-switch ($_GET['accion']){
-
+    
     case 'consultar':
     $producto = new Producto();
     $producto->consultar($datos['codigo']);
@@ -96,7 +92,5 @@ switch ($_GET['accion']){
     $listado = $producto->listar();        
     echo json_encode(array('data'=>$listado), JSON_UNESCAPED_UNICODE);
     break;
-    
-}
 }
 ?>

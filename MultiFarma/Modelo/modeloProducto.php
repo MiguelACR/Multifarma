@@ -103,12 +103,12 @@
 			INNER JOIN tb_presentaciones AS a ON (pb.id_presentacion = a.id_presentacion)
 			INNER JOIN tb_proveedores AS p ON (pb.id_proveedor = p.id_proveedor)
 			";
-			$this->obtener_resultados_query();
+			$this->obtener_resultados_query(0);
 			return $this->rows;
 		}
 		
         public function nuevo_editar(){
-
+			
 		}
 
 		public function nuevo($datos=array()) {

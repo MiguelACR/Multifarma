@@ -22,15 +22,17 @@ usuarioAutenticado(7);
               <div class="box-tools pull-right">
               <button class="btn btn-info btn-sm" id="nuevo"  data-toggle="tooltip" 
                       title="Nuevo inventario"><i class="fa fa-plus" aria-hidden="true"></i></button> 
+              <button class="btn btn-danger btn-sm" id="reportes"  data-toggle="modal" 
+                  data-target="#modal-reportes" title="Nuevo reporte"><i class="fa fa-file-text" aria-hidden="true"></i></button> 
               </div>
             </div>
            
         
             <!-- /.box-header -->
-            <div class="box-body">
+            <div class="box-body bg-info">
             <div id="editar"></div>
             <div id="listado">
-              <table id="tabla" class="table table-bordered table-striped">
+              <table id="tabla" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
                 <thead>
                 <tr>
                   <th>Farmacia</th>
@@ -41,7 +43,8 @@ usuarioAutenticado(7);
                   <th>Valor unitario</th>
                   <th>Valor venta</th>
                   <th>Fecha</th>
-                  <th>Acciones</th>       
+                  <th>&nbsp;</th>
+                  <th>&nbsp;</th>       
                 </tr>
                 </thead>
                 <tbody>
@@ -57,7 +60,8 @@ usuarioAutenticado(7);
                   <th>Valor unitario</th>
                   <th>Valor venta</th>
                   <th>Fecha</th>
-                  <th>Acciones</th>
+                  <th>&nbsp;</th>
+                  <th>&nbsp;</th>
                 </tr>
                 </tfoot>
               </table>

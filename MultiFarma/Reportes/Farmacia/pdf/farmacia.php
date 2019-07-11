@@ -50,9 +50,9 @@
 
 			<?php
 
-				if($detalle_empleados > 0){
+				if($detalle_farmacias > 0){
 
-					foreach($detalle_empleados as $contenido){
+					foreach($detalle_farmacias as $contenido){
 			 ?>
 				<tr>
 					<td class="textcenter"><?php echo $contenido->id_farmacia; ?></td>

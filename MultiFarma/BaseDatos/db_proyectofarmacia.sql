@@ -1147,7 +1147,7 @@ CREATE TABLE IF NOT EXISTS `tb_facturas` (
   CONSTRAINT `fk_facturas-empleados` FOREIGN KEY (`id_empleado`) REFERENCES `tb_empleados` (`id_empleado`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
--- Volcando datos para la tabla db_proyectofarmacia.tb_facturas: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla db_proyectofarmacia.tb_facturas: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_facturas` DISABLE KEYS */;
 INSERT INTO `tb_facturas` (`id_factura`, `id_cliente`, `id_empleado`, `fecha_factura`, `iva_factura`, `valor_factura`, `neto_factura`, `estado_factura`) VALUES
 	(1, 31862723, 1144198853, '2019-07-10 15:40:39', 6365, 33500, 39865, 0);
@@ -1175,10 +1175,11 @@ CREATE TABLE IF NOT EXISTS `tb_farmacias` (
   CONSTRAINT `fk_farmacias-usuarios` FOREIGN KEY (`id_usuario`) REFERENCES `tb_usuarios` (`id_usuario`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
--- Volcando datos para la tabla db_proyectofarmacia.tb_farmacias: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla db_proyectofarmacia.tb_farmacias: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_farmacias` DISABLE KEYS */;
 INSERT INTO `tb_farmacias` (`id_farmacia`, `nombre_farmacia`, `direccion_farmacia`, `telefono_farmacia`, `id_pais`, `id_ciudad`, `id_propietario`, `id_usuario`, `update_at`) VALUES
-	(2, 'Multifarma la 97', 'cra 97 # 55 - 89', '3964778', 205, 76001, 30456789, 1, NULL);
+	(2, 'Multifarma la 97', 'cra 97 # 55 - 89', '3964778', 205, 76001, 30456789, 1, NULL),
+	(3, 'Multifarma la 88', 'Cra 88 # 55 - 42 ', '3024624236', 205, 5001, 30456789, 1, '2019-07-11 11:10:49');
 /*!40000 ALTER TABLE `tb_farmacias` ENABLE KEYS */;
 
 -- Volcando estructura para tabla db_proyectofarmacia.tb_formaspago
