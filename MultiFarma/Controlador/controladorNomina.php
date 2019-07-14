@@ -1,11 +1,11 @@
 <?php
  
 require_once '../Modelo/modeloNomina.php';
-$datos = $_GET;
-switch ($_GET['accion']){
+$datos = $_POST;
+switch ($_POST['accion']){
     case 'editar':
         $nomina = new Nomina();
-        $resultado = $nomina->editar($datos);
+        $resultado = $nomina->nuevo_editar($datos);
         $respuesta = array(
             'respuesta' => $resultado
         );
@@ -14,8 +14,8 @@ switch ($_GET['accion']){
    
     case 'nuevo':
         $nomina = new Nomina();
-        $resultado = $nomina->nuevo($datos);
-        if($resultado > 0) 
+        $resultado = $nomina->nuevo_editar($datos);
+        if($resultado == true) 
         {
             $respuesta = array(
                 'respuesta' => $resultado
@@ -31,7 +31,7 @@ switch ($_GET['accion']){
     case 'borrar':
 		$nomina = new Nomina();
 		$resultado = $nomina->borrar($datos['codigo']);
-        if($resultado > 0) {
+        if($resultado == true) {
             $respuesta = array(
                 'respuesta' => 'correcto'
             );

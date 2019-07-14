@@ -115,6 +115,5 @@ usuarioAutenticado(6);
 
 					<input type="hidden" id="nuevo" value="nuevo" name="accion"/>
 		
-
 		</form>
 	</div>

@@ -16,9 +16,9 @@ function inventario(){
                 { "data": "valor_unitario" },
                 { "data": "valor_venta" },
                 { "data": "fecha_registro" },
-                {"defaultContent": "<a href='#' class= 'btn btn-danger btn-sm borrar'> <i class='fa fa-trash'></i></a>"},
+                {"defaultContent": "<a href='#' class= 'btn btn-danger btn-sm borrar' title='Borrar inventario'> <i class='fa fa-trash'></i></a>"},
 
-                {"defaultContent":"<a href='#' class='btn btn-info btn-sm editar'> <i class='fa fa-edit'></i></a>"}
+                {"defaultContent":"<a href='#' class='btn btn-info btn-sm editar' title='Editar inventario'> <i class='fa fa-edit'></i></a>"}
             ],
                  "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
                     if ( aData['stock'] > 20 )
@@ -35,7 +35,7 @@ function inventario(){
     });
 
   $("#editar").on("click",".btncerrar", function(){
-      $(".box-title").html("Listado de Clientes");
+      $(".box-title").html("Listado de Inventarios");
       $("#editar").addClass('hide');
       $("#editar").removeClass('show');
       $("#listado").addClass('show');
@@ -296,7 +296,7 @@ $("#editar").on("click","button#grabar",function(){
      id_farmacia = data.id_farmacia;
      id_producto = data.id_producto;
      var farmacia, producto;
-     $(".box-title").html("Actualizar Inventario")
+     $(".box-title").html("Actualizar Inventario");
      $(".box #nuevo").hide();
      $(".box #reportes").hide();
      $("#editar").addClass('show');
@@ -359,6 +359,7 @@ $("#editar").on("click","button#grabar",function(){
           });
       });
   })
+  
   $(".box").on("click","#reportes", function(){
     $("#modal-reportes").removeClass('modal fade show');
     $("#modal-reportes").addClass('modal fade in');

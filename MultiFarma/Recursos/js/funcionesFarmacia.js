@@ -16,14 +16,14 @@ function farmacia(){
                 { "data": "nombre_ciudad" },
                 { "data": "nombre_propietario"},
                 { "data": "nickname_usuario"},
-                { "defaultContent": '<a href="#" class="btn btn-danger btn-sm borrar" title="Borrar cliente"> <i class="fa fa-trash"></i></a>'},
+                { "defaultContent": '<a href="#" class="btn btn-danger btn-sm borrar" title="Borrar farmacia"> <i class="fa fa-trash"></i></a>'},
         
-                { "defaultContent": '<a href="#" class="btn btn-info btn-sm editar" title="Editar cliente"> <i class="fa fa-edit"></i></a>'}
+                { "defaultContent": '<a href="#" class="btn btn-info btn-sm editar" title="Editar farmacia"> <i class="fa fa-edit"></i></a>'}
             ]
     });
 
   $("#editar").on("click",".btncerrar", function(){
-      $(".box-title").html("Listado de Clientes");
+      $(".box-title").html("Listado de Farmacias");
       $("#editar").addClass('hide');
       $("#editar").removeClass('show');
       $("#listado").addClass('show');
@@ -40,7 +40,7 @@ function farmacia(){
       $("#editar").removeClass('hide');
       $("#listado").addClass('hide');
       $("#listado").removeClass('show');
-      $("#editar").load('./Vista/Farmacia/nuevoFarmacia.php', function(){
+      $("#editar").load('./Vista/Farmacia/nuevaFarmacia.php', function(){
         $("#id_ciudad_group").hide();
         $("#id_usuario_group").hide();
         $("#id_farmacia_group").hide();

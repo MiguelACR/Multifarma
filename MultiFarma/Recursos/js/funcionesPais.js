@@ -1,222 +1,288 @@
-var dt;
+function pais(){
 
-function pais() {
-    $(".content-header").on("click", "button#actualizar", function() {
-        var datos = $("#fpais").serialize();
-        $.ajax({
-            type: "get",
-            url: "./Controlador/controladorPais.php",
-            data: datos,
-            dataType: "json"
-        }).done(function(resultado) {
-            if (resultado.respuesta) {
-                swal(
-                    'Actualizado!',
-                    'Se actualizaron los datos correctamente',
-                    'success'
-                )
-                dt.ajax.reload();
-                $("#titulo").html("Listado Pais");
-                $("#nuevo-editar").html("");
-                $("#nuevo-editar").removeClass("show");
-                $("#nuevo-editar").addClass("hide");
-                $("#pais").removeClass("hide");
-                $("#pais").addClass("show")
-            } else {
-                swal({
-                    type: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong!'
-                })
+    var dt = $("#tabla").DataTable({
+            "ajax": {
+                      "method"   : "get",
+                      "url"      : "./Controlador/controladorPais.php",
+                      "data"     : {"accion":"listar"},
+                      "dataType" : "json"
+            },
+            "columns": [
+                { "data": "id_pais"} ,
+                { "data": "abreviatura_pais" },
+                { "data": "nombre_pais" },
+                { "defaultContent": '<a href="#" class="btn btn-danger btn-sm borrar" title="Borrar pais"> <i class="fa fa-trash"></i></a>'},
+        
+                { "defaultContent": '<a href="#" class="btn btn-info btn-sm editar" title="Editar pais"> <i class="fa fa-edit"></i></a>'}
+            ]
+    });
+
+  $("#editar").on("click",".btncerrar", function(){
+      $(".box-title").html("Listado de Paises");
+      $("#editar").addClass('hide');
+      $("#editar").removeClass('show');
+      $("#listado").addClass('show');
+      $("#listado").removeClass('hide');  
+      $(".box #nuevo").show(); 
+      $(".box #reportes").show();
+  })  
+
+  $(".box").on("click","#nuevo", function(){
+      $(this).hide();
+      $(".box #reportes").hide();
+      $(".box-title").html("Crear Pais");
+      $("#editar").addClass('show');
+      $("#editar").removeClass('hide');
+      $("#listado").addClass('hide');
+      $("#listado").removeClass('show');
+      $("#editar").load('./Vista/Paises/nuevoPais.php', function(){
+      })
+  })
+
+  $("#editar").on("click","button#grabar",function(){
+    var datos=$("#fpais").serialize();
+    $('.label-danger').text('');
+    $.ajax({
+      type:"post",
+      url:"./Validaciones/validacionPais.php",
+      data: datos,
+      dataType:"json"
+    }).done(function( r ) {
+        if(!r.response) {
+            for(var k in r.errors){
+                $("span[data-key='" + k + "']").text(r.errors[k]);
+            }   
+        }
+    else{     
+      var codigo = document.forms["fpais"]["id_pais"].value;
+      $.ajax({
+        type:"get",
+        url:"./Controlador/controladorPais.php",
+        data: {codigo: codigo, accion:'consultar'},
+        dataType:"json"
+        }).done(function( pais ) {        
+          if(pais.respuesta == "no existe"){  
+            if(document.forms["fpais"]["nuevo"].value === 'nuevo'){
+            $.ajax({
+                  type:"post",
+                  url:"./Controlador/controladorPais.php",
+                  data: datos,
+                  dataType:"json"
+                }).done(function( resultado ) {
+                    if(resultado.respuesta){
+                      swal({
+                          position: 'center',
+                          type: 'success',
+                          title: 'el pais fue grabada con éxito',
+                          showConfirmButton: false,
+                          timer: 1200
+                      })     
+                          $(".box-title").html("Listado de Paises");
+                          $(".box #nuevo").show();
+                          $(".box #reportes").show();
+                          $("#editar").html('');
+                          $("#editar").addClass('hide');
+                          $("#editar").removeClass('show');
+                          $("#listado").addClass('show');
+                          $("#listado").removeClass('hide');
+                          dt.page( 'last' ).draw( 'page' );
+                          dt.ajax.reload(null, false);                   
+                   } else {
+                      swal({
+                          position: 'center',
+                          type: 'error',
+                          title: 'Ocurrió un erro al grabar',
+                          showConfirmButton: false,
+                          timer: 1500
+                      });
+                     
+                  }
+              });
+              }
             }
-        });
+            else{
+              swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'El pais ya existe!!!!!'                         
+              })
+            }
+          })
+      }
     })
+  });
 
-    $(".content-header").on("click", "a.borrar", function() {
-        //Recupera datos del formulario
-        var codigo = $(this).data("codigo");
+  $("#editar").on("click","button#actualizar",function(){
+    var datos=$("#fpais").serialize();
+    $('.label-danger').text('');
+    $.ajax({
+      type:"post",
+      url:"./Validaciones/validacionPais.php",
+      data: datos,
+      dataType:"json"
+    }).done(function( r ) {
+        if(!r.response) {
+            for(var k in r.errors){
+                $("span[data-key='" + k + "']").text(r.errors[k]);
+            }
+        }
+       else{
+        this.pais = new Editar_objeto({
+          id_pais: id_pais,
+          abreviatura_pais: $("#abreviatura_pais").val(),
+          nombre_pais: $("#nombre_pais").val(),
+          accion: 'editar'        
+        })
+       $.ajax({
+          type:"post",
+          url:"./Controlador/controladorPais.php",
+          data: this.pais,
+          dataType:"json"
+        }).done(function( resultado ) {
+ 
+            if(resultado.respuesta){    
+              swal({
+                  position: 'center',
+                  type: 'success',
+                  title: 'Se actualizaron los datos correctamente',
+                  showConfirmButton: false,
+                  timer: 1500
+              }) 
+              $(".box-title").html("Listado de Paises");
+              $(".box #nuevo").show(); 
+              $(".box #reportes").show();
+              $("#editar").html('');
+              $("#editar").addClass('hide');
+              $("#editar").removeClass('show');
+              $("#listado").addClass('show');
+              $("#listado").removeClass('hide');
+              dt.ajax.reload(null, false);       
+           } else {
+              swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!'                         
+              })
+          }
+      });
+    }
+  })
+  })
 
-        swal({
+  $(".box-body").on("click","a.borrar",function(){
+    var data = dt.row($(this).parents("tr")).data();
+    var id_pais = data.id_pais;
+      swal({
             title: '¿Está seguro?',
-            text: "¿Realmente desea borrar el pais con codigo : " + codigo + " ?",
+            text: "¿Realmente desea borrar el pais con codigo : " + id_pais + " ?",
             type: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Si, Borrarlo!'
-        }).then((decision) => {
-            if (decision.value) {
-
-                var request = $.ajax({
-                    method: "get",
-                    url: "./Controlador/controladorPais.php",
-                    data: { codigo: codigo, accion: 'borrar' },
-                    dataType: "json"
-                })
-
-                request.done(function(resultado) {
-                    if (resultado.respuesta == 'correcto') {
-                        swal(
-                            'Borrado!',
-                            'El pais con codigo : ' + codigo + ' fue borrado',
-                            'success'
-                        )
-                        dt.ajax.reload();
-                    } else {
-                        swal({
+      }).then((decision) => {
+              if (decision.value) {
+                  var request = $.ajax({
+                      method: "post",                  
+                      url: "./Controlador/controladorPais.php",
+                      data: {codigo: id_pais, accion:'borrar'},
+                      dataType: "json"
+                  })
+                  request.done(function( resultado ) {
+                      if(resultado.respuesta == 'correcto'){
+                          swal({
+                            position: 'center',
+                            type: 'success',
+                            title: 'El pais con codigo ' + id_pais + ' fue borrada',
+                            showConfirmButton: false,
+                            timer: 1500
+                          })       
+                          var info = dt.page.info();   
+                          if((info.end-1) == info.length)
+                              dt.page( info.page-1 ).draw( 'page' );
+                          dt.ajax.reload(null, false);
+                          
+                      } else {
+                          swal({
                             type: 'error',
                             title: 'Oops...',
-                            text: 'Something went wrong!'
-                        })
-                    }
-                });
-
-                request.fail(function(jqXHR, textStatus) {
-                    swal({
+                            text: 'Something went wrong!'                         
+                          })
+                      }
+                  });
+                   
+                  request.fail(function( jqXHR, textStatus ) {
+                      swal({
                         type: 'error',
                         title: 'Oops...',
-                        text: 'Something went wrong!' + textStatus
-                    })
-                });
-            }
-        })
+                        text: 'Something went wrong!' + textStatus                          
+                      })
+                  });
+              }
+      })
 
-    });
+  });
+  
+  var id_pais;
 
-    $(".content-header").on("click", "button.btncerrar2", function() {
-        $("#titulo").html("Listado de Paises");
-        $("#nuevo-editar").html("");
-        $("#nuevo-editar").removeClass("show");
-        $("#nuevo-editar").addClass("hide");
-        $("#pais").removeClass("hide");
-        $("#pais").addClass("show");
+  $(".box-body").on("click","a.editar",function(){
+    var data = dt.row($(this).parents("tr")).data();
+    id_pais = data.id_pais;
+     $(".box-title").html("Actualizar Pais");
+     $(".box #nuevo").hide();
+     $(".box #reportes").hide();
+     $("#editar").addClass('show');
+     $("#editar").removeClass('hide');
+     $("#listado").addClass('hide');
+     $("#listado").removeClass('show');
+     $("#editar").load("./Vista/Paises/editarPais.php",function(){
+          $.ajax({
+              type:"get",
+              url:"./Controlador/controladorPais.php",
+              data: {codigo: id_pais, accion:'consultar'},
+              dataType:"json"
+              }).done(function( pais ) {        
+                  if(pais.respuesta === "no existe"){
+                      swal({
+                      type: 'error',
+                      title: 'Oops...',
+                      text: 'Pais no existe!'                         
+                      })
+                  } else {               
+                      $("#id_pais").val(pais.codigo);
+                      $("#abreviatura_pais").val(pais.abreviatura);
+                      $("#nombre_pais").val(pais.pais);
+                   }  
+          });
+      });
+  })
 
-    })
+  $(".box").on("click","#reportes", function(){
+    $("#modal-reportes").removeClass('modal fade show');
+    $("#modal-reportes").addClass('modal fade in');
+  })
+   
+  $("#modal-reportes").on("click","#generar_xls", function(){
+    window.location.href = 'Reportes/Pais/xls/pais_xls.php';
+  })
 
-    $(".content-header").on("click", "button.btncerrar", function() {
-        $("#contenedor").removeClass("show");
-        $("#contenedor").addClass("hide");
-        $(".content-header").html('')
-    })
-
-    $(".content-header").on("click", "button#nuevo", function() {
-        $("#titulo").html("Nuevo Pais");
-        $("#nuevo-editar").load("./Vista/Paises/nuevoPais.php");
-        $("#nuevo-editar").removeClass("hide");
-        $("#nuevo-editar").addClass("show");
-        $("#pais").removeClass("show");
-        $("#pais").addClass("hide");
-    })
-
-    $(".content-header").on("click", "button#grabar", function() {
-        var codigo = document.forms["fpais"]["id_pais"].value;
-        $.ajax({
-            type: "get",
-            url: "./Controlador/controladorPais.php",
-            data: { codigo: codigo, accion: 'consultar' },
-            dataType: "json"
-        }).done(function(pais) {
-            if (pais.respuesta == "no existe") {
-                var datos = $("#fpais").serialize();
-
-                $.ajax({
-                    type: "get",
-                    url: "./Controlador/controladorPais.php",
-                    data: datos,
-                    dataType: "json"
-                }).done(function(resultado) {
-                    if (resultado.respuesta) {
-                        swal(
-                            'Grabado!!',
-                            'El registro se grabó correctamente',
-                            'success'
-                        )
-                        dt.ajax.reload();
-                        $("#titulo").html("Listado paises");
-                        $("#nuevo-editar").html("");
-                        $("#nuevo-editar").removeClass("show");
-                        $("#nuevo-editar").addClass("hide");
-                        $("#pais").removeClass("hide");
-                        $("#pais").addClass("show")
-                    } else {
-                        swal({
-                            type: 'error',
-                            title: 'Oops...',
-                            text: 'Something went wrong!'
-                        })
-                    }
-                });
-            } else {
-                swal({
-                    type: 'error',
-                    title: 'Oops...',
-                    text: 'El pais ya existe!!!!!'
-                })
-            }
-        });
-    });
-
-    $(".content-header").on("click", "a.editar", function() {
-        $("#titulo").html("Editar Pais");
-        //Recupera datos del fromulario
-        var codigo = $(this).data("codigo");
-
-        $("#nuevo-editar").load("./Vista/Paises/editarPais.php");
-        $("#nuevo-editar").removeClass("hide");
-        $("#nuevo-editar").addClass("show");
-        $("#pais").removeClass("show");
-        $("#pais").addClass("hide");
-        $.ajax({
-            type: "get",
-            url: "./Controlador/controladorPais.php",
-            data: { codigo: codigo, accion: 'consultar' },
-            dataType: "json"
-        }).done(function(pais) {
-            if (pais.respuesta === "no existe") {
-                swal({
-                    type: 'error',
-                    title: 'Oops...',
-                    text: 'Pais no existe!'
-                })
-            } else {
-                $("#id_pais").val(pais.codigo);
-                $("#nombre_pais").val(pais.pais);
-                $("#abreviatura_pais").val(pais.abreviatura);
-
-            }
-        });
-    })
-
+  $("#modal-reportes").on("click","#generar_pdf", function(){
+    generarPDF();
+  })
 }
-$(document).ready(() => {
-    $(".content-header").off("click", "a.editar");
-    $(".content-header").off("click", "button#actualizar");
-    $(".content-header").off("click", "a.borrar");
-    $(".content-header").off("click", "button#nuevo");
-    $(".content-header").off("click", "button#grabar");
-    $("#titulo").html("Listado de Pais");
-    dt = $("#tabla").DataTable({
-        "ajax": "./Controlador/controladorPais.php?accion=listar",
-        "columns": [
-            { "data": "id_pais" },
-            { "data": "nombre_pais" },
-            { "data": "abreviatura_pais" },
-            {
-                "data": "id_pais",
-                render: function(data) {
-                    return '<a href="#" data-codigo="' + data +
-                        '" class="btn btn-danger btn-sm borrar"> <i class="fa fa-trash"></i></a>'
-                }
-            },
-            {
-                "data": "id_pais",
-                render: function(data) {
-                    return '<a href="#" data-codigo="' + data +
-                        '" class="btn btn-info btn-sm editar"> <i class="fa fa-edit"></i></a>';
-                }
-            }
-        ]
-    });
-
-    pais();
-});
+function Editar_objeto(obj){
+  this.id_pais = obj.id_pais;
+  this.abreviatura_pais = obj.abreviatura_pais;
+  this.nombre_pais = obj.nombre_pais;
+  this.accion = obj.accion;
+}
+function generarPDF(){
+  var ancho = 1000;
+  var alto = 800;
+  
+  var x = parseInt((window.screen.width / 2) - (ancho / 2));
+  var y = parseInt((window.screen.height / 2) - (alto / 2));
+  
+  $url = 'Reportes/Pais/pdf/reportePais.php';
+  window.open($url,"Pais","left="+x+",top="+y+"height="+alto+",width="+ancho+",scrollbar=si,location=no,resizable=si,menubar=no");
+}

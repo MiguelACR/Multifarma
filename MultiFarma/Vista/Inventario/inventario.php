@@ -2,7 +2,7 @@
 usuarioAutenticado(7);
 ?>
       
-      <h1>
+<h1>
         Gestión de
         <small>  Inventarios</small>
       </h1>

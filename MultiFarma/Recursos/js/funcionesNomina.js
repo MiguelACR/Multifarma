@@ -1,7 +1,12 @@
 function nomina(){
 
     var dt = $("#tabla").DataTable({
-        "ajax": "./Controlador/controladorNomina.php?accion=listar",
+        "ajax": {
+                  "method"   : "post",
+                  "url"      : "./Controlador/controladorNomina.php",
+                  "data"     : {"accion":"listar"},
+                  "dataType" : "json"
+        },
         "columns": [
             { "data": "id_nomina"} ,
             { "data": "nombre" },
@@ -17,36 +22,33 @@ function nomina(){
             { "data": "pension" },
             { "data": "salud" },
             { "data": "salario_neto" },
-            { "data": "id_nomina",
-               render: function (data) {
-                            return '<a href="#" data-codigo="'+ data + 
-                                   '" class="btn btn-danger btn-sm borrar"> <i class="fa fa-trash"></i></a>'
-                            +      '<a href="#" data-codigo="'+ data + 
-                                   '" class="btn btn-info btn-sm editar"> <i class="fa fa-edit"></i></a>'
-                  }
-          }             
+            {"defaultContent": "<a href='#' class= 'btn btn-danger btn-sm borrar' title='Borrar nomina'> <i class='fa fa-trash'></i></a>"},
+
+            {"defaultContent":"<a href='#' class='btn btn-info btn-sm editar' title='Editar nomina'> <i class='fa fa-edit'></i></a>"}            
         ]
     });
 
-  $("#editar").on("click",".btncerrar", function(){
-      $(".box-title").html("Listado de Nominas");
-      $("#editar").addClass('hide');
-      $("#editar").removeClass('show');
-      $("#listado").addClass('show');
-      $("#listado").removeClass('hide');  
-      $(".box #nuevo").show(); 
-  })  
+    $("#editar").on("click",".btncerrar", function(){
+        $(".box-title").html("Listado de Nominas");
+        $("#editar").addClass('hide');
+        $("#editar").removeClass('show');
+        $("#listado").addClass('show');
+        $("#listado").removeClass('hide');  
+        $(".box #nuevo").show(); 
+        $(".box #reportes").show();
+    })   
 
   $(".box").on("click","#nuevo", function(){
       $(this).hide();
+      $(".box #reportes").hide();
       $(".box-title").html("Crear Nomina");
       $("#editar").addClass('show');
       $("#editar").removeClass('hide');
       $("#listado").addClass('hide');
       $("#listado").removeClass('show');
-      $("#editar").load('./Vista/Nomina/nuevoNomina.php', function(){
+      $("#editar").load('./Vista/Nomina/nuevaNomina.php', function(){
           $.ajax({
-             type:"get",
+             type:"post",
              url:"./Controlador/controladorEmpleados.php",
              data: {accion:'listar'},
              dataType:"json"
@@ -61,9 +63,22 @@ function nomina(){
 
   $("#editar").on("click","button#grabar",function(){
     var datos=$("#fnomina").serialize();
-    //console.log(datos);
+    $('.label-danger').text('');
     $.ajax({
-          type:"get",
+      type:"post",
+      url:"./Validaciones/validacionNomina.php",
+      data: datos,
+      dataType:"json"
+    }).done(function( r ) {
+        if(!r.response) {
+            for(var k in r.errors){
+                $("span[data-key='" + k + "']").text(r.errors[k]);
+            }   
+        }
+    else{
+    if(document.forms["fnomina"]["nuevo"].value === 'nuevo'){     
+    $.ajax({
+          type:"post",
           url:"./Controlador/controladorNomina.php",
           data: datos,
           dataType:"json"
@@ -76,8 +91,9 @@ function nomina(){
                   showConfirmButton: false,
                   timer: 1200
               })     
-                  $(".box-title").html("Listado de Nomina");
+                  $(".box-title").html("Listado de Nominas");
                   $(".box #nuevo").show();
+                  $(".box #reportes").show();
                   $("#editar").html('');
                   $("#editar").addClass('hide');
                   $("#editar").removeClass('show');
@@ -96,15 +112,42 @@ function nomina(){
              
           }
       });
+    } 
+    }
+  })
   });
 
   $("#editar").on("click","button#actualizar",function(){
-       var datos=$("#fnomina").serialize();
-       console.log(datos);
+    var datos=$("#fnomina").serialize();
+    $('.label-danger').text('');
+    $.ajax({
+      type:"post",
+      url:"./Validaciones/validacionNomina.php",
+      data: datos,
+      dataType:"json"
+    }).done(function( r ) {
+        if(!r.response) {
+            for(var k in r.errors){
+                $("span[data-key='" + k + "']").text(r.errors[k]);
+            }
+        }
+       else{
+       this.nomina = new Editar_objeto({
+            id_nomina: id_nomina,
+            id_empleado: $("#id_empleado").val(),
+            salario_basico: $("#salario_basico").val(),
+            hextrasd: $("#hextrasd").val(),
+            hextrasn: $("#hextrasn").val(),
+            auxilio_transporte: $("#auxilio_transporte").val(),
+            valor_hextrad: $("#valor_hextrad").val(),
+            valor_hextran: $("#valor_hextran").val(),
+            dias_laborados: $("#dias_laborados").val(),
+            accion: 'editar'        
+          })
        $.ajax({
-          type:"get",
+          type:"post",
           url:"./Controlador/controladorNomina.php",
-          data: datos,
+          data: this.nomina,
           dataType:"json"
         }).done(function( resultado ) {
  
@@ -117,6 +160,8 @@ function nomina(){
                   timer: 1500
               }) 
               $(".box-title").html("Listado Nominas");
+              $(".box #nuevo").show(); 
+              $(".box #reportes").show();
               $("#editar").html('');
               $("#editar").addClass('hide');
               $("#editar").removeClass('show');
@@ -131,15 +176,16 @@ function nomina(){
               })
           }
       });
+    }
+  })
   })
 
   $(".box-body").on("click","a.borrar",function(){
-      //Recupera datos del formulario
-      var codigo = $(this).data("codigo");
-      
+    var data = dt.row($(this).parents("tr")).data();
+    var id_nomina = data.id_nomina;
       swal({
             title: '¿Está seguro?',
-            text: "¿Realmente desea borrar la nomina con codigo : " + codigo + " ?",
+            text: "¿Realmente desea borrar la nomina con codigo : " + id_nomina + " ?",
             type: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -148,9 +194,9 @@ function nomina(){
       }).then((decision) => {
               if (decision.value) {
                   var request = $.ajax({
-                      method: "get",                  
+                      method: "post",                  
                       url: "./Controlador/controladorNomina.php",
-                      data: {codigo: codigo, accion:'borrar'},
+                      data: {codigo: id_nomina, accion:'borrar'},
                       dataType: "json"
                   })
                   request.done(function( resultado ) {
@@ -158,7 +204,7 @@ function nomina(){
                           swal({
                             position: 'center',
                             type: 'success',
-                            title: 'La nomina con codigo ' + codigo + ' fue borrada',
+                            title: 'La nomina con codigo ' + id_nomina + ' fue borrada',
                             showConfirmButton: false,
                             timer: 1500
                           })       
@@ -187,22 +233,25 @@ function nomina(){
       })
 
   });
-  // ESTE TOCA ACOMODARLO CASI TODO 
+  
+  var id_nomina;
+
   $(".box-body").on("click","a.editar",function(){
-     //$("#titulo").html("Editar Nomina");
-     //Recupera datos del fromulario
-     var codigo = $(this).data("codigo");
+     var data = dt.row($(this).parents("tr")).data();
+     id_nomina = data.id_nomina;
      var empleado;
-     $(".box-title").html("Actualizar Nomina")
+     $(".box-title").html("Actualizar Nomina");
+     $(".box #nuevo").hide();
+     $(".box #reportes").hide();
      $("#editar").addClass('show');
      $("#editar").removeClass('hide');
      $("#listado").addClass('hide');
      $("#listado").removeClass('show');
      $("#editar").load("./Vista/Nomina/editarNomina.php",function(){
           $.ajax({
-              type:"get",
+              type:"post",
               url:"./Controlador/controladorNomina.php",
-              data: {codigo: codigo, accion:'consultar'},
+              data: {codigo: id_nomina, accion:'consultar'},
               dataType:"json"
               }).done(function( nomina ) {        
                   if(nomina.respuesta === "no existe"){
@@ -226,25 +275,57 @@ function nomina(){
                       $("#salud").val(nomina.salud);
                       $("#salario_neto").val(nomina.salarioN);
                       empleado = nomina.empleado;
+                      $.ajax({
+                        type:"post",
+                        url:"./Controlador/controladorEmpleados.php",
+                        data: {accion:'listar'},
+                        dataType:"json"
+                    }).done(function( resultado ) {                      
+                        $.each(resultado.data, function (index, value) { 
+                        if(empleado === value.id_empleado){
+                            $("#editar #id_empleado").append("<option selected value='" + value.id_empleado + "'>" + value.nombre_empleado + " " + value.apellido_empleado + "</option>")
+                        }else {
+                            $("#editar #id_empleado").append("<option value='" + value.id_empleado + "'>"  + value.nombre_empleado + " " + value.apellido_empleado + "</option>")
+                        }
+                        });
+                    });
                   }
-          });
-
-          $.ajax({
-              type:"get",
-              url:"./Controlador/controladorEmpleados.php",
-              data: {accion:'listar'},
-              dataType:"json"
-          }).done(function( resultado ) {                      
-              $.each(resultado.data, function (index, value) { 
-              if(empleado === value.id_empleado){
-                  $("#editar #id_empleado").append("<option selected value='" + value.id_empleado + "'>" + value.nombre_empleado + " " + value.apellido_empleado + "</option>")
-              }else {
-                  $("#editar #id_empleado").append("<option value='" + value.id_empleado + "'>"  + value.nombre_empleado + " " + value.apellido_empleado + "</option>")
-              }
-              });
-          });
+          });    
       });
   })
 
- 
+  $(".box").on("click","#reportes", function(){
+    $("#modal-reportes").removeClass('modal fade show');
+    $("#modal-reportes").addClass('modal fade in');
+  })
+   
+  $("#modal-reportes").on("click","#generar_xls", function(){
+    window.location.href = 'Reportes/Nomina/xls/nomina_xls.php';
+  })
+
+  $("#modal-reportes").on("click","#generar_pdf", function(){
+    generarPDF();
+  })
 }
+function Editar_objeto(obj){
+    this.id_nomina = obj.id_nomina;
+    this.id_empleado = obj.id_empleado;
+    this.salario_basico = obj.salario_basico;
+    this.hextrasd = obj.hextrasd;
+    this.hextrasn = obj.hextrasn;
+    this.auxilio_transporte = obj.auxilio_transporte;
+    this.valor_hextrad = obj.valor_hextrad;
+    this.valor_hextran = obj.valor_hextran;
+    this.dias_laborados = obj.dias_laborados;
+    this.accion = obj.accion;
+  }
+  function generarPDF(){
+    var ancho = 1000;
+    var alto = 800;
+    
+    var x = parseInt((window.screen.width / 2) - (ancho / 2));
+    var y = parseInt((window.screen.height / 2) - (alto / 2));
+    
+    $url = 'Reportes/Nomina/pdf/reporteNomina.php';
+    window.open($url,"Nomina","left="+x+",top="+y+"height="+alto+",width="+ancho+",scrollbar=si,location=no,resizable=si,menubar=no");
+  }

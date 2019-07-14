@@ -6,7 +6,7 @@ switch ($_POST['accion']){
 
     case 'editar':
         $pais = new Pais();
-		$resultado = $pais->editar($datos);
+		$resultado = $pais->nuevo_editar($datos);
         $respuesta = array(
                 'respuesta' => $resultado
             );
@@ -15,8 +15,8 @@ switch ($_POST['accion']){
 
     case 'nuevo':
         $pais = new Pais();
-		$resultado = $pais->nuevo($datos);
-        if($resultado > 0) {
+		$resultado = $pais->nuevo_editar($datos);
+        if($resultado == true) {
             $respuesta = array(
                 'respuesta' => 'correcto'
             );
@@ -31,7 +31,7 @@ switch ($_POST['accion']){
     case 'borrar':
 		$pais = new Pais();
 		$resultado = $pais->borrar($datos['codigo']);
-        if($resultado > 0) {
+        if($resultado == true) {
             $respuesta = array(
                 'respuesta' => 'correcto'
             );
