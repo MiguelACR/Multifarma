@@ -260,8 +260,7 @@ function nomina(){
                       title: 'Oops...',
                       text: 'Nomina no existe!'                         
                       })
-                  } else {
-                      $("#id_nomina").val(nomina.codigo);                   
+                  } else {                 
                       $("#fecha").val(nomina.fecha);
                       $("#salario_basico").val(nomina.salarioB);                   
                       $("#hextrasd").val(nomina.hextrasd);

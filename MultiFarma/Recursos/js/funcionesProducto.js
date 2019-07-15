@@ -1,34 +1,43 @@
 function producto() {
 
   var dt = $("#tabla").DataTable({
-        "ajax":"./Controlador/controladorProducto.php?accion=listar",
+        "ajax":{
+            "method"   : "post",
+            "url"      : "./Controlador/controladorProducto.php",
+            "data"     : {"accion":"listar"},
+            "dataType" : "json"
+        },
         "columns": [
             { "data": "id_producto" },
             { "data": "nombre_producto" },
             { "data": "nombre_presentacion"},
             { "data": "nombre_proveedor"},
-            { "data": "id_producto",
+            { "data": "foto_producto",
             render: function (data) {
-                return '<a href="#" data-codigo="'+ data + 
-                       '" class="btn btn-danger btn-sm borrar"> <i class="fa fa-trash"></i></a>'
-                +      '<a href="#" data-codigo="'+ data + 
-                       '" class="btn btn-info btn-sm editar"> <i class="fa fa-edit"></i></a>'
+                return '<img src="Recursos/img/Productos/'+data+ '" width="50" height="50" class="user-image" alt="User Image"> '
+                       
             }
-        }
+            },
+            { "defaultContent": '<a href="#" class="btn btn-danger btn-sm borrar" title="Borrar producto"> <i class="fa fa-trash"></i></a>'},
+        
+            { "defaultContent": '<a href="#" class="btn btn-info btn-sm editar" title="Editar producto"> <i class="fa fa-edit"></i></a>'}
         ]
     });
 
-    $("#editar").on("click",".btncerrar", function(){
-        $(".box-title").html("Listado de Productos");
-        $("#editar").addClass('hide');
-        $("#editar").removeClass('show');
-        $("#listado").addClass('show');
-        $("#listado").removeClass('hide');  
-        $(".box #nuevo").show(); 
-    })
+   
+  $("#editar").on("click",".btncerrar", function(){
+    $(".box-title").html("Listado de Productos");
+    $("#editar").addClass('hide');
+    $("#editar").removeClass('show');
+    $("#listado").addClass('show');
+    $("#listado").removeClass('hide');  
+    $(".box #nuevo").show(); 
+    $(".box #reportes").show();
+}) 
 
     $(".box").on("click","#nuevo", function(){
         $(this).hide();
+        $(".box #reportes").hide();
         $(".box-title").html("Crear Producto");
         $("#editar").addClass('show');
         $("#editar").removeClass('hide');
@@ -60,17 +69,30 @@ function producto() {
     })
 
     $("#editar").on("click","button#grabar",function(){
-        var datos = new FormData($("#fproducto")[0]);
-       
-        if(jQuery("#foto_producto").val() != ''){
-            $.ajax({
-                type:"post",
-                url:"./Controlador/controladorProducto.php",
-                data: datos,
-                dataType:"json",
-                contentType: false,
-                processData: false
-              }).done(function( resultado ) {
+    var datos = new FormData($("#fproducto")[0]);
+    $('.label-danger').text('');
+    $.ajax({
+      type:"post",
+      url:"./Validaciones/validacionProducto.php",
+      data: datos,
+      dataType:"json",
+      contentType: false,
+      processData: false
+    }).done(function( r ) {
+        if(!r.response) {
+            for(var k in r.errors){
+                $("span[data-key='" + k + "']").text(r.errors[k]);
+            }   
+        }
+    else{       
+                $.ajax({
+                  type:"post",
+                  url:"./Controlador/controladorProducto.php",
+                  data: datos,
+                  dataType:"json",
+                  contentType: false,
+                  processData: false
+                }).done(function( resultado ) {
                   if(resultado.respuesta){
                     swal({
                         position: 'center',
@@ -81,6 +103,7 @@ function producto() {
                     })     
                         $(".box-title").html("Listado de Productos");
                         $(".box #nuevo").show();
+                        $(".box #reportes").show();
                         $("#editar").html('');
                         $("#editar").addClass('hide');
                         $("#editar").removeClass('show');
@@ -99,21 +122,27 @@ function producto() {
                    
                 }
             });    
-        }
-        else{
-            swal({
-                position: 'center',
-                type: 'error',
-                title: 'Seleccione una imagen con formato: jpg, png, gif o jpeg',
-                showConfirmButton: false,
-                timer: 1200
-            })            
-        }
-      });
+    }
+    })
+    });
   
       $("#editar").on("click","button#actualizar",function(){
            var datos = new FormData($("#fproducto")[0]);
-
+           $('.label-danger').text('');
+           $.ajax({
+             type:"post",
+             url:"./Validaciones/validacionProducto.php",
+             data: datos,
+             dataType:"json",
+             contentType: false,
+             processData: false
+           }).done(function( r ) {
+               if(!r.response) {
+                   for(var k in r.errors){
+                       $("span[data-key='" + k + "']").text(r.errors[k]);
+                   }
+               }
+              else{
            $.ajax({
               type:"post",
               url:"./Controlador/controladorProducto.php",
@@ -131,6 +160,8 @@ function producto() {
                         timer: 1500
                     }) 
                     $(".box-title").html("Listado de Productos");
+                    $(".box #nuevo").show(); 
+                    $(".box #reportes").show();
                     $("#editar").html('');
                     $("#editar").addClass('hide');
                     $("#editar").removeClass('show');
@@ -145,14 +176,16 @@ function producto() {
                   })
               }
           });
+        }
+     })
       });
   
       $(".box-body").on("click","a.borrar",function(){
-          //Recupera datos del formulario
-          var codigo = $(this).data("codigo");  
+        var data = dt.row($(this).parents("tr")).data();
+        var id_producto = data.id_producto; 
           swal({
                 title: '¿Está seguro?',
-                text: "¿Realmente desea borrar el producto con codigo : " + codigo + " ?",
+                text: "¿Realmente desea borrar el producto con codigo : " + id_producto + " ?",
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -163,7 +196,7 @@ function producto() {
                       var request = $.ajax({
                           method: "post",                  
                           url: "./Controlador/controladorProducto.php",
-                          data: {codigo: codigo, accion:'borrar'},
+                          data: {codigo: id_producto, accion:'borrar'},
                           dataType: "json"
                       })
                       request.done(function( producto ) {
@@ -171,7 +204,7 @@ function producto() {
                             swal({
                                 position: 'center',
                                 type: 'success',
-                                title: 'El producto con codigo ' + codigo + ' fue borrado',
+                                title: 'El producto con codigo ' + id_producto + ' fue borrado',
                                 showConfirmButton: false,
                                 timer: 1500
                               })       
@@ -199,26 +232,26 @@ function producto() {
           })
   
       });
-      
-      $(".box-body").on("click","a.editar",function(){
-         
-         var codigo = $(this).data("codigo");
-         var presentacion, proveedor;
 
-         $(".box-title").html("Actualizar Producto")
+      $(".box-body").on("click","a.editar",function(){
+        var data = dt.row($(this).parents("tr")).data();
+        var id_producto = data.id_producto;
+         $(".box-title").html("Actualizar Producto");
+         $(".box #nuevo").hide();
+         $(".box #reportes").hide();
          $("#editar").addClass('show');
          $("#editar").removeClass('hide');
          $("#listado").addClass('hide');
          $("#listado").removeClass('show'); 
          $.ajax({
-            type:"get",
+            type:"post",
             url:"./Controlador/controladorProducto.php",
-            data: {codigo: codigo, accion:'consultar'},
+            data: {codigo: id_producto, accion:'consultar'},
             dataType:"json"
             }).done(function( producto ) {        
          if(producto.respuesta === "existe"){
-         $("#editar").load("./Vista/Producto/editarProducto.php",function(){    
-            $("#id_producto").val(producto.id_producto);                   
+         $("#editar").load("./Vista/Producto/editarProducto.php",function(){  
+            $("#id_producto").val(producto.id_producto);                    
             $("#nombre_producto").val(producto.nombre_producto);
             presentacion = producto.id_presentacion;
             proveedor = producto.id_proveedor;
@@ -261,5 +294,26 @@ function producto() {
         }
      });
       })
+      $(".box").on("click","#reportes", function(){
+        $("#modal-reportes").removeClass('modal fade show');
+        $("#modal-reportes").addClass('modal fade in');
+      })
+       
+      $("#modal-reportes").on("click","#generar_xls", function(){
+        window.location.href = 'Reportes/Producto/xls/producto_xls.php';
+      })
+    
+      $("#modal-reportes").on("click","#generar_pdf", function(){
+        generarPDF();
+      })
+}
+  function generarPDF(){
+    var ancho = 1000;
+    var alto = 800;
+    
+    var x = parseInt((window.screen.width / 2) - (ancho / 2));
+    var y = parseInt((window.screen.height / 2) - (alto / 2));
+    
+    $url = 'Reportes/Producto/pdf/reporteProducto.php';
+    window.open($url,"Producto","left="+x+",top="+y+"height="+alto+",width="+ancho+",scrollbar=si,location=no,resizable=si,menubar=no");
   }
-  

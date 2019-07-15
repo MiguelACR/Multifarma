@@ -3,6 +3,7 @@ $validaciones = [];
 $datos = $_POST;
 
 if(!empty($_POST)){
+    
     if(empty($datos['id_empleado'])){
         $validaciones['id_empleado'] = 'Seleccione un empleado';  
     }

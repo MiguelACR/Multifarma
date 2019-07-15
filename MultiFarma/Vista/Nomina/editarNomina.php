@@ -7,9 +7,7 @@ usuarioAutenticado(9);
             <div class="panel-heading">Datos</div>
             <div class="panel-body">    
                 <form class="form-horizontal" role="form"  id="fnomina">
-                <div class="form-group">
-                      
-                <div class="form-group">
+                   <div class="form-group">
                         <label class="control-label col-sm-2" for="id_empleado">Empleado:</label>
                         <div class="input-group col-sm-9">
                             <span class="input-group-addon"><i class="fa fa-user"></i></span>

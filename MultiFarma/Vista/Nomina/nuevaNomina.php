@@ -8,7 +8,6 @@ usuarioAutenticado(9);
             <div class="panel-heading">Gestion Nomina</div>
             <div class="panel-body">
                 <form class="form-horizontal" role="form" id="fnomina">   
-
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="id_empleado">Empleado:</label>
                         <div class="input-group col-sm-9">

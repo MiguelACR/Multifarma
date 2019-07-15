@@ -69,9 +69,13 @@
 			INNER JOIN tb_ciudades AS ci ON (pr.id_ciudad = ci.id_ciudad)
 			ORDER BY nombre_proveedor
 			';
-            $this->obtener_resultados_query();
+            $this->obtener_resultados_query(0);
 
             return $this->rows;
+        }
+
+        public function nuevo_editar(){
+            
         }
 
         public function nuevo($datos = array())

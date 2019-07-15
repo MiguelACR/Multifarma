@@ -51,17 +51,15 @@
 		}
 
 		public function consultar($id_producto='') {
-
-			session_start();
-			$id_farmacia = $_SESSION['id_farmacia'];
 			if($id_producto != ''):
 				$this->query = "
 				SELECT id_producto, nombre_producto, foto_producto,
 	            id_presentacion, id_proveedor
 	            FROM tb_productos 
-	            WHERE id_producto = '$id_producto'  
+	            WHERE id_producto = ?
 				";
-				$this->obtener_resultados_query();
+				$this->primero = $id_producto;
+				$this->obtener_resultados_query(1);
 			endif;
 			if(count($this->rows) == 1):
 				foreach ($this->rows[0] as $propiedad=>$valor):
@@ -98,7 +96,7 @@
 	
 		public function listar() {
 			$this->query = "
-			SELECT id_producto, nombre_producto, a.nombre_presentacion, p.nombre_proveedor 
+			SELECT id_producto, nombre_producto, a.nombre_presentacion, p.nombre_proveedor, foto_producto
 			FROM tb_productos as pb 
 			INNER JOIN tb_presentaciones AS a ON (pb.id_presentacion = a.id_presentacion)
 			INNER JOIN tb_proveedores AS p ON (pb.id_proveedor = p.id_proveedor)
@@ -107,16 +105,14 @@
 			return $this->rows;
 		}
 		
-        public function nuevo_editar(){
-			
-		}
-
-		public function nuevo($datos=array()) {
-			 if(array_key_exists('id_producto', $datos)):
-			 	foreach ($datos as $campo=>$valor):
-			 		$$campo = $valor;
-			 	endforeach;
-			 	$carpeta = "../Recursos/img/Productos/";
+        public function nuevo_editar($datos=array()){
+			$resultado = false;
+			foreach ($datos as $campo=>$valor):
+				$$campo = $valor;
+			endforeach;
+			try {
+			if($datos['accion'] == 'nuevo'){	
+				$carpeta = "../Recursos/img/Productos/";
 			 	opendir($carpeta);
 			 	$destino = $carpeta.$_FILES['foto_producto']['name'];
 			 	copy($_FILES['foto_producto']['tmp_name'],$destino);
@@ -126,57 +122,77 @@
 			 	(id_producto, nombre_producto, foto_producto,
                  id_presentacion, id_proveedor, update_at)
 			 	VALUES
-			 	(NULL, '$nombre_producto', '$foto_producto',
-			 	'$id_presentacion', '$id_proveedor', NOW())
+			 	(NULL, ?, ?, ?, ?, NOW())
 			 	";
-			 	$resultado = $this->ejecutar_query_simple();
-			 	return $resultado;
-			 endif;
+				$stm = $this->abrir_preparar_cerrar('abrir');
+				$stm->execute([
+					$nombre_producto,
+					$foto_producto,
+					$id_presentacion,
+					$id_proveedor
+				]);
+				$this->abrir_preparar_cerrar('cerrar');    
+			}
+			else if($datos['accion'] == 'editar'){
+				session_start();
+				if($_FILES['foto_producto']['name'] != ""){
+					unlink("../Recursos/img/Productos/".$_SESSION['producto']);
+					$carpeta = "../Recursos/img/Productos/";
+					opendir($carpeta);
+					$destino = $carpeta.$_FILES['foto_producto']['name'];
+					copy($_FILES['foto_producto']['tmp_name'],$destino);
+					$foto_producto = $_FILES['foto_producto']['name'];
+				}
+				else{
+				  $foto_producto = $_SESSION['producto'];
+			   }
+			   $this->query = "
+				UPDATE tb_productos
+				SET nombre_producto = ?, 
+				foto_producto = ?, 
+				id_presentacion = ?, 
+				id_proveedor = ?, 
+				update_at = NOW()
+				WHERE id_producto = ?
+				"; 
+				$stm = $this->abrir_preparar_cerrar('abrir');
+				$stm->execute([
+					$nombre_producto,
+					$foto_producto,
+					$id_presentacion,
+					$id_proveedor,
+					$id_producto
+				  ]);
+				$this->abrir_preparar_cerrar('cerrar'); 
+			}
+			$resultado = true;
+			}
+			catch(Exception $e) {
+				throw new Exception($e->getMessage());
+			}
+			return $resultado;	
 		}
-		
-		public function editar($datos=array()) {
-			foreach ($datos as $campo=>$valor):
-				$$campo = $valor;
-			endforeach;
-			session_start();
-		if($_FILES['foto_producto']['name']==""){
-			$foto_producto = $_SESSION['producto'];	
-			$this->query = "
-			UPDATE tb_productos
-            SET nombre_producto='$nombre_producto', foto_producto='$foto_producto', 
-            id_presentacion='$id_presentacion', id_proveedor = '$id_proveedor', update_at = NOW()
-			WHERE id_producto = '$id_producto'
-			";
-			$resultado = $this->ejecutar_query_simple();
-			return $resultado;
-		}
-		else{
-			 unlink("../Recursos/img/Productos/".$_SESSION['producto']);
-			 $carpeta = "../Recursos/img/Productos/";
-			 	opendir($carpeta);
-			 	$destino = $carpeta.$_FILES['foto_producto']['name'];
-			 	copy($_FILES['foto_producto']['tmp_name'],$destino);
-				 $foto_producto = $_FILES['foto_producto']['name'];
-				 $this->query = "
-				 UPDATE tb_productos
-				 SET nombre_producto='$nombre_producto', foto_producto='$foto_producto', 
-				 id_presentacion='$id_presentacion', id_proveedor = '$id_proveedor', update_at = NOW()
-				 WHERE id_producto = '$id_producto'
-				 ";
-				 $resultado = $this->ejecutar_query_simple();
-				 return $resultado;	 
-		}
-		}
-		
+
 		public function borrar($id_producto='') {
-			session_start();
-			unlink("../Recursos/img/Productos/".$_SESSION['producto']);
+			$resultado = false;
+			try{
+			$this->consultar($id_producto);
+            $foto_producto = $this->getFoto_producto();
 			$this->query = "
 			DELETE FROM tb_productos
-			WHERE id_producto = '$id_producto'
-			";
-			$resultado = $this->ejecutar_query_simple();
-
+			WHERE id_producto = ?
+				";
+			$stm = $this->abrir_preparar_cerrar('abrir');
+			$stm->execute([
+                    $id_producto
+			]);
+			$this->abrir_preparar_cerrar('cerrar'); 
+			unlink("../Recursos/img/Productos/".$foto_producto);
+            $resultado = true;
+			}
+			catch(Exception $e) {
+				throw new Exception($e->getMessage());
+			}
 			return $resultado;
 		}
 		

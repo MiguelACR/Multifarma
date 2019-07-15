@@ -7,7 +7,7 @@ switch ($_POST['accion']){
 
     case 'editar':
         $producto = new Producto();
-		$resultado = $producto->editar($datos);
+		$resultado = $producto->nuevo_editar($datos);
         $respuesta = array(
                 'respuesta' => $resultado
             );
@@ -16,8 +16,8 @@ switch ($_POST['accion']){
 
     case 'nuevo':
         $producto = new Producto();
-		$resultado = $producto->nuevo($datos);
-        if($resultado > 0) {
+		$resultado = $producto->nuevo_editar($datos);
+        if($resultado == true) {
              $respuesta = array(
                  'respuesta' => 'correcto'
              );
@@ -32,7 +32,7 @@ switch ($_POST['accion']){
     case 'borrar':
 		$producto = new Producto();
 		$resultado = $producto->borrar($datos['codigo']);
-        if($resultado > 0) {
+        if($resultado == true) {
             $respuesta = array(
                 'respuesta' => 'correcto'
             );
@@ -53,9 +53,8 @@ switch ($_POST['accion']){
             'respuesta' => 'no existe'
         );
     }  else {
-        
+        session_start();
         $_SESSION['producto'] = $producto->getFoto_producto();
-
         $respuesta = array(
             'id_producto' => $producto->getId_producto(),
             'nombre_producto' => $producto->getNombre_producto(),

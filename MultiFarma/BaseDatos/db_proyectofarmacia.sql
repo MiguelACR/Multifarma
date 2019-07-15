@@ -1280,7 +1280,7 @@ CREATE TABLE IF NOT EXISTS `tb_nominas` (
   CONSTRAINT `fk_nominas-empleados` FOREIGN KEY (`id_empleado`) REFERENCES `tb_empleados` (`id_empleado`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
--- Volcando datos para la tabla db_proyectofarmacia.tb_nominas: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla db_proyectofarmacia.tb_nominas: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_nominas` DISABLE KEYS */;
 INSERT INTO `tb_nominas` (`id_nomina`, `id_empleado`, `fecha`, `salario_basico`, `hextrasd`, `hextrasn`, `auxilio_transporte`, `valor_hextrad`, `valor_hextran`, `dias_laborados`, `salario_devengado`, `pension`, `salud`, `salario_neto`) VALUES
 	(2, 1144198853, '2019-07-14', 120000, 3, 4, 97000, 2500, 3000, 30, 139500, 19200, 15000, 129900);
@@ -1545,7 +1545,7 @@ CREATE TABLE IF NOT EXISTS `tb_productos` (
   KEY `id_proveedor` (`id_proveedor`),
   CONSTRAINT `fk_productos-presentaciones` FOREIGN KEY (`id_presentacion`) REFERENCES `tb_presentaciones` (`id_presentacion`),
   CONSTRAINT `fk_productos-proveedores` FOREIGN KEY (`id_proveedor`) REFERENCES `tb_proveedores` (`id_proveedor`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 -- Volcando datos para la tabla db_proyectofarmacia.tb_productos: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_productos` DISABLE KEYS */;

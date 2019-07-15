@@ -42,9 +42,13 @@
 			SELECT id_presentacion, nombre_presentacion
 			FROM tb_presentaciones ORDER BY id_presentacion
 			';
-            $this->obtener_resultados_query();
+            $this->obtener_resultados_query(0);
 
             return $this->rows;
+        }
+
+        public function nuevo_editar(){
+            
         }
 
         public function nuevo($datos = array())
