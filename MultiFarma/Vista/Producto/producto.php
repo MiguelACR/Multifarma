@@ -74,7 +74,7 @@ usuarioAutenticado(11);
   <!-- /.content-wrapper -->
 
 <script src="./Recursos/js/funcionesProducto.js"></script>
-<!-- Funciones de Lógica de neogcio -->
+<!-- Funciones de Lógica de negocio -->
 <script>
     $(document).ready(producto);
 </script>

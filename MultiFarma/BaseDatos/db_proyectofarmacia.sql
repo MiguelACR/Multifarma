@@ -1149,8 +1149,6 @@ CREATE TABLE IF NOT EXISTS `tb_facturas` (
 
 -- Volcando datos para la tabla db_proyectofarmacia.tb_facturas: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_facturas` DISABLE KEYS */;
-INSERT INTO `tb_facturas` (`id_factura`, `id_cliente`, `id_empleado`, `fecha_factura`, `iva_factura`, `valor_factura`, `neto_factura`, `estado_factura`) VALUES
-	(1, 31862723, 1144198853, '2019-07-10 15:40:39', 6365, 33500, 39865, 0);
 /*!40000 ALTER TABLE `tb_facturas` ENABLE KEYS */;
 
 -- Volcando estructura para tabla db_proyectofarmacia.tb_farmacias
@@ -1213,13 +1211,8 @@ CREATE TABLE IF NOT EXISTS `tb_inventario` (
   CONSTRAINT `tb_inventario_ibfk_2` FOREIGN KEY (`id_producto`) REFERENCES `tb_productos` (`id_producto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
--- Volcando datos para la tabla db_proyectofarmacia.tb_inventario: ~4 rows (aproximadamente)
+-- Volcando datos para la tabla db_proyectofarmacia.tb_inventario: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_inventario` DISABLE KEYS */;
-INSERT INTO `tb_inventario` (`id_farmacia`, `id_producto`, `entradas`, `salidas`, `stock`, `valor_unitario`, `valor_venta`, `fecha_registro`) VALUES
-	(2, 8, 50, 0, 50, 2500, 3000, '2019-06-23'),
-	(2, 9, 50, 0, 50, 3000, 3500, '2019-06-23'),
-	(2, 12, 50, 0, 50, 1500, 2000, '2019-06-23'),
-	(2, 13, 50, 0, 50, 2000, 3000, '2019-06-26');
 /*!40000 ALTER TABLE `tb_inventario` ENABLE KEYS */;
 
 -- Volcando estructura para tabla db_proyectofarmacia.tb_logs
@@ -1250,13 +1243,8 @@ CREATE TABLE IF NOT EXISTS `tb_movimientosfacturas` (
   CONSTRAINT `fk_movimientosfacturas-productos` FOREIGN KEY (`id_producto`) REFERENCES `tb_productos` (`id_producto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
--- Volcando datos para la tabla db_proyectofarmacia.tb_movimientosfacturas: ~4 rows (aproximadamente)
+-- Volcando datos para la tabla db_proyectofarmacia.tb_movimientosfacturas: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_movimientosfacturas` DISABLE KEYS */;
-INSERT INTO `tb_movimientosfacturas` (`id_factura`, `id_producto`, `cantidad`, `precio`, `total`) VALUES
-	(1, 8, 3, 3000, 9000),
-	(1, 9, 5, 3500, 17500),
-	(1, 12, 2, 2000, 4000),
-	(1, 13, 1, 3000, 3000);
 /*!40000 ALTER TABLE `tb_movimientosfacturas` ENABLE KEYS */;
 
 -- Volcando estructura para tabla db_proyectofarmacia.tb_nominas
@@ -1516,20 +1504,21 @@ INSERT INTO `tb_paises` (`id_pais`, `abreviatura_pais`, `nombre_pais`, `update_a
 
 -- Volcando estructura para tabla db_proyectofarmacia.tb_presentaciones
 CREATE TABLE IF NOT EXISTS `tb_presentaciones` (
-  `id_presentacion` int(11) NOT NULL,
+  `id_presentacion` int(11) NOT NULL AUTO_INCREMENT,
   `nombre_presentacion` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `update_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id_presentacion`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 -- Volcando datos para la tabla db_proyectofarmacia.tb_presentaciones: ~6 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_presentaciones` DISABLE KEYS */;
-INSERT INTO `tb_presentaciones` (`id_presentacion`, `nombre_presentacion`) VALUES
-	(1, 'TABLETA'),
-	(2, 'JARABE'),
-	(3, 'CREMA'),
-	(4, 'SUSPENSION'),
-	(5, 'CAPSULAS'),
-	(6, 'GOTAS');
+INSERT INTO `tb_presentaciones` (`id_presentacion`, `nombre_presentacion`, `update_at`) VALUES
+	(1, 'TABLETA', NULL),
+	(2, 'JARABE', NULL),
+	(3, 'CREMA', NULL),
+	(4, 'SUSPENSION', NULL),
+	(5, 'CAPSULAS', NULL),
+	(6, 'GOTAS', NULL);
 /*!40000 ALTER TABLE `tb_presentaciones` ENABLE KEYS */;
 
 -- Volcando estructura para tabla db_proyectofarmacia.tb_productos
@@ -1541,19 +1530,14 @@ CREATE TABLE IF NOT EXISTS `tb_productos` (
   `id_proveedor` int(11) DEFAULT NULL,
   `update_at` datetime NOT NULL,
   PRIMARY KEY (`id_producto`),
-  KEY `id_presentacion` (`id_presentacion`),
   KEY `id_proveedor` (`id_proveedor`),
+  KEY `id_presentacion` (`id_presentacion`),
   CONSTRAINT `fk_productos-presentaciones` FOREIGN KEY (`id_presentacion`) REFERENCES `tb_presentaciones` (`id_presentacion`),
   CONSTRAINT `fk_productos-proveedores` FOREIGN KEY (`id_proveedor`) REFERENCES `tb_proveedores` (`id_proveedor`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
--- Volcando datos para la tabla db_proyectofarmacia.tb_productos: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla db_proyectofarmacia.tb_productos: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `tb_productos` DISABLE KEYS */;
-INSERT INTO `tb_productos` (`id_producto`, `nombre_producto`, `foto_producto`, `id_presentacion`, `id_proveedor`, `update_at`) VALUES
-	(8, 'Acetaminofen', _binary 0x61636574616D696E6F66656E2E6A7067, 2, 1, '2019-06-22 14:30:31'),
-	(9, 'Dolex', _binary 0x446F6C65782E706E67, 1, 2, '2019-06-22 13:44:24'),
-	(12, 'Ibuprofeno', _binary 0x49627570726F66656E6F2E6A7067, 1, 3, '2019-06-22 14:31:27'),
-	(13, 'Loratadina', _binary 0x4C6F7261746164696E612E6A7067, 1, 3, '2019-06-26 12:20:29');
 /*!40000 ALTER TABLE `tb_productos` ENABLE KEYS */;
 
 -- Volcando estructura para tabla db_proyectofarmacia.tb_propietarios

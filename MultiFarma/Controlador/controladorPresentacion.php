@@ -5,7 +5,7 @@ switch ($_POST['accion']) {
 
     case 'editar':
         $presentacion = new Presentacion();
-        $resultado = $presentacion->editar($datos);
+        $resultado = $presentacion->nuevo_editar($datos);
         $respuesta = array(
                 'respuesta' => $resultado,
             );
@@ -14,8 +14,8 @@ switch ($_POST['accion']) {
         
     case 'nuevo':
         $presentacion = new Presentacion();
-        $resultado = $presentacion->nuevo($datos);
-        if ($resultado > 0) {
+        $resultado = $presentacion->nuevo_editar($datos);
+        if ($resultado == true) {
             $respuesta = array(
                 'respuesta' => 'correcto',
             );
@@ -30,7 +30,7 @@ switch ($_POST['accion']) {
     case 'borrar':
         $presentacion = new Presentacion();
         $resultado = $presentacion->borrar($datos['codigo']);
-        if ($resultado > 0) {
+        if ($resultado == true) {
             $respuesta = array(
                 'respuesta' => 'correcto',
             );

@@ -19,15 +19,15 @@
             return $this->nombre_presentacion;
         }
 
-        public function consultar($id_presentacion = '')
-        {
+        public function consultar($id_presentacion = ''){
             if ($id_presentacion != ''):
                 $this->query = "
 				SELECT id_presentacion, nombre_presentacion
 				FROM tb_presentaciones
-				WHERE id_presentacion = '$id_presentacion'
-				";
-            $this->obtener_resultados_query();
+				WHERE id_presentacion = ?
+                ";
+            $this->primero = $id_presentacion;    
+            $this->obtener_resultados_query(1);
             endif;
             if (count($this->rows) == 1):
                 foreach ($this->rows[0] as $propiedad => $valor):
@@ -47,54 +47,66 @@
             return $this->rows;
         }
 
-        public function nuevo_editar(){
-            
-        }
-
-        public function nuevo($datos = array())
-        {
-            if (array_key_exists('id_presentacion', $datos)):
-                foreach ($datos as $campo => $valor):
-                    $$campo = $valor;
-            endforeach;
-            $id_presentacion = utf8_decode($id_presentacion);
-            $nombre_presentacion = utf8_decode($nombre_presentacion);
-            $this->query = "
-				INSERT INTO tb_presentaciones
-				(id_presentacion, nombre_presentacion)
-				VALUES
-				('$id_presentacion', '$nombre_presentacion')
-				";
-            $resultado = $this->ejecutar_query_simple();
-
-            return $resultado;
-            endif;
-        }
-
-        public function editar($datos = array())
-        {
-            foreach ($datos as $campo => $valor):
+        public function nuevo_editar($datos=array()){
+            $resultado = false;
+            foreach ($datos as $campo=>$valor):
                 $$campo = $valor;
             endforeach;
-            $this->query = "
-			UPDATE tb_presentaciones
-			SET nombre_presentacion='$nombre_presentacion'
-			WHERE id_presentacion = '$id_presentacion'
-			";
-            $resultado = $this->ejecutar_query_simple();
-
-            return $resultado;
+            try {
+            if($datos['accion'] == 'nuevo'){	
+                $this->query = "
+				INSERT INTO tb_presentaciones
+				(id_presentacion, nombre_presentacion, update_at)
+				VALUES
+				(NULL, ?, NOW())
+				";
+                $stm = $this->abrir_preparar_cerrar('abrir');
+                $stm->execute([
+                    $nombre_presentacion
+                ]);
+                $this->abrir_preparar_cerrar('cerrar');    
+            }
+            else if($datos['accion'] == 'editar'){
+                $this->query = "
+                UPDATE tb_presentaciones
+                SET nombre_presentacion = ?,
+                update_at = NOW()
+                WHERE id_presentacion = ?
+                ";
+                $stm = $this->abrir_preparar_cerrar('abrir');
+                $stm->execute([
+                    $nombre_presentacion,
+                    $id_presentacion
+                  ]);
+                $this->abrir_preparar_cerrar('cerrar'); 
+            }
+            $resultado = true;
+            }
+            catch(Exception $e) {
+                throw new Exception($e->getMessage());
+            }
+            return $resultado;    
         }
 
         public function borrar($id_presentacion = '')
         {
+            $resultado = false;
+			try{
             $this->query = "
-			DELETE FROM tb_presentaciones
-			WHERE id_presentacion = '$id_presentacion'
-			";
-            $resultado = $this->ejecutar_query_simple();
-
-            return $resultado;
+            DELETE FROM tb_presentaciones
+            WHERE id_presentacion = ?
+            ";
+			$stm = $this->abrir_preparar_cerrar('abrir');
+				$stm->execute([
+                    $id_presentacion
+				  ]);
+				$this->abrir_preparar_cerrar('cerrar'); 
+                $resultado = true;
+			}
+			catch(Exception $e) {
+				throw new Exception($e->getMessage());
+			}
+			return $resultado;
         }
 
         public function __destruct()

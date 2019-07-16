@@ -143,6 +143,8 @@ function producto() {
                    }
                }
               else{
+          if(typeof document.forms['fproducto']['id_producto'] != "undefined"){      
+           if(id_producto == document.forms['fproducto']['id_producto'].value){
            $.ajax({
               type:"post",
               url:"./Controlador/controladorProducto.php",
@@ -176,6 +178,22 @@ function producto() {
                   })
               }
           });
+        }
+        else{
+          swal({
+            type: 'error',
+            title: 'Oops...',
+            text: 'Por favor no modificar el html!'                         
+          })
+        }
+      }
+      else{
+        swal({
+          type: 'error',
+          title: 'Oops...',
+          text: 'Por favor no borrar el html!'                         
+        })
+      }
         }
      })
       });
@@ -232,10 +250,10 @@ function producto() {
           })
   
       });
-
+      var id_producto;
       $(".box-body").on("click","a.editar",function(){
         var data = dt.row($(this).parents("tr")).data();
-        var id_producto = data.id_producto;
+        id_producto = data.id_producto;
          $(".box-title").html("Actualizar Producto");
          $(".box #nuevo").hide();
          $(".box #reportes").hide();

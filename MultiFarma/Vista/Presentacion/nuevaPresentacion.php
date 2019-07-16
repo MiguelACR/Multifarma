@@ -1,15 +1,12 @@
 <?php include_once ("../../Funciones/sessiones.php"); 
 usuarioAutenticado(12);
 ?>
-
-<div class="box-body">
+ <div class="box-body">
         <div class="panel-group"><div class="panel panel-primary">
             <div class="panel-heading">Datos</div>
             <div class="panel-body">    
                 <form class="form-horizontal" role="form"  id="fpresentacion">
-                    <input type="hidden" id="id_presentacion" name="id_presentacion" placeholder="Oculto"
-                    value = "" readonly="true">
- 					<div class="form-group">
+                    <div class="form-group">
                         <label class="control-label col-sm-2" for="nombre_presentacion">Descripción:</label>
                         <div class="input-group col-sm-9">
                             <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
@@ -18,15 +15,15 @@ usuarioAutenticado(12);
                             <span data-key="nombre_presentacion" class="label label-danger"></span>
                         </div>
                     </div>
-					
+
 					 <div class="form-group">        
                         <div class="col-sm-offset-2 col-sm-10">
-                            <button type="button" id="actualizar" class="btn btn-primary" data-toggle="tooltip" title="Actualizar Presentacion">Actualizar Presentación</button>
+                            <button type="button" id="grabar" class="btn btn-primary" data-toggle="tooltip" title="Grabar Presentacion">Grabar Presentación</button>
                             <button type="button" id="cerrar" class="btn btn-success btncerrar" data-toggle="tooltip" title="Cancelar">Cancelar</button>
                         </div>
                     </div>
 
-					<input type="hidden" id="nuevo" value="editar" name="accion"/>
+					<input type="hidden" id="nuevo" value="nuevo" name="accion"/>
 			</fieldset>
 
 		</form>
