@@ -22,7 +22,8 @@ Aplicacion que permite la gestion de farmacias a nivel mundial, permite la creac
 ```
 ## Desarrolladores
 
-``` - Miguel Angel Cerquera Rodriguez
+``` 
+    - Miguel Angel Cerquera Rodriguez
     - Daniel Alberto Salazar Erazo
 ``` 
  
