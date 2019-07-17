@@ -1,52 +1,48 @@
 <?php
 require_once '../Modelo/modeloProveedor.php';
-if($datos = $_POST){
+
+$datos = $_POST;
+
 switch ($_POST['accion']) {
     
     case 'editar':
         $proveedor = new Proveedor();
-        $resultado = $proveedor->editar($datos);
+        $resultado = $proveedor->nuevo_editar($datos);
         $respuesta = array(
-                'respuesta' => $resultado,
+                'respuesta' => $resultado
             );
         echo json_encode($respuesta);
-        break;
+    break;
 
     case 'nuevo':
         $proveedor = new Proveedor();
-        $resultado = $proveedor->nuevo($datos);
-        if ($resultado > 0) {
+        $resultado = $proveedor->nuevo_editar($datos);
+        if ($resultado == true) {
             $respuesta = array(
-                'respuesta' => 'correcto',
+                'respuesta' => 'correcto'
             );
         } else {
             $respuesta = array(
-                'respuesta' => 'error',
+                'respuesta' => 'error'
             );
         }
         echo json_encode($respuesta);
-        break;
+    break;
         
     case 'borrar':
         $proveedor = new Proveedor();
         $resultado = $proveedor->borrar($datos['codigo']);
-        if ($resultado > 0) {
+        if ($resultado == true) {
             $respuesta = array(
-                'respuesta' => 'correcto',
+                'respuesta' => 'correcto'
             );
         } else {
             $respuesta = array(
-                'respuesta' => 'error',
+                'respuesta' => 'error'
             );
         }
         echo json_encode($respuesta);
-        break;
-
-}
-}
-else{
-$datos = $_GET;
-switch ($_GET['accion']) {
+    break;
 
     case 'consultar':
     $proveedor = new Proveedor();
@@ -54,7 +50,7 @@ switch ($_GET['accion']) {
 
     if ($proveedor->getId_proveedor() == null) {
         $respuesta = array(
-            'respuesta' => 'no existe',
+            'respuesta' => 'no existe'
         );
     } else {
         $respuesta = array(
@@ -64,7 +60,8 @@ switch ($_GET['accion']) {
             'telefono' => $proveedor->getTelefono_proveedor(),
             'ciudad' => $proveedor->getId_ciudad(),
             'pais' => $proveedor->getId_pais(),
-            'respuesta' => 'existe',
+            'email' => $proveedor->getEmail_proveedor(),
+            'respuesta' => 'existe'
         );
     }
     echo json_encode($respuesta);
@@ -76,6 +73,5 @@ switch ($_GET['accion']) {
     echo json_encode(array('data' => $listado), JSON_UNESCAPED_UNICODE);
     break;
 
-}
 }
 ?>

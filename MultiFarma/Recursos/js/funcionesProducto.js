@@ -55,7 +55,7 @@ function producto() {
                 });
             });
              $.ajax({
-                type:"get",
+                type:"post",
                 url:"./Controlador/controladorProveedor.php",
                 data: {accion:'listar'},
                 dataType:"json"
@@ -288,7 +288,7 @@ function producto() {
                   });
                   });
                   $.ajax({
-                  type:"get",
+                  type:"post",
                   url:"./Controlador/controladorProveedor.php",
                   data: {accion:'listar'},
                   dataType:"json"

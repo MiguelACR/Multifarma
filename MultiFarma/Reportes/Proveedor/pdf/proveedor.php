@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Producto</title>
+	<title>Proveedor</title>
     <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
@@ -28,7 +28,7 @@
 				<div class="round">
                     <span class="h3">Reporte de:</span>	
 
-                    <span class="h1">Productos</span>	
+                    <span class="h1">Proveedores</span>	
                 </div>
 			</td>
 		</tr>
@@ -36,27 +36,31 @@
 	<table id="detalle_head">
 			<thead>
 				<tr>
-					<th width="50px">Codigo</th>
+					<th width="50px">Nit</th>
 					<th class="textleft">Descripción</th>
-                    <th class="textleft">Presentación</th>
-                    <th class="textleft">Proveedor</th>
-					<th class="textleft">Foto</th>
+                    <th class="textleft">Pais</th>
+                    <th class="textleft">Ciudad</th>
+                    <th class="textleft">Dirección</th>
+                    <th class="textleft">Telefono</th>
+                    <th class="textleft">Email</th>
 				</tr>
 			</thead>
 			<tbody id="detalle_body">
 
 			<?php
 
-				if($detalle_productos > 0){
+				if($detalle_proveedores > 0){
 
-					foreach($detalle_productos as $contenido){
+					foreach($detalle_proveedores as $contenido){
 			 ?>
 				<tr>
-					<td class="textcenter"><?php echo $contenido->id_producto; ?></td>
-                    <td><?php echo $contenido->nombre_producto; ?></td>
-					<td><?php echo $contenido->nombre_presentacion; ?></td>
-                    <td><?php echo $contenido->nombre_proveedor; ?></td>
-					<td><img src="../../../Recursos/img/Productos/<?php echo $contenido->foto_producto; ?>" width="50" height="50" alt="User Image"></td>
+					<td class="textcenter"><?php echo $contenido->id_proveedor; ?></td>
+					<td><?php echo $contenido->nombre_proveedor; ?></td>
+                    <td><?php echo $contenido->nombre_pais; ?></td>
+                    <td><?php echo $contenido->nombre_ciudad; ?></td>
+                    <td><?php echo $contenido->direccion_proveedor; ?></td>
+                    <td><?php echo $contenido->telefono_proveedor; ?></td>
+                    <td><?php echo $contenido->email_proveedor; ?></td>
 				</tr> 
 				
 			<?php

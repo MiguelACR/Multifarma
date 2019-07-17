@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Farmacia</title>
+	<title>Inventario</title>
     <link rel="stylesheet" href="../../style.css">
 </head>
 <body>

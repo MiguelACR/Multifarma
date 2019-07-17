@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Pais</title>
+	<title>Presentacion</title>
     <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
@@ -28,7 +28,7 @@
 				<div class="round">
                     <span class="h3">Reporte de:</span>	
 
-                    <span class="h1">Paises</span>	
+                    <span class="h1">Presentaciones</span>	
                 </div>
 			</td>
 		</tr>
@@ -37,22 +37,20 @@
 			<thead>
 				<tr>
 					<th width="50px">Codigo</th>
-					<th class="textleft">Abreviatura</th>
-					<th class="textleft">Nombre</th>
+					<th class="textleft">Descripción</th>
 				</tr>
 			</thead>
 			<tbody id="detalle_body">
 
 			<?php
 
-				if($detalle_paises > 0){
+				if($detalle_presentaciones > 0){
 
-					foreach($detalle_paises as $contenido){
+					foreach($detalle_presentaciones as $contenido){
 			 ?>
 				<tr>
-					<td class="textcenter"><?php echo $contenido->id_pais; ?></td>
-					<td><?php echo $contenido->abreviatura_pais; ?></td>
-					<td><?php echo $contenido->nombre_pais; ?></td>
+					<td class="textcenter"><?php echo $contenido->id_presentacion; ?></td>
+					<td><?php echo $contenido->nombre_presentacion; ?></td>
 				</tr> 
 				
 			<?php

@@ -23,9 +23,6 @@ Aplicacion que permite la gestion de farmacias a nivel mundial, permite la creac
 ## Desarrolladores
 
 ``` - Miguel Angel Cerquera Rodriguez
-    - Gelder Steven Arcila Pardo
-    - Cristian Moreno
-    - Brandon Machado Vargas
     - Daniel Alberto Salazar Erazo
 ``` 
  
